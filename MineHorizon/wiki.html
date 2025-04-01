@@ -11,6 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            margin: 0; /* Reset default body margin */
         }
         /* Custom CSS for animations */
         #toc li a:hover {
@@ -23,235 +24,376 @@
         }
         .content-section {
             opacity: 0;
-            transform: translateY(105px); /* Increased vertical offset */
+            transform: translateY(20px);
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
         .content-section.active {
             opacity: 1;
             transform: translateY(0);
         }
+        #sidebar {
+            background-color: #2d3748; /* Dark gray sidebar */
+            color: #f7fafc;
+            width: 250px; /* Increased sidebar width */
+            min-height: 100vh; /* Full height sidebar */
+            position: fixed; /* Fixed positioning */
+            top: 0;
+            left: 0;
+            overflow-y: auto; /* Enable scrolling in sidebar */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Add shadow */
+            z-index: 10; /* Ensure sidebar is above other elements */
+        }
+        #toc {
+            padding-top: 20px; /* Add padding to top of TOC */
+            padding-bottom: 20px;
+        }
+        #toc li a {
+            color: #f7fafc; /* Light text for TOC links */
+            display: block; /* Make links fill the entire list item width */
+            padding: 10px 16px; /* Increased padding for better touch area */
+            border-left: 4px solid transparent; /* Add a transparent border */
+            transition: color 0.3s ease, border-left-color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+        }
+        #toc li a:hover {
+            color: #fff; /* White on hover */
+            border-left-color: #63b3ed; /* Blue border on hover */
+            background-color: rgba(255, 255, 255, 0.05); /* Slight background color */
+        }
+        #toc li a.active {
+            color: #fff; /* White for active link */
+            border-left-color: #63b3ed; /* Blue border for active link */
+            background-color: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        header {
+            background-color: #edf2f7; /* Light gray header */
+            padding: 20px;
+            margin-left: 250px; /* Match sidebar width */
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            z-index: 5; /* Ensure header is above main content */
+            position: relative;
+        }
+        header h1 {
+            color: #2d3748; /* Dark gray for heading */
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            color: #4a5568; /* Medium gray for paragraph */
+            margin-bottom: 0;
+        }
+        main {
+            margin-left: 250px; /* Match sidebar width */
+            padding: 20px;
+            flex-grow: 1;
+            margin-top: 80px; /* Add margin to the top to account for fixed header */
+        }
+
+        .content-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0; /* Add a border between sections */
+            margin-bottom: 20px;
+        }
+        .content-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .content-section h2 {
+            color: #2d3748; /* Dark gray for section titles */
+            margin-bottom: 1.5rem;
+            font-size: 2.25rem; /* Larger heading */
+            font-weight: 600;
+        }
+        .content-section p,
+        .content-section ul,
+        .content-section ol {
+            color: #4a5568; /* Medium gray for text */
+            line-height: 1.75; /* Increased line height for better readability */
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .content-section ul,
+        .content-section ol {
+            padding-left: 2rem;
+        }
+        .content-section li {
+             margin-bottom: 0.5rem;
+        }
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .text-center{
+            text-align: center;
+        }
+
+        .w-64{
+            width: 32rem;
+        }
+        .h-64{
+            height: 16rem;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+                left: 0;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            main {
+                margin-left: 0;
+                margin-top: 0;
+                padding-top: 80px;
+            }
+            header {
+                margin-left: 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 flex">
-    <aside id="sidebar" class="bg-gray-800 text-white w-64 min-h-screen flex flex-col">
+<body class="bg-gray-100">
+    <aside id="sidebar">
         <div class="p-4">
             <h1 class="text-2xl font-semibold">Minehorizon Wiki</h1>
         </div>
         <nav id="toc" class="p-4 overflow-y-auto">
             <ul class="space-y-2">
-                <li><a href="#introduction" class="hover:text-blue-300 transition duration-300">Introduction</a></li>
-                <li><a href="#getting-started" class="hover:text-blue-300 transition duration-300">Getting Started</a></li>
-                <li><a href="#server-rules" class="hover:text-blue-300 transition duration-300">Server Rules</a></li>
-                <li><a href="#world-info" class="hover:text-blue-300 transition duration-300">World Information</a></li>
-                <li><a href="#plugins-mods" class="hover:text-blue-300 transition duration-300">Plugins & Mods</a></li>
-                <li><a href="#lifesteal" class="hover:text-blue-300 transition duration-300">Lifesteal</a></li>
-                <li><a href="#staff" class="hover:text-blue-300 transition duration-300">Server Staff</a></li>
-                <li><a href="#building-guide" class="hover:text-blue-300 transition duration-300">Building Guide</a></li>
-                <li><a href="#pvp-guide" class="hover:text-blue-300 transition duration-300">PvP Guide</a></li>
-                <li><a href="#economy" class="hover:text-blue-300 transition duration-300">Economy</a></li>
-                <li><a href="#farms" class="hover:text-blue-300 transition duration-300">Farms</a></li>
-                <li><a href="#commands" class="hover:text-blue-300 transition duration-300">Commands</a></li>
-                <li><a href="#faq" class="hover:text-blue-300 transition duration-300">FAQ</a></li>
-                <li><a href="#changelog" class="hover:text-blue-300 transition duration-300">Changelog</a></li>
-                <li><a href="#credits" class="hover:text-blue-300 transition duration-300">Credits</a></li>
+                <li><a href="#introduction" class="">Introduction</a></li>
+                <li><a href="#getting-started" class="">Getting Started</a></li>
+                <li><a href="#server-rules" class="">Server Rules</a></li>
+                <li><a href="#world-info" class="">World Information</a></li>
+                <li><a href="#plugins-mods" class="">Plugins & Mods</a></li>
+                <li><a href="#lifesteal" class="">Lifesteal</a></li>
+                <li><a href="#staff" class="">Server Staff</a></li>
+                <li><a href="#building-guide" class="">Building Guide</a></li>
+                <li><a href="#pvp-guide" class="">PvP Guide</a></li>
+                <li><a href="#economy" class="">Economy</a></li>
+                <li><a href="#farms" class="">Farms</a></li>
+                <li><a href="#commands" class="">Commands</a></li>
+                <li><a href="#faq" class="">FAQ</a></li>
+                <li><a href="#changelog" class="">Changelog</a></li>
+                <li><a href="#credits" class="">Credits</a></li>
             </ul>
         </nav>
     </aside>
 
-    <main class="flex-1 p-8">
-        <header class="mb-8">
-            <h1 class="text-4xl font-semibold text-gray-800">Welcome to the Minehorizon Wiki</h1>
+    <header>
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-semibold">Welcome to the Minehorizon Wiki</h1>
             <p class="text-gray-600 mt-2">Your comprehensive guide to the Minehorizon Minecraft Server.</p>
-        </header>
+        </div>
+    </header>
 
-        <section id="introduction" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Introduction</h2>
-            <p class="text-gray-600">
-                Welcome to Minehorizon, a Minecraft server dedicated to providing a fun and engaging experience for all players.
-                This wiki is designed to help you get started, understand the server rules, and make the most of your time on Minehorizon.
-                We strive to create a friendly and inclusive community where players can explore, build, and create together.
-                You may suggest new features via Discord
-            </p>
-        </section>
+    <main>
+        <div class="container mx-auto">
+            <section id="introduction" class="content-section">
+                <h2 class="text-3xl font-semibold">Introduction</h2>
+                <p class="text-gray-600">
+                    Welcome to Minehorizon, a Minecraft server dedicated to providing a fun and engaging experience for all players.
+                    This wiki is designed to help you get started, understand the server rules, and make the most of your time on Minehorizon.
+                    We strive to create a friendly and inclusive community where players can explore, build, and create together.
+                    You may suggest new features via Discord
+                </p>
+            </section>
 
-        <section id="getting-started" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Getting Started</h2>
-            <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                <li><strong>Joining the Server:</strong> To join Minehorizon, you'll need a Minecraft: Java Edition account (accepting "cracked" launchers) <strong>OR</strong> an Official Minecraft: Bedrock Edition account.  The server address is: <code>ares.5ijiusi.com</code></li>
-                <li><strong>Initial Setup:</strong> When you first join, you'll be in the spawn area. Take some time to explore and familiarize yourself with the surroundings.  You may want to set your home using <code>/sethome</code>.</li>
-                <li><strong>Resource Gathering:</strong> To start building and crafting, you'll need resources. Head out into the world to gather wood, stone, and other materials.</li>
-                <li><strong>Building Your Base:</strong> Find a suitable location to build your base.  Remember to hide it well to minimize greif.</li>
-                <li><strong>Exploring the World:</strong>  Minehorizon features a vast and diverse world to explore.  Discover new biomes, find hidden treasures, and embark on exciting adventures.</li>
-            </ol>
-        </section>
+            <section id="getting-started" class="content-section">
+                <h2 class="text-3xl font-semibold">Getting Started</h2>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><strong>Joining the Server:</strong> To join Minehorizon, you'll need a Minecraft: Java Edition account (accepting "cracked" launchers) <strong>OR</strong> an Official Minecraft: Bedrock Edition account.  The server address is: <code>ares.5ijiusi.com</code></li>
+                    <li><strong>Initial Setup:</strong> When you first join, you'll be in the spawn area. Take some time to explore and familiarize yourself with the surroundings.  You may want to set your home using <code>/sethome</code>.</li>
+                    <li><strong>Resource Gathering:</strong> To start building and crafting, you'll need resources. Head out into the world to gather wood, stone, and other materials.</li>
+                    <li><strong>Building Your Base:</strong> Find a suitable location to build your base.  Remember to hide it well to minimize greif.</li>
+                    <li><strong>Exploring the World:</strong>  Minehorizon features a vast and diverse world to explore.  Discover new biomes, find hidden treasures, and embark on exciting adventures.</li>
+                </ol>
+            </section>
 
-        <section id="server-rules" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Server Rules</h2>
-            <p class="text-gray-600">
-                To ensure a positive experience for everyone, please adhere to the following rules:
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Respect:</strong> Treat all players with respect.  Harassment, hate speech, and discrimination will not be tolerated.</li>
-                <li><strong>No Griefing:</strong>  Do not destroy or modify other players' builds or belongings without their permission.</li>
-                <li><strong>No Cheating:</strong>  The use of hacks, mods, or exploits that provide an unfair advantage is strictly prohibited.</li>
-                <li><strong>No Advertising:</strong>  Do not advertise other servers, websites, or products without permission from the staff.</li>
-                <li><strong>Follow Staff Instructions:</strong>  Listen to and follow the instructions of server staff members.</li>
-                <li><strong>Use Common Sense:</strong>  If you're unsure about something, ask a staff member.  Use common sense and good judgment.</li>
-            </ul>
-        </section>
+            <section id="server-rules" class="content-section">
+                <h2 class="text-3xl font-semibold">Server Rules</h2>
+                <p class="text-gray-600">
+                    To ensure a positive experience for everyone, please adhere to the following rules:
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Respect:</strong> Treat all players with respect.  Harassment, hate speech, and discrimination will not be tolerated.</li>
+                    <li><strong>No Griefing:</strong>  Do not destroy or modify other players' builds or belongings without their permission.</li>
+                    <li><strong>No Cheating:</strong>  The use of hacks, mods, or exploits that provide an unfair advantage is strictly prohibited.</li>
+                    <li><strong>No Advertising:</strong>  Do not advertise other servers, websites, or products without permission from the staff.</li>
+                    <li><strong>Follow Staff Instructions:</strong>  Listen to and follow the instructions of server staff members.</li>
+                    <li><strong>Use Common Sense:</strong>  If you're unsure about something, ask a staff member.  Use common sense and good judgment.</li>
+                </ul>
+            </section>
 
-        <section id="world-info" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">World Information</h2>
-            <p class="text-gray-600">
-                Minehorizon features a carefully crafted world with a variety of biomes, structures, and resources.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Overworld:</strong> The main world where you'll start your adventure.</li>
-                <li><strong>Nether:</strong> A dangerous realm filled with valuable resources.</li>
-                <li><strong>End:</strong> The home of the Ender Dragon, a challenging boss.</li>
-            </ul>
-        </section>
+            <section id="world-info" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">World Information</h2>
+                <p class="text-gray-600">
+                    Minehorizon features a carefully crafted world with a variety of biomes, structures, and resources.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Overworld:</strong> The main world where you'll start your adventure.</li>
+                    <li><strong>Nether:</strong> A dangerous realm filled with valuable resources.</li>
+                    <li><strong>End:</strong> The home of the Ender Dragon, a challenging boss.</li>
+                </ul>
+            </section>
 
-        <section id="plugins-mods" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Plugins & Mods</h2>
-            <p class="text-gray-600">
-                Minehorizon utilizes a variety of plugins to enhance gameplay. Here are some of the key ones:
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>HuskHomes:</strong> Provides essential commands and features like <code>/home</code>, <code>/spawn</code>, and <code>/warp</code>.</li>
-                <li><strong>LuckPerms:</strong> Manages player permissions and ranks.</li>
-                <li><strong>WorldGuard:</strong> Protects the server's spawn from griefing and unauthorized building.</li>
-                <li><strong>AuthMe:</strong> Protects players' accounts from account theft from malicious actors.</li>
-            </ul>
-        </section>
+            <section id="plugins-mods" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Plugins & Mods</h2>
+                <p class="text-gray-600">
+                    Minehorizon utilizes a variety of plugins to enhance gameplay. Here are some of the key ones:
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>HuskHomes:</strong> Provides essential commands and features like <code>/home</code>, <code>/spawn</code>, and <code>/warp</code>.</li>
+                    <li><strong>LuckPerms:</strong> Manages player permissions and ranks.</li>
+                    <li><strong>WorldGuard:</strong> Protects the server's spawn from griefing and unauthorized building.</li>
+                     <li><strong>AuthMe:</strong> Protects players' accounts from account theft from malicious actors.</li>
+                </ul>
+            </section>
 
-        <section id="lifesteal" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Lifesteal</h2>
-            <p class="text-gray-600">
-                Information about the Lifesteal aspect of the server.
-            </p>
-            <div class="flex flex-wrap gap-4 items-center">
-                <div class="flex flex-col items-center">
-                    <img src="Heart.png" alt="Heart" class="w-64 h-64">
-                    <p class="text-gray-600 mt-2">Heart</p>
+            <section id="lifesteal" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Lifesteal</h2>
+                <p class="text-gray-600">
+                    Information about the Lifesteal aspect of the server.
+                </p>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div class="flex flex-col items-center">
+                        <img src="Heart.png" alt="Heart" class="w-64 h-64">
+                        <p class="text-gray-600 mt-2">Heart</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <img src="Revive Crystal.png" alt="Revive Crystal" class="w-64 h-64">
+                        <p class="text-gray-600 mt-2">Revive Crystal</p>
+                    </div>
                 </div>
-                <div class="flex flex-col items-center">
-                    <img src="Revive Crystal.png" alt="Revive Crystal" class="w-64 h-64">
-                    <p class="text-gray-600 mt-2">Revive Crystal</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="staff" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Server Staff</h2>
-            <p class="text-gray-600">
-                Our dedicated staff team is here to help you with any questions or issues you may have.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Owners:</strong> Earth1283, ThatSunSet, Pepe Alek</li>
-                <li><strong>Admins:</strong> help</li>
-                <li><strong>Moderators:</strong> ug</li>
-                <li><strong>Helpers:</strong> 07Keano (and who else)</li>
-            </ul>
-        </section>
+            <section id="staff" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Server Staff</h2>
+                <p class="text-gray-600">
+                    Our dedicated staff team is here to help you with any questions or issues you may have.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Owners:</strong> Earth1283, ThatSunSet, Pepe Alek</li>
+                    <li><strong>Admins:</strong> help</li>
+                    <li><strong>Moderators:</strong> ug</li>
+                    <li><strong>Helpers:</strong> 07Keano (and who else)</li>
+                </ul>
+            </section>
 
-        <section id="building-guide" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Building Guide</h2>
-            <p class="text-gray-600">
-                A guide to help you with your builds on the server.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Building Styles:</strong> It is advised to build underground for your safety.</li>
-                <li><strong>On Greifing:</strong> No refunds if your base gets greifed <strong>unless</strong> it's done by a cheater.</li>
-            </ul>
-        </section>
+            <section id="building-guide" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Building Guide</h2>
+                <p class="text-gray-600">
+                    A guide to help you with your builds on the server.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Building Styles:</strong> It is advised to build underground for your safety.</li>
+                    <li><strong>On Greifing:</strong> No refunds if your base gets greifed <strong>unless</strong> it's done by a cheater.</li>
+                </ul>
+            </section>
 
-        <section id="pvp-guide" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">PvP Guide</h2>
-            <p class="text-gray-600">
-               Information about Player vs Player combat on the server
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>PvP Arenas:</strong> Take advantage of <code>/warp warzone</code> for a designated PVP arena!</li>
-                <li><strong>Rules of Engagement:</strong> It is advised that you do not log off during combat, or else you will face consequences.</li>
-            </ul>
-        </section>
+            <section id="pvp-guide" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">PvP Guide</h2>
+                <p class="text-gray-600">
+                   Information about Player vs Player combat on the server
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>PvP Arenas:</strong> Take advantage of <code>/warp warzone</code> for a designated PVP arena!</li>
+                    <li><strong>Rules of Engagement:</strong> It is advised that you do not log off during combat, or else you will face consequences.</li>
+                </ul>
+            </section>
 
-        <section id="economy" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Economy</h2>
-            <p class="text-gray-600">
-                Information about the server economy
-            </p>
-             <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Ideology:</strong> We aim to give maximum freedom to our players, so there will be very frew regulations on playe-run markets</li>
-                <li><strong>Player Shops:</strong> Player run shops are purely based on trust. If you get scammed, do not ask admins for a refund..</li>
-                <li><strong>Currency:</strong> There is curently no offical currency. You are welcome to create one.</li>
-            </ul>
-        </section>
+            <section id="economy" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Economy</h2>
+                <p class="text-gray-600">
+                    Information about the server economy
+                </p>
+                 <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Ideology:</strong> We aim to give maximum freedom to our players, so there will be very frew regulations on playe-run markets</li>
+                    <li><strong>Player Shops:</strong> Player run shops are purely based on trust. If you get scammed, do not ask admins for a refund..</li>
+                    <li><strong>Currency:</strong> There is curently no offical currency. You are welcome to create one.</li>
+                </ul>
+            </section>
 
-        <section id="farms" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Farms</h2>
-             <p class="text-gray-600">
-                Information about creating farms & Farm policies
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Types of Farms:</strong> There are currently no limitations on farm types.</li>
-                <li><strong>Farm Efficiency:</strong> You may bring your farm's efficiency through the roof as long as it doesn't compromise the server's performance.</li>
-                <li><strong>Redstone Farms:</strong> Redstone-powered farms are fine, but please limit farms to under 1000 redstone ticks per chunk.</li>
-                <li><strong>Community Farms:</strong> It is up to you to maintain and operate your farm! Staff will not refund it if it is greifed.</li>
-            </ul>
-        </section>
+            <section id="farms" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Farms</h2>
+                 <p class="text-gray-600">
+                    Information about creating farms & Farm policies
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Types of Farms:</strong> There are currently no limitations on farm types.</li>
+                    <li><strong>Farm Efficiency:</strong> You may bring your farm's efficiency through the roof as long as it doesn't compromise the server's performance.</li>
+                    <li><strong>Redstone Farms:</strong> Redstone-powered farms are fine, but please limit farms to under 1000 redstone ticks per chunk.</li>
+                    <li><strong>Community Farms:</strong> It is up to you to maintain and operate your farm! Staff will not refund it if it is greifed.</li>
+                </ul>
+            </section>
 
-        <section id="commands" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Commands</h2>
-            <p class="text-gray-600">
-                A list of useful commands
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><code>/home</code>: Teleports you to your home.</li>
-                <li><code>/spawn</code>: Teleports you to spawn.</li>
-                <li><code>/warp [warpname]</code>: Teleports you to a warp point.</li>
-                <li><code>/tpa [playername]</code>: Requests to teleport to a player.</li>
-                 <li><code>/sethome</code>: Sets your home location.</li>
-            </ul>
-        </section>
+            <section id="commands" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Commands</h2>
+                <p class="text-gray-600">
+                    A list of useful commands
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><code>/home</code>: Teleports you to your home.</li>
+                    <li><code>/spawn</code>: Teleports you to spawn.</li>
+                    <li><code>/warp [warpname]</code>: Teleports you to a warp point.</li>
+                    <li><code>/tpa [playername]</code>: Requests to teleport to a player.</li>
+                     <li><code>/sethome</code>: Sets your home location.</li>
+                </ul>
+            </section>
 
-        <section id="faq" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Frequently Asked Questions</h2>
-            <p class="text-gray-600">
-                Find answers to common questions about Minehorizon.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>Q: How do I teleport to another player?</strong>  A: Use the <code>/tpa playername</code> command.</li>
-                <li><strong>Q: How do I set my home?</strong>  A: Use the <code>/sethome</code> command.</li>
-                <li><strong>Q: What are the server rules?</strong>  A: See the <a href="#server-rules">Server Rules</a> section.</li>
-                <li><strong>Q: How do I join the server?</strong> A: The server address is <code>ares.5ijiusi.com</code></li>
-            </ul>
-        </section>
+            <section id="faq" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Frequently Asked Questions</h2>
+                <p class="text-gray-600">
+                    Find answers to common questions about Minehorizon.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Q: How do I teleport to another player?</strong>  A: Use the <code>/tpa playername</code> command.</li>
+                    <li><strong>Q: How do I set my home?</strong>  A: Use the <code>/sethome</code> command.</li>
+                    <li><strong>Q: What are the server rules?</strong>  A: See the <a href="#server-rules">Server Rules</a> section.</li>
+                     <li><strong>Q: How do I join the server?</strong> A: The server address is <code>ares.5ijiusi.com</code></li>
+                </ul>
+            </section>
 
-        <section id="changelog" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Changelog</h2>
-            <p class="text-gray-600">
-                Stay up-to-date with the latest server updates and changes.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li><strong>[Date]:</strong> [Description of changes]</li>
-                <li><strong>[Date]:</strong> [Description of changes]</li>
-                <li><strong>[Date]:</strong> [Description of changes]</li>
-            </ul>
-        </section>
+            <section id="changelog" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Changelog</h2>
+                <p class="text-gray-600">
+                    Stay up-to-date with the latest server updates and changes.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>[Date]:</strong> [Description of changes]</li>
+                    <li><strong>[Date]:</strong> [Description of changes]</li>
+                    <li><strong>[Date]:</strong> [Description of changes]</li>
+                </ul>
+            </section>
 
-        <section id="credits" class="content-section mb-12">
-            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Credits</h2>
-            <p class="text-gray-600">
-                A big thank you to everyone who has contributed to the Minehorizon server.
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li>Server Owners: Earth1283, ThatSunSet, PepeAlek</li>
-                <li>Staff Members: Insert content</li>
-                <li>Contributors: [List Names]</li>
-            </ul>
-        </section>
+            <section id="credits" class="content-section mb-12">
+                <h2 class="text-3xl font-semibold">Credits</h2>
+                <p class="text-gray-600">
+                    A big thank you to everyone who has contributed to the Minehorizon server.
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Server Owners: Earth1283, ThatSunSet, PepeAlek</li>
+                    <li>Staff Members: Insert content</li>
+                    <li>Contributors: [List Names]</li>
+                </ul>
+            </section>
+        </div>
     </main>
 
     <script>
@@ -263,15 +405,16 @@
             sections.forEach((section, index) => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
-                if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+                if (window.scrollY >= sectionTop - 150 && window.scrollY < sectionTop + sectionHeight - 150) {
                     navLinks[index].classList.add('active');
-                    section.classList.add('active');
+                    sections[index].classList.add('active');
                 } else {
                     navLinks[index].classList.remove('active');
-                    section.classList.remove('active');
+                    sections[index].classList.remove('active');
                 }
             });
         }
+
         // Add smooth scrolling to links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
