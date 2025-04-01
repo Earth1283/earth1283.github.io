@@ -140,11 +140,16 @@
             text-align: center;
         }
 
-        .w-64{
-            width: 32rem;
+        .max-w-full {
+            max-width: 100%;
+            height: auto;
         }
-        .h-64{
-            height: 16rem;
+
+        .lifesteal-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -271,13 +276,13 @@
                 <p class="text-gray-600">
                     Information about the Lifesteal aspect of the server.
                 </p>
-                <div class="flex flex-wrap gap-4 items-center">
-                    <div class="flex flex-col items-center">
-                        <img src="Heart.png" alt="Heart" class="w-64 h-64">
+                <div class="flex flex-col items-center">
+                    <div class="lifesteal-image-container">
+                        <img src="Heart.png" alt="Heart" class="max-w-full">
                         <p class="text-gray-600 mt-2">Heart</p>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <img src="Revive Crystal.png" alt="Revive Crystal" class="w-64 h-64">
+                    <div class="lifesteal-image-container">
+                        <img src="Revive Crystal.png" alt="Revive Crystal" class="max-w-full">
                         <p class="text-gray-600 mt-2">Revive Crystal</p>
                     </div>
                 </div>
