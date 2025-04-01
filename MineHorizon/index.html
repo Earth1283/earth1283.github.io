@@ -106,25 +106,39 @@
     </div>
 
     <script>
-        // Simulate fetching player count and server uptime (replace with actual API calls)
-        function updateServerInfo() {
-            // Simulate API call delay
-            setTimeout(() => {
-                const playerCountElement = document.getElementById('player-count');
-                const uptimeElement = document.getElementById('server-uptime');
-                const randomPlayers = Math.floor(Math.random() * 50) + 10; // Simulate 10-60 players
-                const uptime = (Math.random() * 100).toFixed(2) + "%"; // Simulate uptime
+        // Function to fetch server status from mcsrvstat.us API
+        function fetchServerStatus() {
+            const serverIp = "ares.5ijiusi.com"; // Replace with your server IP
+            const apiUrl = `https://api.mcsrvstat.us/2/${serverIp}`;
 
-                playerCountElement.textContent = randomPlayers;
-                uptimeElement.textContent = uptime;
-            }, 1500);
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const playerCountElement = document.getElementById('player-count');
+                    const uptimeElement = document.getElementById('server-uptime');
+
+                    if (data.online) {
+                        playerCountElement.textContent = `${data.players.online} / ${data.players.max}`;
+                        uptimeElement.textContent = "Online"; //  API doesn't directly provide uptime.  You might need a plugin for that.
+                    } else {
+                        playerCountElement.textContent = "Offline";
+                        uptimeElement.textContent = "Offline";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching server status:", error);
+                    const playerCountElement = document.getElementById('player-count');
+                    const uptimeElement = document.getElementById('server-uptime');
+                    playerCountElement.textContent = "Error";
+                    uptimeElement.textContent = "Error";
+                });
         }
 
         // Initial update
-        updateServerInfo();
+        fetchServerStatus();
 
         // Update every 60 seconds (adjust as needed)
-        setInterval(updateServerInfo, 60000);
+        setInterval(fetchServerStatus, 60000);
     </script>
 </body>
 </html>
