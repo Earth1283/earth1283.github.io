@@ -3,52 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minehorizon Minecraft Server</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Minehorizon - Minecraft Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .bg-gradient-minehorizon {
+            background: linear-gradient(135deg, #4a148c, #1a237e); /* Deep purple gradient */
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+        .card-shadow {
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        .hover\:scale-105:hover {
+            transform: scale(1.05);
+        }
+        .hover\:shadow-lg:hover {
+             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Welcome to Minehorizon Minecraft Server</h1>
-        </header>
+<body class="bg-gradient-minehorizon text-white flex justify-center items-center min-h-screen py-8">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-glow mb-4">
+                <span class="block sm:inline">Welcome to</span>
+                <span class="block sm:inline text-yellow-400">Minehorizon</span>
+            </h1>
+            <p class="text-lg text-gray-300">Your ultimate Minecraft adventure awaits!</p>
+        </div>
 
-        <section class="server-info">
-            <h2>Server Information</h2>
-            <div class="info">
-                <div class="info-item">
-                    <h3>Server Status:</h3>
-                    <p class="status online">Online</p>
+        <div class="bg-white/10 rounded-lg shadow-lg backdrop-blur-md p-6 mb-6 card-shadow transition-all hover:scale-105 hover:shadow-lg">
+            <h2 class="text-2xl font-semibold text-center text-blue-400 mb-4">Server Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Server Name:</span> Minehorizon</p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Server IP:</span> play.minehorizon.com</p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Version:</span> 1.20+</p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Online Players:</span> <span id="player-count" class="text-green-400">Loading...</span></p>
                 </div>
-                <div class="info-item">
-                    <h3>IP Address:</h3>
-                    <p>play.minehorizon.com</p>
-                </div>
-                <div class="info-item">
-                    <h3>Player Count:</h3>
-                    <p>25/100 players online</p>
+                <div>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Website:</span> <a href="https://www.minehorizon.com" target="_blank" class="text-blue-400 hover:underline">www.minehorizon.com</a></p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Discord:</span> <a href="https://discord.gg/minehorizon" target="_blank" class="text-blue-400 hover:underline">discord.gg/minehorizon</a></p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Location:</span> North America</p>
+                    <p class="text-gray-200"><span class="font-semibold text-yellow-300">Uptime:</span> <span id="server-uptime" class="text-green-400">Loading...</span></p>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="server-description">
-            <h2>About Minehorizon</h2>
-            <p>Minehorizon is an exciting, community-driven Minecraft server offering custom game modes, events, and a welcoming environment for players of all ages. Join us for a unique adventure and be part of our growing community!</p>
-        </section>
+        <div class="bg-white/10 rounded-lg shadow-lg backdrop-blur-md p-6 mb-6 card-shadow transition-all hover:scale-105 hover:shadow-lg">
+            <h2 class="text-2xl font-semibold text-center text-green-400 mb-4">About Minehorizon</h2>
+            <p class="text-gray-200 text-lg">
+                Minehorizon is a vibrant and welcoming Minecraft server dedicated to providing an exceptional gameplay experience.
+                We offer a variety of game modes, including Survival, Creative, and Mini-Games, each with unique features and challenges.
+                Our friendly community and dedicated staff ensure a safe and enjoyable environment for players of all ages. Join us
+                and embark on an unforgettable adventure!
+            </p>
+        </div>
 
-        <section class="server-rules">
-            <h2>Server Rules</h2>
-            <ul>
-                <li>No griefing or stealing.</li>
-                <li>Be respectful to others.</li>
-                <li>No cheating or using hacks.</li>
-                <li>Respect server staff and other players.</li>
-                <li>Have fun and enjoy the game!</li>
-            </ul>
-        </section>
+        <div class="bg-white/10 rounded-lg shadow-lg backdrop-blur-md p-6 mb-8 card-shadow transition-all hover:scale-105 hover:shadow-lg">
+            <h2 class="text-2xl font-semibold text-center text-purple-400 mb-4">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Survival Mode</h3>
+                    <p class="text-gray-200">Explore a vast world, gather resources, build your dream base, and conquer challenges.</p>
+                </div>
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Creative Mode</h3>
+                    <p class="text-gray-200">Unleash your creativity and build amazing structures with unlimited resources.</p>
+                </div>
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Mini-Games</h3>
+                    <p class="text-gray-200">Engage in fun and exciting mini-games, compete with friends, and earn rewards.</p>
+                </div>
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Friendly Community</h3>
+                    <p class="text-gray-200">Join a welcoming community of players and make new friends.</p>
+                </div>
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">24/7 Uptime</h3>
+                    <p class="text-gray-200">Enjoy uninterrupted gameplay with our reliable servers.</p>
+                </div>
+                <div class="bg-black/20 rounded-lg p-4 text-center">
+                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Regular Events</h3>
+                    <p class="text-gray-200">Participate in exciting events and challenges with unique rewards.</p>
+                </div>
+            </div>
+        </div>
 
-        <footer>
-            <p>&copy; 2025 Minehorizon Minecraft Server. All rights reserved.</p>
-        </footer>
+        <div class="text-center">
+            <a href="https://www.minehorizon.com" target="_blank" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-full transition-all hover:scale-110 shadow-lg text-xl">
+                Join Us Now!
+            </a>
+            <p class="mt-4 text-gray-300">Connect with us and start your adventure today!</p>
+        </div>
     </div>
+
+    <script>
+        // Simulate fetching player count and server uptime (replace with actual API calls)
+        function updateServerInfo() {
+            // Simulate API call delay
+            setTimeout(() => {
+                const playerCountElement = document.getElementById('player-count');
+                const uptimeElement = document.getElementById('server-uptime');
+                const randomPlayers = Math.floor(Math.random() * 50) + 10; // Simulate 10-60 players
+                const uptime = (Math.random() * 100).toFixed(2) + "%"; // Simulate uptime
+
+                playerCountElement.textContent = randomPlayers;
+                uptimeElement.textContent = uptime;
+            }, 1500);
+        }
+
+        // Initial update
+        updateServerInfo();
+
+        // Update every 60 seconds (adjust as needed)
+        setInterval(updateServerInfo, 60000);
+    </script>
 </body>
 </html>
