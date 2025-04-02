@@ -16,6 +16,7 @@
             background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d);
             color: #e0e0e0;
             line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -111,11 +112,61 @@
             color: #1a1a1a;
             text-decoration: none;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .back-button:hover {
             background: #00cc7a;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: #00ff9d;
+            color: #1a1a1a;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease, transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: none;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        body.light-mode {
+            background: linear-gradient(to bottom right, #f0f0f0, #e0e0e0);
+            color: #333;
+        }
+
+        body.light-mode .header h1 {
+            color: #007a4d;
+            text-shadow: none;
+        }
+
+        body.light-mode .card {
+            background: #ffffff;
+            border-color: #e0e0e0;
+        }
+
+        body.light-mode .card-title {
+            color: #222;
+        }
+
+        body.light-mode .card-content {
+            color: #444;
+        }
+
+        body.light-mode .timeline::before {
+            background: #e0e0e0;
         }
 
         footer {
@@ -123,11 +174,27 @@
             padding: 2rem;
             color: #666;
         }
+
+        @keyframes toggleBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .theme-toggle.changing {
+            animation: toggleBounce 0.4s ease, iconSpin 0.6s ease;
+        }
     </style>
 </head>
 <body>
-    <a href="https://earth1283.github.io/MineHorizon/index.html" class="back-button">← Back to Start Page</a>
-    
+    <a href="https://earth1283.github.io" class="back-button">← Back to Main Page</a>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
     <div class="container">
         <header class="header">
             <h1>MineHorizon News</h1>
@@ -135,31 +202,56 @@
         </header>
 
         <div class="timeline">
-            <!-- News Entry 1 -->
             <div class="card">
                 <div class="card-date">April 2, 2025</div>
-                <h2 class="card-title">MineHorizon News Birthday!</h2>
+                <h2 class="card-title">News Feature Launch!</h2>
                 <div class="card-content">
                     <p>We're excited to announce the start of MineHorizon news stories!</p>
                 </div>
             </div>
 
-            <!-- News Entry 2 -->
             <div class="card">
                 <div class="card-date">April 1, 2025</div>
-                <h2 class="card-title">Nations Event!</h2>
+                <h2 class="card-title">Placehodler</h2>
                 <div class="card-content">
-                    <p>Participate in the week-long nations event!</p>
+                    <p>Please insert content</p>
                 </div>
             </div>
-
-            <!-- Add more news entries following the same structure -->
-            <!-- Will explain in detail in README.md -->
         </div>
     </div>
 
     <footer>
-        <p>© 2025 MineHorizon. All rights reserved.</p>
+        <p>© 2023 MineHorizon. All rights reserved.</p>
     </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeButton = document.querySelector('.theme-toggle');
+            
+            themeButton.classList.add('changing');
+            
+            setTimeout(() => {
+                if (body.classList.contains('light-mode')) {
+                    body.classList.remove('light-mode');
+                    themeButton.textContent = '🌙';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.add('light-mode');
+                    themeButton.textContent = '☀️';
+                    localStorage.setItem('theme', 'light');
+                }
+                
+                themeButton.classList.remove('changing');
+            }, 400);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+    </script>
 </body>
 </html>
