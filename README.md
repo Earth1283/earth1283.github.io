@@ -24,3 +24,4 @@ The webpage will auto-scale
     </div>
 </div>
 ```
+The reset CSS will handle.
