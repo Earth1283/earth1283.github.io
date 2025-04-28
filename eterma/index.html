@@ -36,6 +36,40 @@
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .copy-container {
+            display: flex;
+            /* 将 flex 方向改为 column，使子元素垂直排列 */
+            flex-direction: column;
+            align-items: center; /* 垂直居中对齐 */
+            gap: 0.5rem; /* 文本和复制按钮之间的间距 */
+        }
+        .copy-button {
+            background-color: #4a5568; /* 灰色按钮 */
+            color: #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .copy-button:hover {
+            background-color: #64748b; /* 鼠标悬停时的颜色 */
+        }
+        .copy-button svg {
+            width: 1.25rem; /* SVG 图标大小 */
+            height: 1.25rem;
+        }
+        .copied-feedback {
+            color: #48bb78; /* 绿色文字 */
+            font-size: 0.875rem; /* 小号文字 */
+            /* 调整提示信息的边距 */
+            margin-top: 0.5rem;
+            margin-left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .copied-feedback.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -51,14 +85,34 @@
     <section id="join" class="py-16 px-4">
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold mb-8">服务器信息</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="card">
                     <h3 class="text-2xl font-semibold mb-4">服务器 IP</h3>
-                    <p class="text-3xl font-mono break-words">eterma.2m.pub</p>
+                    <div class="copy-container">
+                        <p id="server-ip" class="text-2xl font-mono break-words">eterma.2m.pub</p>
+                        <button class="copy-button" onclick="copyToClipboard('server-ip', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.305 9.305 0 0 1 1.5.124Rb9.75 0 0 0 5.625-4.724M9.75 14.25v-2.25m3 3v-2.25m3 3v-2.25M9.75 21.75v-3C9.75 18.336 9.336 18 8.811 18H2.25M16.5 7.5h.008v.008H16.5V7.5Zm-3 0h.008v.008H13.5V7.5Z" />
+                            </svg>
+                        </button>
+                        <span id="ip-feedback" class="copied-feedback">已复制!</span>
+                    </div>
                 </div>
                 <div class="card">
                     <h3 class="text-2xl font-semibold mb-4">服务器端口</h3>
                     <p class="text-3xl font-mono">25565</p>
+                </div>
+                 <div class="card">
+                    <h3 class="text-2xl font-semibold mb-4">QQ 群号</h3>
+                    <div class="copy-container">
+                        <p id="qq-group" class="text-2xl font-mono">1035332547</p>
+                         <button class="copy-button" onclick="copyToClipboard('qq-group', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.305 9.305 0 0 1 1.5.124Rb9.75 0 0 0 5.625-4.724M9.75 14.25v-2.25m3 3v-2.25m3 3v-2.25M9.75 21.75v-3C9.75 18.336 9.336 18 8.811 18H2.25M16.5 7.5h.008v.008H16.5V7.5Zm-3 0h.008v.008H13.5V7.5Z" />
+                            </svg>
+                        </button>
+                        <span id="qq-feedback" class="copied-feedback">已复制!</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,6 +133,61 @@
     <footer class="bg-gray-900 py-8 text-center text-gray-500">
         <p>&copy; 2023 Eterma MC. All rights reserved.</p>
     </footer>
+
+    <script>
+        // JavaScript for copy to clipboard functionality
+        async function copyToClipboard(elementId, buttonElement) {
+            const textElement = document.getElementById(elementId);
+            if (!textElement) {
+                console.error('Element not found:', elementId);
+                return;
+            }
+
+            const textToCopy = textElement.innerText;
+
+            try {
+                // Use the modern Clipboard API
+                await navigator.clipboard.writeText(textToCopy);
+
+                // Show feedback
+                const feedbackElement = document.getElementById(elementId.replace('-', '') + '-feedback');
+                if (feedbackElement) {
+                    feedbackElement.classList.add('show');
+                    setTimeout(() => {
+                        feedbackElement.classList.remove('show');
+                    }, 2000); // Hide feedback after 2 seconds
+                }
+
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                // Fallback for older browsers (less reliable)
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed"; // Avoid scrolling to bottom
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                     // Show feedback for fallback
+                    const feedbackElement = document.getElementById(elementId.replace('-', '') + '-feedback');
+                    if (feedbackElement) {
+                        feedbackElement.innerText = '已复制! (Fallback)'; // Indicate fallback
+                        feedbackElement.classList.add('show');
+                        setTimeout(() => {
+                            feedbackElement.classList.remove('show');
+                            feedbackElement.innerText = '已复制!'; // Reset text
+                        }, 2000);
+                    }
+                } catch (err) {
+                    console.error('Fallback copy failed: ', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+    </script>
 
 </body>
 </html>
