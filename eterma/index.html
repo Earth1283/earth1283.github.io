@@ -14,10 +14,27 @@
             line-height: 1.6;
         }
         .hero-bg {
-            background-image: url('https://placehold.co/1920x1080/2d3748/e2e8f0?text=Eterma+MC+Background'); /* 占位背景图，可以替换成你的MC截图或宣传图 */
+            background-image: url('https://placehold.co/1920x1080/2d3748/e2e8f0?text=临时背景图'); /* 占位背景图，可以替换成你的MC截图或宣传图 */
             background-size: cover;
             background-position: center;
+            /* 调整背景叠加层的颜色和透明度，让背景图更突出 */
+            position: relative;
         }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* 黑色叠加层，透明度调整 */
+            z-index: 1;
+        }
+        .hero-bg > div {
+            position: relative;
+            z-index: 2; /* 确保文字内容在叠加层上方 */
+        }
+
         .btn-primary {
             background-color: #48bb78; /* 绿色按钮 */
             color: #1a202c;
@@ -30,15 +47,32 @@
         .btn-primary:hover {
             background-color: #38a169; /* 鼠标悬停时的颜色 */
         }
+         .btn-secondary {
+            background-color: #4a5568; /* 灰色按钮 */
+            color: #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            display: inline-block; /* 使链接表现得像块级元素以便应用 padding 和 margin */
+            margin-top: 1.5rem; /* 与上方内容的间距 */
+        }
+        .btn-secondary:hover {
+            background-color: #64748b; /* 鼠标悬停时的颜色 */
+        }
+
         .card {
             background-color: #2d3748; /* 卡片背景 */
             border-radius: 0.75rem;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* 添加一些边框颜色或者细微的阴影 */
+            border: 1px solid rgba(74, 85, 104, 0.5); /* 浅灰色边框 */
         }
         .copy-container {
             display: flex;
-            /* 将 flex 方向改为 column，使子元素垂直排列 */
+            /* 将 flex 方向改为 column, 使子元素垂直排列 */
             flex-direction: column;
             align-items: center; /* 垂直居中对齐 */
             gap: 0.5rem; /* 文本和复制按钮之间的间距 */
@@ -70,6 +104,16 @@
         .copied-feedback.show {
             opacity: 1;
         }
+
+        /* 新增：为不同 Section 添加背景色 */
+        #join {
+            background-color: #243040; /* 稍微浅一点的深色 */
+        }
+
+        .rules-section {
+            background-color: #1a202c; /* 保持和 body 背景色一致，形成对比 */
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -118,7 +162,7 @@
         </div>
     </section>
 
-    <section class="bg-gray-800 py-16 px-4">
+    <section class="rules-section py-16 px-4">
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold mb-8">服务器规则</h2>
             <div class="card max-w-2xl mx-auto">
@@ -126,12 +170,13 @@
                 <p class="text-xl mb-4">在 Eterma MC，我们相信真正的自由。没有繁琐的规则，没有限制，你可以尽情探索、建造和互动。</p>
                 <p class="text-xl font-bold text-red-400">但请注意：严禁使用任何形式的外挂！</p>
                 <p class="text-lg mt-4">我们致力于维护一个公平的游戏环境，外挂行为将导致封禁。</p>
+                <a href="https://earth1283.github.io/eterma/bans.html" class="btn-secondary" target="_blank">查看封禁列表</a>
             </div>
         </div>
     </section>
 
     <footer class="bg-gray-900 py-8 text-center text-gray-500">
-        <p>&copy; 2023 Eterma MC. All rights reserved.</p>
+        <p>&copy; 2025 Eterma MC. All rights reserved.</p>
     </footer>
 
     <script>
