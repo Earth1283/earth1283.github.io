@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eterma MC 意见箱</title>
+    <title>意见箱</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -96,7 +96,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">管理员面板</h2>
             <div class="mb-4">
                 <label for="adminKey" class="block text-gray-700 text-sm font-medium mb-2">输入8位数密钥</label>
-                <input type="password" id="adminKey" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 ease-in-out" placeholder="例如: 12345678" maxlength="8">
+                <input type="password" id="adminKey" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 ease-in-out" placeholder="例如: 84719342" maxlength="8">
             </div>
             <button id="viewSuggestionsBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:scale-105">
                 查看所有意见
@@ -152,6 +152,11 @@
         // Initialize Firebase and authenticate
         async function initializeFirebase() {
             try {
+                // Check if projectId is provided in firebaseConfig
+                if (!firebaseConfig.projectId) {
+                    throw new Error("Firebase configuration missing 'projectId'. Please ensure __firebase_config is correctly set in your environment.");
+                }
+
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -175,7 +180,7 @@
                 });
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
-                showMessage("初始化失败，请稍后再试。", "error");
+                showMessage(`初始化失败: ${error.message}`, "error"); // Display specific error message
             }
         }
 
