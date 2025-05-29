@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eterma 土豆状态检察器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+        }
+        .container {
+            min-height: 100vh;
+        }
+        .status-card {
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .online-text {
+            color: #10B981; /* Green for online */
+        }
+        .offline-text {
+            color: #EF4444; /* Red for offline */
+        }
+        .refresh-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .refresh-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center container p-4">
+    <div class="status-card p-8 rounded-xl w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Eterma 土豆状态检察器</h1>
+        <p class="text-lg text-gray-600 mb-8">正在检查 <span class="font-semibold text-blue-600">eterma.2m.pub</span></p>
+
+        <div id="statusDisplay" class="mb-8">
+            <p class="text-xl font-semibold text-gray-700">正在加载服务器状态...</p>
+        </div>
+
+        <button id="refreshButton" class="refresh-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            刷新状态
+        </button>
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const statusDisplay = document.getElementById('statusDisplay');
+        const refreshButton = document.getElementById('refreshButton');
+        const serverAddress = 'eterma.2m.pub';
+        const apiUrl = `https://api.mcsrvstat.us/2/${serverAddress}`;
+
+        /**
+         * Fetches the Minecraft server status from the mcsrvstat.us API.
+         * Updates the statusDisplay element with the server's online status and player count.
+         */
+        async function fetchServerStatus() {
+            // Display a loading message while fetching data
+            statusDisplay.innerHTML = `
+                <p class="text-xl font-semibold text-gray-700 flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    正在检查服务器...
+                </p>
+            `;
+            refreshButton.disabled = true; // Disable button during fetch
+
+            try {
+                const response = await fetch(apiUrl);
+                // Check if the network response was successful
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Check if the server is online based on the API response
+                if (data.online) {
+                    const playersOnline = data.players ? data.players.online : 'N/A';
+                    const playersMax = data.players ? data.players.max : 'N/A';
+                    statusDisplay.innerHTML = `
+                        <p class="text-2xl font-bold online-text mb-2">服务器在线！</p>
+                        <p class="text-xl text-gray-700">玩家人数：<span class="font-semibold">${playersOnline}</span> / <span class="font-semibold">${playersMax}</span></p>
+                    `;
+                } else {
+                    statusDisplay.innerHTML = `
+                        <p class="text-2xl font-bold offline-text mb-2">土豆已熟</p>
+                        <p class="text-lg text-gray-600">请稍后再试。</p>
+                    `;
+                }
+            } catch (error) {
+                // Log and display any errors during the fetch operation
+                console.error('Error fetching server status:', error);
+                statusDisplay.innerHTML = `
+                    <p class="text-xl font-bold offline-text mb-2">检查状态时出错</p>
+                    <p class="text-lg text-gray-600">无法获取服务器信息。请重试。</p>
+                `;
+            } finally {
+                refreshButton.disabled = false; // Re-enable button after fetch
+            }
+        }
+
+        // Add event listener to the refresh button
+        refreshButton.addEventListener('click', fetchServerStatus);
+
+        // Fetch status when the page loads
+        document.addEventListener('DOMContentLoaded', fetchServerStatus);
+    </script>
+</body>
+</html>
