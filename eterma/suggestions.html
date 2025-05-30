@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>意见箱</title>
+    <title>开放式建议箱</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: flex-start; /* Align to top for better content flow */
@@ -17,43 +17,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        .container {
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            padding: 32px;
-            max-width: 600px;
-            width: 100%;
-            margin-top: 20px; /* Add some top margin */
-        }
-        .message-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .message-box.error {
-            background-color: #f44336;
-        }
-        .message-box.show {
-            display: block;
-            opacity: 1;
-        }
         /* Custom scrollbar for suggestions list */
-        .suggestions-list {
-            max-height: 400px; /* Limit height for scrollability */
-            overflow-y: auto;
-            padding-right: 10px; /* Space for scrollbar */
-        }
         .suggestions-list::-webkit-scrollbar {
             width: 8px;
         }
@@ -70,58 +34,47 @@
         }
     </style>
 </head>
-<body class="selection:bg-blue-200">
-    <div id="messageBox" class="message-box"></div>
+<body class="antialiased">
+    <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl max-w-2xl w-full flex flex-col space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 text-center mb-4">开放式建议箱</h1>
 
-    <div class="container">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">意见箱</h1>
+        <div id="userIdDisplay" class="text-sm text-gray-600 text-center p-2 bg-blue-50 rounded-md shadow-sm">
+            </div>
 
-        <form id="suggestionForm" class="mb-8 p-6 bg-gray-50 rounded-xl shadow-inner">
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700 text-sm font-medium mb-2">人名 (可选)</label>
-                <input type="text" id="name" name="name" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out" placeholder="您的名字">
+        <div class="flex flex-col space-y-4">
+            <textarea id="suggestionInput"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200 resize-y min-h-[100px]"
+                      placeholder="请在此输入您的建议..."
+                      rows="4"></textarea>
+
+            <div class="flex items-center space-x-2">
+                <input type="checkbox" id="anonymousCheckbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                <label for="anonymousCheckbox" class="text-gray-700 select-none">匿名提交</label>
             </div>
-            <div class="mb-6">
-                <label for="content" class="block text-gray-700 text-sm font-medium mb-2">内容 (必填)</label>
-                <textarea id="content" name="content" rows="5" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out resize-y" placeholder="请输入您的意见或建议..." required></textarea>
-            </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:scale-105">
-                提交意见
+
+            <button id="submitSuggestionBtn"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                提交建议
             </button>
-        </form>
-
-        <hr class="my-8 border-gray-300">
-
-        <div class="admin-access-section p-6 bg-gray-50 rounded-xl shadow-inner">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">管理员面板</h2>
-            <div class="mb-4">
-                <label for="adminKey" class="block text-gray-700 text-sm font-medium mb-2">输入8位数密钥</label>
-                <input type="password" id="adminKey" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 ease-in-out" placeholder="例如: 12345678" maxlength="8">
-            </div>
-            <button id="viewSuggestionsBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:scale-105">
-                查看所有意见
-            </button>
-            <p id="keyAttemptMessage" class="text-sm text-red-600 mt-2 text-center"></p>
         </div>
 
-        <div id="suggestionsPanel" class="hidden mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">所有意见</h2>
-            <ul id="suggestionsList" class="suggestions-list space-y-4">
-                <li class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-gray-900 font-medium"><strong>测试用户:</strong> 这是一个测试意见内容。</p>
-                    <p class="text-gray-600 text-sm mt-1">提交时间: 2023-10-27 10:00:00</p>
-                </li>
-            </ul>
+        <div id="messageBox" class="hidden p-3 rounded-lg text-sm text-center" role="alert"></div>
+
+        <div class="mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">所有建议</h2>
+            <div id="suggestionsList" class="suggestions-list bg-gray-50 p-4 rounded-lg shadow-inner border border-gray-200 max-h-96 overflow-y-auto space-y-4">
+                <p class="text-gray-500 text-center" id="noSuggestionsMessage">暂无建议。</p>
+            </div>
         </div>
     </div>
 
     <script type="module">
-        // Import Firebase modules
+        // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase configuration and global variables
+        // Global variables provided by the Canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -129,218 +82,150 @@
         let app;
         let db;
         let auth;
-        let userId;
+        let userId = null; // To store the current user's ID
 
-        // Message box utility function
-        function showMessage(message, type = 'success') {
-            const messageBox = document.getElementById('messageBox');
+        const suggestionInput = document.getElementById('suggestionInput');
+        const anonymousCheckbox = document.getElementById('anonymousCheckbox');
+        const submitSuggestionBtn = document.getElementById('submitSuggestionBtn');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const messageBox = document.getElementById('messageBox');
+        const noSuggestionsMessage = document.getElementById('noSuggestionsMessage');
+
+        /**
+         * Displays a message in the message box.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'success', 'error', or 'info' for styling.
+         */
+        function showMessage(message, type) {
             messageBox.textContent = message;
-            messageBox.className = 'message-box show'; // Reset classes
-            if (type === 'error') {
-                messageBox.classList.add('error');
+            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-blue-100', 'text-blue-800');
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-800');
             } else {
-                messageBox.classList.remove('error');
+                messageBox.classList.add('bg-blue-100', 'text-blue-800');
             }
-
+            // Hide message after 3 seconds
             setTimeout(() => {
-                messageBox.classList.remove('show');
-                // Optional: Hide completely after transition
-                setTimeout(() => { messageBox.style.display = 'none'; }, 500);
-            }, 3000); // Message disappears after 3 seconds
+                messageBox.classList.add('hidden');
+            }, 3000);
         }
 
-        // Initialize Firebase and authenticate
+        /**
+         * Initializes Firebase and sets up authentication.
+         */
         async function initializeFirebase() {
             try {
-                // Check if projectId is provided in firebaseConfig
-                if (!firebaseConfig.projectId) {
-                    throw new Error("Firebase configuration missing 'projectId'. Please ensure __firebase_config is correctly set in your environment.");
-                }
-
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Sign in with custom token if available, otherwise anonymously
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Listen for auth state changes to get the user ID
-                onAuthStateChanged(auth, (user) => {
+                // Listen for authentication state changes
+                onAuthStateChanged(auth, async (user) => {
                     if (user) {
+                        // User is signed in
                         userId = user.uid;
-                        console.log("Firebase initialized and user authenticated. User ID:", userId);
+                        userIdDisplay.textContent = `您的用户ID: ${userId}`;
+                        console.log("Firebase initialized and user signed in:", userId);
+                        // Once authenticated, set up the real-time listener for suggestions
+                        setupSuggestionsListener();
                     } else {
-                        console.log("No user signed in.");
-                        userId = null; // Clear userId if logged out
+                        // User is signed out or not yet signed in
+                        console.log("No user signed in. Attempting to sign in.");
+                        // Attempt to sign in with custom token if available, otherwise anonymously
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
                     }
                 });
+
             } catch (error) {
-                console.error("Error initializing Firebase or authenticating:", error);
-                showMessage(`初始化失败: ${error.message}`, "error"); // Display specific error message
+                console.error("Error initializing Firebase or signing in:", error);
+                showMessage(`初始化错误: ${error.message}`, 'error');
             }
         }
 
-        // --- Suggestion Submission Logic ---
-        const suggestionForm = document.getElementById('suggestionForm');
-        suggestionForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        /**
+         * Sets up a real-time listener for suggestions from Firestore.
+         */
+        function setupSuggestionsListener() {
+            // Define the collection path for public data
+            const suggestionsColRef = collection(db, `artifacts/${appId}/public/data/suggestions`);
+            // Create a query to order by timestamp (optional, but good for display)
+            // NOTE: orderBy() can sometimes require index creation in Firestore.
+            // For simplicity and to avoid potential index errors, we will sort client-side.
+            const q = query(suggestionsColRef);
 
-            if (!db || !userId) {
-                showMessage("服务未准备好，请稍等。", "error");
+            onSnapshot(q, (snapshot) => {
+                suggestionsList.innerHTML = ''; // Clear existing suggestions
+                const suggestions = [];
+                snapshot.forEach((doc) => {
+                    suggestions.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort suggestions by timestamp in descending order (newest first)
+                suggestions.sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
+
+                if (suggestions.length === 0) {
+                    noSuggestionsMessage.classList.remove('hidden');
+                } else {
+                    noSuggestionsMessage.classList.add('hidden');
+                    suggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'bg-white p-4 rounded-lg shadow-sm border border-gray-100';
+                        const timestamp = suggestion.timestamp ? new Date(suggestion.timestamp.toDate()).toLocaleString('zh-TW') : '未知时间';
+                        suggestionItem.innerHTML = `
+                            <p class="text-gray-800 text-base mb-2">${suggestion.suggestion}</p>
+                            <p class="text-gray-500 text-xs text-right">
+                                <span class="font-medium">${suggestion.userId === '匿名用户' ? '匿名用户' : `用户: ${suggestion.userId}`}</span>
+                                <span class="ml-2">${timestamp}</span>
+                            </p>
+                        `;
+                        suggestionsList.appendChild(suggestionItem);
+                    });
+                }
+            }, (error) => {
+                console.error("Error listening to suggestions:", error);
+                showMessage(`加载建议失败: ${error.message}`, 'error');
+            });
+        }
+
+        /**
+         * Handles the submission of a new suggestion.
+         */
+        submitSuggestionBtn.addEventListener('click', async () => {
+            const suggestionText = suggestionInput.value.trim();
+            const isAnonymous = anonymousCheckbox.checked;
+
+            if (!suggestionText) {
+                showMessage('建议内容不能为空。', 'info');
                 return;
             }
 
-            const name = document.getElementById('name').value.trim();
-            const content = document.getElementById('content').value.trim();
-
-            if (!content) {
-                showMessage("意见内容不能为空！", "error");
+            if (!db || !userId) {
+                showMessage('Firebase尚未初始化或用户未登录。请稍候。', 'error');
                 return;
             }
 
             try {
-                // Store suggestions in the public collection
-                const suggestionsCollectionRef = collection(db, `artifacts/${appId}/public/data/suggestions`);
-                await addDoc(suggestionsCollectionRef, {
-                    name: name || "匿名用户", // If name is empty, use "匿名用户"
-                    content: content,
-                    timestamp: new Date(),
-                    userId: userId // Store the user ID for tracking
+                const suggestionsColRef = collection(db, `artifacts/${appId}/public/data/suggestions`);
+                await addDoc(suggestionsColRef, {
+                    suggestion: suggestionText,
+                    userId: isAnonymous ? '匿名用户' : userId,
+                    timestamp: serverTimestamp() // Use server timestamp for consistent ordering
                 });
-
-                showMessage("意见提交成功！");
-                suggestionForm.reset(); // Clear the form
+                showMessage('建议已成功提交！', 'success');
+                suggestionInput.value = ''; // Clear the input field
+                anonymousCheckbox.checked = false; // Reset checkbox
             } catch (error) {
-                console.error("提交意见失败:", error);
-                showMessage("提交意见失败，请稍后再试。", "error");
+                console.error("Error adding document: ", error);
+                showMessage(`提交建议失败: ${error.message}`, 'error');
             }
         });
-
-        // --- Admin Panel Access and Rate Limiting Logic ---
-        const ADMIN_KEY = "84719342"; // administrative key acsess code
-        const MAX_ATTEMPTS = 3;
-        const LOCKOUT_DURATION_MS = 45 * 1000; // 45 seconds
-        const RESET_INTERVAL_MS = 60 * 1000; // 1 minute
-
-        const viewSuggestionsBtn = document.getElementById('viewSuggestionsBtn');
-        const adminKeyInput = document.getElementById('adminKey');
-        const keyAttemptMessage = document.getElementById('keyAttemptMessage');
-        const suggestionsPanel = document.getElementById('suggestionsPanel');
-        const suggestionsList = document.getElementById('suggestionsList');
-
-        let attempts = 0;
-        let lastAttemptTime = 0;
-        let lockoutEndTime = 0;
-        let lockoutTimer = null;
-
-        // Function to update remaining lockout time
-        function updateLockoutTimer() {
-            const now = Date.now();
-            if (now < lockoutEndTime) {
-                const remainingSeconds = Math.ceil((lockoutEndTime - now) / 1000);
-                keyAttemptMessage.textContent = `尝试次数过多，请等待 ${remainingSeconds} 秒。`;
-                viewSuggestionsBtn.disabled = true;
-                lockoutTimer = setTimeout(updateLockoutTimer, 1000);
-            } else {
-                keyAttemptMessage.textContent = '';
-                viewSuggestionsBtn.disabled = false;
-                attempts = 0; // Reset attempts after lockout
-                lastAttemptTime = 0; // Reset last attempt time
-                clearTimeout(lockoutTimer);
-                lockoutTimer = null;
-            }
-        }
-
-        viewSuggestionsBtn.addEventListener('click', async () => {
-            const now = Date.now();
-
-            // Check if currently in lockout period
-            if (now < lockoutEndTime) {
-                showMessage(`请等待 ${Math.ceil((lockoutEndTime - now) / 1000)} 秒后再试。`, "error");
-                return;
-            }
-
-            // Reset attempts if more than 1 minute has passed since the last attempt
-            if (now - lastAttemptTime > RESET_INTERVAL_MS) {
-                attempts = 0;
-            }
-
-            lastAttemptTime = now;
-            attempts++;
-
-            if (attempts > MAX_ATTEMPTS) {
-                lockoutEndTime = now + LOCKOUT_DURATION_MS;
-                updateLockoutTimer(); // Start/update the countdown
-                showMessage(`尝试次数过多，请等待 ${Math.ceil(LOCKOUT_DURATION_MS / 1000)} 秒。`, "error");
-                return;
-            }
-
-            const enteredKey = adminKeyInput.value;
-
-            if (enteredKey === ADMIN_KEY) {
-                suggestionsPanel.classList.remove('hidden');
-                keyAttemptMessage.textContent = ''; // Clear any previous error messages
-                attempts = 0; // Reset attempts on successful login
-                lastAttemptTime = 0; // Reset last attempt time
-                showMessage("管理员面板已解锁！");
-                fetchAndDisplaySuggestions(); // Fetch and display suggestions
-            } else {
-                showMessage("密钥错误！", "error");
-                keyAttemptMessage.textContent = `密钥错误。剩余尝试次数: ${MAX_ATTEMPTS - attempts}`;
-                if (attempts >= MAX_ATTEMPTS) {
-                    lockoutEndTime = now + LOCKOUT_DURATION_MS;
-                    updateLockoutTimer();
-                }
-            }
-        });
-
-        // --- Fetch and Display Suggestions Logic ---
-        function fetchAndDisplaySuggestions() {
-            if (!db) {
-                showMessage("数据库未初始化。", "error");
-                return;
-            }
-
-            const suggestionsCollectionRef = collection(db, `artifacts/${appId}/public/data/suggestions`);
-            // Note: orderBy is commented out as per instructions to avoid potential index issues.
-            // Data will be sorted in memory.
-            const q = query(suggestionsCollectionRef /*, orderBy('timestamp', 'desc')*/);
-
-            // Listen for real-time updates
-            onSnapshot(q, (snapshot) => {
-                const suggestions = [];
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    suggestions.push({ id: doc.id, ...data });
-                });
-
-                // Sort suggestions by timestamp in descending order (newest first)
-                suggestions.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
-
-                suggestionsList.innerHTML = ''; // Clear existing list
-                if (suggestions.length === 0) {
-                    suggestionsList.innerHTML = '<li class="text-gray-600 text-center">目前没有意见。</li>';
-                } else {
-                    suggestions.forEach(suggestion => {
-                        const li = document.createElement('li');
-                        li.className = 'bg-white p-4 rounded-lg shadow-sm border border-gray-200';
-                        const date = suggestion.timestamp ? suggestion.timestamp.toDate().toLocaleString() : '未知时间';
-                        li.innerHTML = `
-                            <p class="text-gray-900 font-medium"><strong>${suggestion.name}:</strong> ${suggestion.content}</p>
-                            <p class="text-gray-600 text-sm mt-1">提交时间: ${date}</p>
-                        `;
-                        suggestionsList.appendChild(li);
-                    });
-                }
-            }, (error) => {
-                console.error("获取意见失败:", error);
-                showMessage("获取意见失败，请检查网络或稍后再试。", "error");
-            });
-        }
 
         // Initialize Firebase when the window loads
         window.onload = initializeFirebase;
