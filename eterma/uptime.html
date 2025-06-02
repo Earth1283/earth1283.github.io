@@ -9,32 +9,75 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light gray background */
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f4f8 100%);
+            min-height: 100vh;
         }
         .container {
             min-height: 100vh;
         }
         .status-card {
-            background-color: #ffffff;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 10px 32px -5px rgba(59,130,246,0.15), 0 8px 20px -6px rgba(16,185,129,0.08);
+            border-radius: 1.5rem;
+            border: 1.5px solid #e0e7ff;
+            transition: box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+            opacity: 0.7;
         }
         .online-text {
-            color: #10B981; /* Green for online */
+            color: #10B981;
+            text-shadow: 0 1px 8px #d1fae5;
         }
         .offline-text {
-            color: #EF4444; /* Red for offline */
+            color: #EF4444;
+            text-shadow: 0 1px 8px #fee2e2;
         }
         .refresh-button {
-            transition: all 0.2s ease-in-out;
+            transition: all 0.2s cubic-bezier(.4,2,.6,1);
+            box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+            letter-spacing: 0.03em;
         }
-        .refresh-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .refresh-button:active {
+            transform: scale(0.97);
+        }
+        .refresh-button:disabled {
+            background: #a5b4fc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .server-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1.5rem auto;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+            border: 2px solid #3b82f6;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fade-in {
+            animation: fadeIn 0.7s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="flex items-center justify-center container p-4">
-    <div class="status-card p-8 rounded-xl w-full max-w-md text-center">
+    <div class="status-card p-8 rounded-xl w-full max-w-md text-center fade-in">
+        <div class="server-icon mx-auto mb-4">
+            <img src="icon.png" alt="Server Icon" class="w-14 h-14 rounded-full shadow-md border-2 border-blue-500 object-cover" />
+        </div>
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Eterma 土豆状态检察器</h1>
         <p class="text-lg text-gray-600 mb-8">正在检查 <span class="font-semibold text-blue-600">eterma.2m.pub</span></p>
 
@@ -43,6 +86,7 @@
         </div>
 
         <button id="refreshButton" class="refresh-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-4">
+            <svg class="inline-block mr-2 h-5 w-5 align-text-bottom" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582M20 20v-5h-.581M5.635 19.364A9 9 0 1 1 19.364 5.636"/></svg>
             刷新状态
         </button>
         <p class="text-sm text-gray-400">注：土豆信息由第三方API提供，可能有延迟</p>
