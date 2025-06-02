@@ -74,24 +74,26 @@
     </style>
 </head>
 <body class="flex items-center justify-center container p-4">
-    <div class="status-card p-8 rounded-xl w-full max-w-md text-center fade-in">
-        <div class="server-icon mx-auto mb-4">
-            <img src="icon.png" alt="Server Icon" class="w-14 h-14 rounded-full shadow-md border-2 border-blue-500 object-cover" />
-        </div>
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Eterma 土豆状态检察器</h1>
-        <p class="text-lg text-gray-600 mb-8">正在检查 <span class="font-semibold text-blue-600">eterma.2m.pub</span></p>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="status-card p-8 rounded-xl w-full max-w-md text-center fade-in">
+            <div class="server-icon mx-auto mb-4">
+                <img src="icon.png" alt="Server Icon" class="w-14 h-14 rounded-full shadow-md border-2 border-blue-500 object-cover" />
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Eterma 土豆状态检察器</h1>
+            <p class="text-lg text-gray-600 mb-8">正在检查 <span class="font-semibold text-blue-600">eterma.2m.pub</span></p>
 
-        <div id="statusDisplay" class="mb-8">
-            <p class="text-xl font-semibold text-gray-700">正在加载服务器状态...</p>
-        </div>
+            <div id="statusDisplay" class="mb-8">
+                <p class="text-xl font-semibold text-gray-700">正在加载服务器状态...</p>
+            </div>
 
-        <button id="refreshButton" class="refresh-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2">
-            <span id="refreshIcon" class="inline-block">
-                <svg class="h-5 w-5 align-text-bottom" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582M20 20v-5h-.581M5.635 19.364A9 9 0 1 1 19.364 5.636"/></svg>
-            </span>
-            <span>刷新状态</span>
-        </button>
-        <p class="text-sm text-gray-400">注：土豆信息由第三方API提供，可能有延迟</p>
+            <button id="refreshButton" class="refresh-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2">
+                <span id="refreshIcon">
+                    <svg class="h-5 w-5 block" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582M20 20v-5h-.581M5.635 19.364A9 9 0 1 1 19.364 5.636"/></svg>
+                </span>
+                <span>刷新状态</span>
+            </button>
+            <p class="text-sm text-gray-400">注：土豆信息由第三方API提供，可能有延迟</p>
+        </div>
     </div>
 
     <script>
