@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户代理数据 - 终端模式</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', 'Monaco', monospace; /* 终端常用字体 */
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a; /* 更深的背景 */
+            color: #e0e0e0; /* 默认文字颜色 */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-y: auto; /* 允许滚动 */
+        }
+
+        /* 终端容器 */
+        .terminal-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px 20px; /* 增加上下边距 */
+            background: #000000; /* 纯黑背景 */
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* 绿色辉光 */
+            box-sizing: border-box;
+            border: 1px solid #00ff00; /* 绿色边框 */
+        }
+
+        /* 终端输出区域 */
+        #terminal-output {
+            min-height: 200px; /* 最小高度 */
+            padding-bottom: 20px;
+        }
+
+        /* 终端行 */
+        .terminal-line {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+            white-space: pre-wrap; /* 允许文本换行 */
+            word-wrap: break-word; /* 允许长单词断开 */
+        }
+
+        /* 终端提示符 */
+        .prompt {
+            color: #00ff00; /* 亮绿色提示符 */
+            margin-right: 10px;
+            flex-shrink: 0; /* 防止收缩 */
+        }
+
+        /* 标签 (属性名) */
+        .label {
+            color: #61afef; /* 亮蓝色 */
+            font-weight: bold;
+            min-width: 180px; /* 确保对齐 */
+            flex-shrink: 0;
+        }
+
+        /* 值 (属性值) */
+        .value {
+            color: #98c379; /* 亮绿色值 */
+            flex-grow: 1; /* 占据剩余空间 */
+        }
+
+        /* 块标题 (模拟命令输出标题) */
+        .block-title {
+            color: #c678dd; /* 紫色 */
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .block-title .prompt {
+            margin-right: 10px;
+        }
+
+        /* 预格式化文本块 (如 Client Hints, Plugins) */
+        .code-block {
+            background-color: #0d0d0d; /* 更深的背景 */
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px dashed #3e4451; /* 虚线边框 */
+            overflow-x: auto;
+            font-size: 0.9em;
+            color: #98c379; /* 亮绿色 */
+            margin-top: 5px;
+        }
+
+        /* 闪烁光标 */
+        .blinking-cursor {
+            display: inline-block; /* Make it visible */
+            width: 8px; /* Width of the cursor */
+            height: 1.2em; /* Height of the cursor, matches line-height */
+            background-color: #00ff00; /* Green cursor color */
+            animation: blink-caret 0.75s step-end infinite;
+            vertical-align: middle; /* Align with text */
+            margin-left: 5px; /* Small space after text */
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div id="terminal-output">
+            <div class="terminal-line">
+                <span class="prompt">user@host:~$ </span>
+                <span id="typing-area"></span><span class="blinking-cursor"></span>
+            </div>
+        </div>
+
+        <script>
+            const terminalOutput = document.getElementById('terminal-output');
+            const typingArea = document.getElementById('typing-area');
+            const typingSpeed = 20; // ms per char (1000ms / 50 chars/sec = 20ms)
+
+            let contentQueue = []; // Stores objects { type: 'line'/'block', data: { label, value } or { title, content } }
+            let currentContentIndex = 0;
+            let currentCharIndex = 0;
+            let currentLineElement = null; // Reference to the span being currently typed into
+
+            // Function to add content to the queue
+            function addToQueue(type, data) {
+                contentQueue.push({ type, data });
+            }
+
+            // Function to start the typing animation
+            function startTyping() {
+                if (currentContentIndex < contentQueue.length) {
+                    const item = contentQueue[currentContentIndex];
+                    if (item.type === 'line') {
+                        // For a new line, create the structure and append it
+                        if (currentCharIndex === 0) {
+                            const lineDiv = document.createElement('div');
+                            lineDiv.classList.add('terminal-line');
+
+                            const promptSpan = document.createElement('span');
+                            promptSpan.classList.add('prompt');
+                            promptSpan.textContent = 'user@host:~$ ';
+                            lineDiv.appendChild(promptSpan);
+
+                            const labelSpan = document.createElement('span');
+                            labelSpan.classList.add('label');
+                            labelSpan.textContent = `${item.data.label}:`;
+                            lineDiv.appendChild(labelSpan);
+
+                            const valueSpan = document.createElement('span');
+                            valueSpan.classList.add('value');
+                            lineDiv.appendChild(valueSpan);
+                            currentLineElement = valueSpan; // Set current typing target
+
+                            terminalOutput.appendChild(lineDiv);
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        }
+
+                        // Type the value character by character
+                        const fullValue = item.data.value;
+                        if (currentCharIndex < fullValue.length) {
+                            currentLineElement.textContent += fullValue.charAt(currentCharIndex);
+                            currentCharIndex++;
+                            setTimeout(startTyping, typingSpeed);
+                        } else {
+                            // Line finished, move to next item
+                            currentCharIndex = 0;
+                            currentContentIndex++;
+                            setTimeout(startTyping, typingSpeed * 2); // Small delay before next line
+                        }
+
+                    } else if (item.type === 'block') {
+                        // For a block, first type the title, then the content
+                        if (currentCharIndex === 0) {
+                            const titleDiv = document.createElement('div');
+                            titleDiv.classList.add('block-title');
+                            const promptSpan = document.createElement('span');
+                            promptSpan.classList.add('prompt');
+                            promptSpan.textContent = 'user@host:~$ ';
+                            titleDiv.appendChild(promptSpan);
+                            const titleSpan = document.createElement('span');
+                            titleSpan.classList.add('label');
+                            titleSpan.textContent = item.data.title;
+                            titleDiv.appendChild(titleSpan);
+                            terminalOutput.appendChild(titleDiv);
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+                            const codeBlockDiv = document.createElement('div');
+                            codeBlockDiv.classList.add('code-block');
+                            terminalOutput.appendChild(codeBlockDiv);
+                            currentLineElement = codeBlockDiv; // Set current typing target
+                        }
+
+                        // Type the block content character by character
+                        const fullContent = item.data.content;
+                        if (currentCharIndex < fullContent.length) {
+                            currentLineElement.textContent += fullContent.charAt(currentCharIndex);
+                            currentCharIndex++;
+                            setTimeout(startTyping, typingSpeed);
+                        } else {
+                            // Block finished, move to next item
+                            currentCharIndex = 0;
+                            currentContentIndex++;
+                            setTimeout(startTyping, typingSpeed * 2); // Small delay before next block
+                        }
+                    }
+                } else {
+                    // All content typed, remove the initial typing area and cursor
+                    typingArea.nextElementSibling.remove(); // Remove blinking cursor
+                    typingArea.remove(); // Remove typing area span
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initial message typed into the typing area
+                const initialMessage = "执行命令: 获取浏览器信息";
+                let initialCharIndex = 0;
+
+                function typeInitialMessage() {
+                    if (initialCharIndex < initialMessage.length) {
+                        typingArea.textContent += initialMessage.charAt(initialCharIndex);
+                        initialCharIndex++;
+                        setTimeout(typeInitialMessage, typingSpeed);
+                    } else {
+                        // Initial message complete, now populate the queue and start main typing
+                        typingArea.nextElementSibling.remove(); // Remove initial cursor
+                        typingArea.remove(); // Remove initial typing area
+
+                        // Function to safely get navigator property or 'N/A'
+                        function getNavigatorProperty(prop) {
+                            return navigator[prop] !== undefined && navigator[prop] !== null ? navigator[prop].toString() : 'N/A';
+                        }
+
+                        // Populate content queue
+                        addToQueue('line', { label: '用户代理字符串', value: getNavigatorProperty('userAgent') });
+                        addToQueue('line', { label: '应用代码名称', value: getNavigatorProperty('appCodeName') });
+                        addToQueue('line', { label: '应用名称', value: getNavigatorProperty('appName') });
+                        addToQueue('line', { label: '应用版本', value: getNavigatorProperty('appVersion') });
+                        addToQueue('line', { label: '平台', value: getNavigatorProperty('platform') });
+                        addToQueue('line', { label: '产品', value: getNavigatorProperty('product') });
+                        addToQueue('line', { label: '产品子版本', value: getNavigatorProperty('productSub') });
+                        addToQueue('line', { label: '供应商', value: getNavigatorProperty('vendor') });
+                        addToQueue('line', { label: '供应商子版本', value: getNavigatorProperty('vendorSub') });
+                        addToQueue('line', { label: 'Cookie 已启用', value: navigator.cookieEnabled ? '是' : '否' });
+                        addToQueue('line', { label: '硬件并发数', value: getNavigatorProperty('hardwareConcurrency') });
+                        addToQueue('line', { label: '语言', value: getNavigatorProperty('language') });
+                        addToQueue('line', { label: '语言列表', value: (navigator.languages && navigator.languages.join(', ')) || 'N/A' });
+                        addToQueue('line', { label: '最大触摸点数', value: getNavigatorProperty('maxTouchPoints') });
+                        addToQueue('line', { label: '在线状态', value: navigator.onLine ? '是' : '否' });
+                        // Removed blinking-text class
+                        addToQueue('line', { label: '设备内存', value: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'N/A' });
+                        addToQueue('line', { label: '地理定位可用', value: ('geolocation' in navigator) ? '是' : '否' });
+                        addToQueue('line', { label: 'Java 已启用', value: navigator.javaEnabled() ? '是' : '否' });
+                        addToQueue('line', { label: '不跟踪', value: getNavigatorProperty('doNotTrack') });
+                        addToQueue('line', { label: '电池 API 可用', value: ('getBattery' in navigator) ? '是' : '否' });
+                        addToQueue('line', { label: 'Web 蓝牙可用', value: ('bluetooth' in navigator) ? '是' : '否' });
+                        addToQueue('line', { label: 'Web USB 可用', value: ('usb' in navigator) ? '是' : '否' });
+                        addToQueue('line', { label: 'Web 分享可用', value: ('share' in navigator) ? '是' : '否' });
+
+                        // User Agent Client Hints Block
+                        let uaDataContent = '正在加载用户代理客户端提示...';
+                        if (navigator.userAgentData) {
+                            navigator.userAgentData.getHighEntropyValues([
+                                "architecture", "model", "platform", "platformVersion",
+                                "uaFullVersion", "fullVersionList", "bitness", "formFactor",
+                                "mobile", "brands"
+                            ]).then(highEntropyValues => {
+                                const data = {
+                                    mobile: navigator.userAgentData.mobile,
+                                    platform: navigator.userAgentData.platform,
+                                    ...highEntropyValues
+                                };
+                                // Update the content in the queue once resolved
+                                const index = contentQueue.findIndex(item => item.data.title === '用户代理客户端提示 (现代浏览器)');
+                                if (index !== -1) {
+                                    contentQueue[index].data.content = JSON.stringify(data, null, 2);
+                                }
+                            }).catch(e => {
+                                console.error("Error getting high entropy user agent client hints:", e);
+                                const lowEntropyData = {
+                                    brands: navigator.userAgentData.brands || 'N/A',
+                                    mobile: navigator.userAgentData.mobile !== undefined ? navigator.userAgentData.mobile : 'N/A',
+                                    platform: navigator.userAgentData.platform || 'N/A'
+                                };
+                                const index = contentQueue.findIndex(item => item.data.title === '用户代理客户端提示 (现代浏览器)');
+                                if (index !== -1) {
+                                    contentQueue[index].data.content = `获取高熵提示错误（可能需要用户权限或不受支持）：${e.message}。\n可用低熵数据：${JSON.stringify(lowEntropyData, null, 2)}`;
+                                }
+                            });
+                        } else {
+                            uaDataContent = '此浏览器不支持用户代理客户端提示 API。';
+                        }
+                        addToQueue('block', { title: '用户代理客户端提示 (现代浏览器)', content: uaDataContent });
+
+
+                        // Plugins Block
+                        let pluginsList = '正在加载插件...';
+                        if (navigator.plugins && navigator.plugins.length > 0) {
+                            let tempPluginsList = '';
+                            for (let i = 0; i < navigator.plugins.length; i++) {
+                                const plugin = navigator.plugins[i];
+                                tempPluginsList += `名称: ${plugin.name || 'N/A'}\n`;
+                                tempPluginsList += `  描述: ${plugin.description || 'N/A'}\n`;
+                                tempPluginsList += `  文件名: ${plugin.filename || 'N/A'}\n`;
+                                tempPluginsList += `  版本: ${plugin.version || 'N/A'}\n`;
+                                if (plugin.length > 0) {
+                                    tempPluginsList += `  Mime 类型:\n`;
+                                    for (let j = 0; j < plugin.length; j++) {
+                                        const mimeType = plugin[j];
+                                        tempPluginsList += `    - 类型: ${mimeType.type || 'N/A'}, 描述: ${mimeType.description || 'N/A'}, 后缀: ${mimeType.suffixes || 'N/A'}\n`;
+                                    }
+                                }
+                                tempPluginsList += `\n`;
+                            }
+                            pluginsList = tempPluginsList;
+                        } else {
+                            pluginsList = '未检测到插件或 navigator.plugins 不可用（现代浏览器出于隐私/安全原因通常会限制此功能）。';
+                        }
+                        addToQueue('block', { title: '插件 (传统)', content: pluginsList });
+
+                        // Start the main typing animation after initial message
+                        startTyping();
+                    }
+                }
+                typeInitialMessage(); // Start typing the initial message
+            });
+        </script>
+    </div>
+</body>
+</html>
