@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live HTML Editor</title>
+    <title>实时HTML编辑器</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css">
     <style>
         /* Custom styles for better visual appeal and responsiveness */
         body {
@@ -13,74 +16,96 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative; /* Needed for fixed positioning of the control panel */
+        }
+
+        .header-main-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding-right: 4rem; /* Space for the fixed control panel */
         }
 
         .container {
             display: flex;
-            flex-direction: column; /* Stack vertically on small screens */
+            flex-direction: column; /* Always stack vertically */
             flex-grow: 1;
             padding: 1rem;
             gap: 1rem;
         }
 
-        @media (min-width: 768px) { /* Side-by-side on medium and larger screens */
-            .container {
-                flex-direction: row;
-            }
-        }
-
         .editor-panel, .preview-panel {
             background-color: #ffffff;
             border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Slightly softer shadow */
             padding: 1rem;
             display: flex;
             flex-direction: column;
             flex: 1; /* Distribute space equally */
         }
 
-        textarea {
+        /* CodeMirror specific styling adjustments */
+        .CodeMirror {
             width: 100%;
             flex-grow: 1;
-            border: 1px solid #d1d5db; /* border-gray-300 */
+            border: 1px solid #e5e7eb; /* border-gray-200 for thinner look */
             border-radius: 0.5rem; /* rounded-lg */
-            padding: 0.75rem;
-            font-family: monospace;
             font-size: 0.9rem;
-            resize: vertical; /* Allow vertical resizing */
-            min-height: 200px; /* Minimum height for textarea */
+            min-height: 400px; /* Minimum height for editor */
+            height: auto; /* Allow CodeMirror to adjust height */
+        }
+
+        .CodeMirror-scroll {
+            min-height: 400px; /* Ensure scroll area also respects min-height */
+            height: 100%; /* Fill available height */
         }
 
         iframe {
             width: 100%;
             flex-grow: 1;
-            border: 1px solid #d1d5db; /* border-gray-300 */
+            border: 1px solid #e5e7eb; /* border-gray-200 for thinner look */
             border-radius: 0.5rem; /* rounded-lg */
             background-color: #fff;
+            min-height: 400px; /* Minimum height for preview */
+            aspect-ratio: 1 / 1; /* Ensure preview is at least as tall as it is wide */
+            object-fit: contain; /* Ensure content fits within the aspect ratio */
         }
 
-        .button-group {
+        /* Sticky Control Panel */
+        .control-panel {
+            position: fixed;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem;
             display: flex;
-            gap: 0.75rem; /* gap-3 */
-            margin-top: 1rem;
-            flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-            justify-content: center; /* Center buttons horizontally */
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 10; /* Ensure it stays on top */
         }
 
-        .button-group button {
-            padding: 0.75rem 1.25rem; /* py-3 px-5 */
-            border-radius: 0.5rem; /* rounded-lg */
-            font-weight: 600; /* font-semibold */
+        .control-panel button {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
             transition: background-color 0.2s, transform 0.1s;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 1.5rem; /* Larger font for emojis */
+            line-height: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .button-group button:hover {
+        .control-panel button:hover {
             transform: translateY(-1px);
         }
 
-        .button-group button:active {
+        .control-panel button:active {
             transform: translateY(0);
         }
 
@@ -105,20 +130,21 @@
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
     <header class="bg-blue-600 text-white p-4 shadow-md">
-        <h1 class="text-2xl font-bold text-center">Live HTML Editor</h1>
+        <h1 class="text-2xl font-bold text-center">实时HTML编辑器</h1>
     </header>
 
-    <main class="container flex-grow md:flex-row flex-col">
-        <div class="editor-panel flex-1">
-            <h2 class="text-xl font-semibold mb-3">Your HTML Code</h2>
-            <textarea id="htmlEditor" class="flex-grow rounded-lg border border-gray-300 p-3 font-mono text-sm resize-y min-h-[200px]"
-                      placeholder="Start typing your HTML here...">
+    <div class="header-main-wrapper">
+        <main class="container flex-grow">
+            <div class="editor-panel flex-1">
+                <h2 class="text-xl font-semibold mb-3">您的HTML代码</h2>
+                <textarea id="htmlEditor" class="flex-grow rounded-lg border border-gray-200 p-3 font-mono text-sm resize-y min-h-[400px]"
+                          placeholder="在此处开始输入您的HTML代码...">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Preview</title>
+    <title>实时预览</title>
     <style>
         body {
             font-family: sans-serif;
@@ -142,30 +168,47 @@
     </style>
 </head>
 <body>
-    <h1>Hello from Live Preview!</h1>
-    <p>This is a simple paragraph to demonstrate the live HTML preview.</p>
+    <h1>来自实时预览的问候！</h1>
+    <p>这是一个简单的段落，用于演示实时HTML预览。</p>
     <div class="card">
-        <h2>A Card Example</h2>
-        <p>You can edit the HTML on the left and see the changes instantly here.</p>
-        <button style="background-color: #3b82f6; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Click Me</button>
+        <h2>卡片示例</h2>
+        <p>您可以在左侧编辑HTML，并在此处即时查看更改。</p>
+        <button style="background-color: #3b82f6; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">点击我</button>
     </div>
 </body>
 </html>
-            </textarea>
-        </div>
-
-        <div id="previewPanel" class="preview-panel flex-1">
-            <h2 class="text-xl font-semibold mb-3">Live Preview</h2>
-            <iframe id="livePreview" class="flex-grow rounded-lg border border-gray-300 bg-white"></iframe>
-            <div class="button-group">
-                <button id="togglePauseBtn" class="btn-primary">Pause Preview</button>
-                <button id="toggleHideBtn" class="btn-secondary">Hide Preview</button>
+                </textarea>
             </div>
-        </div>
-    </main>
+
+            <div id="previewPanel" class="preview-panel flex-1">
+                <h2 class="text-xl font-semibold mb-3">实时预览</h2>
+                <iframe id="livePreview" class="flex-grow rounded-lg border border-gray-200 bg-white"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <div class="control-panel">
+        <button id="togglePauseBtn" class="btn-primary" title="暂停/恢复预览">⏯️</button>
+        <button id="toggleHideBtn" class="btn-secondary" title="隐藏/显示预览">👁️‍🗨️</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/xml-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/matchbrackets.min.js"></script>
+
 
     <script>
-        const htmlEditor = document.getElementById('htmlEditor');
+        const htmlEditorElement = document.getElementById('htmlEditor');
         const livePreview = document.getElementById('livePreview');
         const togglePauseBtn = document.getElementById('togglePauseBtn');
         const toggleHideBtn = document.getElementById('toggleHideBtn');
@@ -175,12 +218,41 @@
         let isHidden = false; // Flag to control preview visibility
         let updateTimeout; // To debounce the input events
 
+        // Initialize CodeMirror on the textarea
+        const editor = CodeMirror.fromTextArea(htmlEditorElement, {
+            mode: 'htmlmixed', // Use htmlmixed mode for HTML, CSS, and JS highlighting
+            theme: 'material-ocean', // Apply the chosen theme
+            lineNumbers: true, // Show line numbers
+            indentUnit: 4, // Indent by 4 spaces
+            tabSize: 4, // Tab key inserts 4 spaces
+            indentWithTabs: false, // Use spaces for indentation
+            autoCloseTags: true, // Automatically close HTML tags
+            autoCloseBrackets: true, // Automatically close brackets
+            matchBrackets: true, // Highlight matching brackets
+            extraKeys: {
+                "Ctrl-Space": "autocomplete", // Trigger autocomplete with Ctrl-Space
+                "Cmd-Space": "autocomplete",  // For Mac users
+                "Tab": function(cm) { // Custom Tab behavior for indentation or completion
+                    if (cm.somethingSelected()) {
+                        cm.indentSelection("add");
+                    } else if (CodeMirror.commands.autocomplete) {
+                        CodeMirror.commands.autocomplete(cm);
+                    } else {
+                        cm.execCommand("insertSoftTab");
+                    }
+                }
+            },
+            hintOptions: {
+                // Options for the hinting addon
+            }
+        });
+
         // Function to update the iframe content
         function updatePreview() {
             // Only update if not paused
             if (!isPaused) {
-                // Get the HTML content from the textarea
-                const htmlContent = htmlEditor.value;
+                // Get the HTML content from the CodeMirror editor
+                const htmlContent = editor.getValue();
                 // Write the content to the iframe's document
                 livePreview.contentDocument.open();
                 livePreview.contentDocument.write(htmlContent);
@@ -194,20 +266,22 @@
             updateTimeout = setTimeout(updatePreview, 300); // Update after 300ms of no typing
         }
 
-        // Event listener for input changes in the textarea
-        htmlEditor.addEventListener('input', debounceUpdate);
+        // Event listener for CodeMirror content changes
+        editor.on('change', debounceUpdate);
 
         // Event listener for the Pause/Resume button
         togglePauseBtn.addEventListener('click', () => {
             isPaused = !isPaused; // Toggle the pause state
             if (isPaused) {
-                togglePauseBtn.textContent = 'Resume Preview';
+                togglePauseBtn.textContent = '▶️'; // Play icon
                 togglePauseBtn.classList.remove('btn-primary');
                 togglePauseBtn.classList.add('btn-secondary');
+                togglePauseBtn.title = '恢复预览'; // Translated title
             } else {
-                togglePauseBtn.textContent = 'Pause Preview';
+                togglePauseBtn.textContent = '⏸️'; // Pause icon
                 togglePauseBtn.classList.remove('btn-secondary');
                 togglePauseBtn.classList.add('btn-primary');
+                togglePauseBtn.title = '暂停预览'; // Translated title
                 // If resuming, immediately update the preview
                 updatePreview();
             }
@@ -218,14 +292,16 @@
             isHidden = !isHidden; // Toggle the hide state
             if (isHidden) {
                 previewPanel.classList.add('hidden'); // Hide the entire preview panel
-                toggleHideBtn.textContent = 'Show Preview';
+                toggleHideBtn.textContent = '👁️'; // Show icon
                 toggleHideBtn.classList.remove('btn-secondary');
                 toggleHideBtn.classList.add('btn-primary');
+                toggleHideBtn.title = '显示预览'; // Translated title
             } else {
                 previewPanel.classList.remove('hidden'); // Show the preview panel
-                toggleHideBtn.textContent = 'Hide Preview';
+                toggleHideBtn.textContent = '👁️‍🗨️'; // Hide icon (eye with speech bubble, or just eye-slash if available)
                 toggleHideBtn.classList.remove('btn-primary');
                 toggleHideBtn.classList.add('btn-secondary');
+                toggleHideBtn.title = '隐藏预览'; // Translated title
                 // If showing, ensure the preview is up-to-date
                 updatePreview();
             }
@@ -235,7 +311,10 @@
         document.addEventListener('DOMContentLoaded', updatePreview);
 
         // Also update if the window is resized to ensure iframe content fits
-        window.addEventListener('resize', debounceUpdate);
+        window.addEventListener('resize', () => {
+            editor.refresh(); // CodeMirror needs to be refreshed on resize
+            debounceUpdate();
+        });
     </script>
 </body>
 </html>
