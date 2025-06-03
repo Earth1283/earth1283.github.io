@@ -126,6 +126,112 @@
         .btn-secondary:hover {
             background-color: #4b5563; /* bg-gray-600 */
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content textarea, .modal-content input[type="text"] {
+            min-height: 40px; /* Adjusted for input field */
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        .modal-content pre {
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap; /* Ensure long lines wrap */
+            word-break: break-all; /* Break words to prevent overflow */
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .modal-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .modal-buttons .btn-generate {
+            background-color: #10b981; /* bg-emerald-500 */
+            color: #ffffff;
+        }
+        .modal-buttons .btn-generate:hover {
+            background-color: #059669; /* bg-emerald-600 */
+        }
+        .modal-buttons .btn-insert {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: #ffffff;
+        }
+        .modal-buttons .btn-insert:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+        .modal-buttons .btn-close {
+            background-color: #ef4444; /* bg-red-500 */
+            color: #ffffff;
+        }
+        .modal-buttons .btn-close:hover {
+            background-color: #dc2626; /* bg-red-600 */
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3b82f6; /* Blue */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
@@ -190,6 +296,24 @@
     <div class="control-panel">
         <button id="togglePauseBtn" class="btn-primary" title="暂停/恢复预览">⏯️</button>
         <button id="toggleHideBtn" class="btn-secondary" title="隐藏/显示预览">👁️‍🗨️</button>
+        <button id="openGeminiModalBtn" class="btn-primary" title="AI HTML助手">✨</button>
+    </div>
+
+    <div id="geminiModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold">✨ AI HTML助手</h3>
+            <p class="text-gray-600">请输入您的Gemini API 秘钥</p>
+            <input type="password" id="geminiApiKeyInput" placeholder="您的API Key">
+            <p class="text-gray-600">描述您想要生成的HTML代码：</p>
+            <textarea id="geminiPromptInput" placeholder="例如：一个带有三个链接的简单导航栏"></textarea>
+            <div id="geminiLoadingSpinner" class="loading-spinner hidden"></div>
+            <pre id="geminiOutput" class="hidden"></pre>
+            <div class="modal-buttons">
+                <button id="generateHtmlBtn" class="btn-generate">生成代码</button>
+                <button id="insertHtmlBtn" class="btn-insert hidden">插入到编辑器</button>
+                <button id="closeGeminiModalBtn" class="btn-close">关闭</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -213,6 +337,15 @@
         const togglePauseBtn = document.getElementById('togglePauseBtn');
         const toggleHideBtn = document.getElementById('toggleHideBtn');
         const previewPanel = document.getElementById('previewPanel');
+        const openGeminiModalBtn = document.getElementById('openGeminiModalBtn');
+        const geminiModalOverlay = document.getElementById('geminiModalOverlay');
+        const closeGeminiModalBtn = document.getElementById('closeGeminiModalBtn');
+        const geminiApiKeyInput = document.getElementById('geminiApiKeyInput'); // New API Key input
+        const geminiPromptInput = document.getElementById('geminiPromptInput');
+        const generateHtmlBtn = document.getElementById('generateHtmlBtn');
+        const geminiOutput = document.getElementById('geminiOutput');
+        const insertHtmlBtn = document.getElementById('insertHtmlBtn');
+        const geminiLoadingSpinner = document.getElementById('geminiLoadingSpinner');
 
         let isPaused = false; // Flag to control preview updates
         let isHidden = false; // Flag to control preview visibility
@@ -304,6 +437,88 @@
                 toggleHideBtn.title = '隐藏预览'; // Translated title
                 // If showing, ensure the preview is up-to-date
                 updatePreview();
+            }
+        });
+
+        // Open Gemini Modal
+        openGeminiModalBtn.addEventListener('click', () => {
+            geminiModalOverlay.classList.add('show');
+            geminiPromptInput.value = ''; // Clear previous input
+            geminiOutput.textContent = ''; // Clear previous output
+            geminiOutput.classList.add('hidden');
+            insertHtmlBtn.classList.add('hidden');
+            geminiLoadingSpinner.classList.add('hidden');
+        });
+
+        // Close Gemini Modal
+        closeGeminiModalBtn.addEventListener('click', () => {
+            geminiModalOverlay.classList.remove('show');
+        });
+
+        // Generate HTML using Gemini API
+        generateHtmlBtn.addEventListener('click', async () => {
+            const promptText = geminiPromptInput.value.trim();
+            const apiKey = geminiApiKeyInput.value.trim(); // Get API key from input field
+
+            if (!apiKey) {
+                geminiOutput.textContent = '请输入您的Gemini API Key。';
+                geminiOutput.classList.remove('hidden');
+                return;
+            }
+
+            if (!promptText) {
+                geminiOutput.textContent = '请输入您想要生成的HTML描述。';
+                geminiOutput.classList.remove('hidden');
+                return;
+            }
+
+            geminiOutput.textContent = '';
+            geminiOutput.classList.add('hidden');
+            insertHtmlBtn.classList.add('hidden');
+            geminiLoadingSpinner.classList.remove('hidden'); // Show spinner
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: `请根据以下描述生成HTML代码。只返回HTML代码，不要包含任何解释性文字或Markdown代码块标记。描述：${promptText}` }] });
+                const payload = { contents: chatHistory };
+                // Use the user-provided API key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const generatedHtml = result.candidates[0].content.parts[0].text;
+                    geminiOutput.textContent = generatedHtml;
+                    geminiOutput.classList.remove('hidden');
+                    insertHtmlBtn.classList.remove('hidden');
+                } else {
+                    geminiOutput.textContent = '抱歉，未能生成HTML代码。请尝试不同的描述。';
+                    geminiOutput.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Gemini API 调用失败:', error);
+                geminiOutput.textContent = '生成代码时发生错误。请检查控制台了解详情。';
+                geminiOutput.classList.remove('hidden');
+            } finally {
+                geminiLoadingSpinner.classList.add('hidden'); // Hide spinner
+            }
+        });
+
+        // Insert generated HTML into CodeMirror editor
+        insertHtmlBtn.addEventListener('click', () => {
+            const generatedHtml = geminiOutput.textContent;
+            if (generatedHtml) {
+                editor.replaceSelection(generatedHtml); // Insert at cursor
+                geminiModalOverlay.classList.remove('show'); // Close modal after insertion
+                updatePreview(); // Update live preview
             }
         });
 
