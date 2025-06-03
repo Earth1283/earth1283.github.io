@@ -131,10 +131,11 @@
             progressBar.style.width = '0%';
             displayStatus('Loading PDF...', 'info');
 
-            // Check file size (e.g., max 10MB)
-            const MAX_FILE_SIZE_MB = 10;
+            // Check file size (e.g., max 1GB)
+            const MAX_FILE_SIZE_MB = 1024;
+            const MAX_FILE_SIZE_GB = MAX_FILE_SIZE_MB / 1024;
             if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-                displayStatus(`File size exceeds ${MAX_FILE_SIZE_MB}MB. Please upload a smaller PDF.`, 'error');
+                displayStatus(`File size exceeds ${MAX_FILE_SIZE_MB}MB (${MAX_FILE_SIZE_GB} GB). Please upload a smaller PDF.`, 'error');
                 return;
             }
 
