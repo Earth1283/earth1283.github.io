@@ -4,58 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eterma MC 封禁列表</title>
+    <link rel="icon" type="image/png" href="icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 添加一些自定义样式 */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* 深色背景 */
-            color: #e2e8f0; /* 浅色文字 */
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 960px; /* 限制容器最大宽度 */
-        }
-        .table-container {
-            overflow-x: auto; /* 在小屏幕上允许水平滚动 */
-            -webkit-overflow-scrolling: touch; /* 改善移动端滚动体验 */
-        }
-        table {
-            width: 100%; /* 表格宽度占满容器 */
-            border-collapse: collapse; /* 合并边框 */
-        }
-        th, td {
-            padding: 12px 15px; /* 单元格内边距 */
-            text-align: left; /* 文字左对齐 */
-            border-bottom: 1px solid #4a5568; /* 底部边框 */
-        }
-        th {
-            background-color: #2d3748; /* 表头背景色 */
-            font-weight: bold;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
             color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
         }
+
+        .container {
+            max-width: 1024px;
+        }
+
+        .header-bg {
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), transparent);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            background: rgba(51, 65, 85, 0.5);
+            font-weight: 600;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        th:first-child {
+            border-top-left-radius: 0.75rem;
+        }
+
+        th:last-child {
+            border-top-right-radius: 0.75rem;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
         tbody tr:hover {
-            background-color: #243040; /* 鼠标悬停时的背景色 */
+            background: rgba(51, 65, 85, 0.3);
+            transform: translateY(-1px);
         }
-        tbody tr:nth-child(even) {
-            background-color: #1a202c; /* 偶数行背景色 */
+
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 0.75rem;
         }
-         tbody tr:nth-child(odd) {
-            background-color: #2d3748; /* 奇数行背景色 */
+
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .reason-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .reason-tag.cheating {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .reason-tag.xray {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body class="antialiased">
-
-    <header class="bg-gray-900 py-4 text-center">
-        <h1 class="text-3xl font-bold text-e2e8f0">Eterma MC 封禁列表</h1>
+    <header class="header-bg py-6 sticky top-0 z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-400">
+                    封禁列表
+                </h1>
+                <a href="index.html" class="text-gray-400 hover:text-white transition-colors">
+                    返回主页
+                </a>
+            </div>
+        </div>
     </header>
 
     <section class="py-12 px-4">
-        <div class="container mx-auto">
-            <h2 class="text-2xl font-bold mb-6 text-center">近期封禁记录</h2>
+        <div class="container mx-auto fade-in">
+            <div class="mb-8 text-center">
+                <h2 class="text-2xl font-bold mb-4">永久封禁记录</h2>
+                <p class="text-gray-400">以下玩家因违规行为被永久封禁</p>
+            </div>
 
-            <div class="table-container rounded-lg overflow-hidden">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -67,130 +162,132 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>424274</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">1</td>
+                            <td class="font-medium">424274</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>2</td>
-                            <td>CMDIST</td>
-                            <td>矿透</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">2</td>
+                            <td class="font-medium">CMDIST</td>
+                            <td><span class="reason-tag xray">矿透</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>3</td>
-                            <td>SmudgyBag800</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">3</td>
+                            <td class="font-medium">SmudgyBag800</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>4</td>
-                            <td>II</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">4</td>
+                            <td class="font-medium">II</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>5</td>
-                            <td>Command_ston</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">5</td>
+                            <td class="font-medium">Command_ston</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>6</td>
-                            <td>TurtleccChannel</td>
-                            <td>矿透</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">6</td>
+                            <td class="font-medium">TurtleccChannel</td>
+                            <td><span class="reason-tag xray">矿透</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>7</td>
-                            <td>sad12556</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">7</td>
+                            <td class="font-medium">sad12556</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>8</td>
-                            <td>Command stone</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">8</td>
+                            <td class="font-medium">Command stone</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
                         <tr>
-                            <td>9</td>
-                            <td>xhzXHZ</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                            <td class="text-gray-400">9</td>
+                            <td class="font-medium">xhzXHZ</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>10</td>
-                            <td>QHHDKHLDJKO</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">10</td>
+                            <td class="font-medium">QHHDKHLDJKO</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>11</td>
-                            <td>lichou8</td>
-                            <td>矿透</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">11</td>
+                            <td class="font-medium">lichou8</td>
+                            <td><span class="reason-tag xray">矿透</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>12</td>
-                            <td>luogue</td>
-                            <td>矿透</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">12</td>
+                            <td class="font-medium">luogue</td>
+                            <td><span class="reason-tag xray">矿透</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>13</td>
-                            <td>kung1</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">13</td>
+                            <td class="font-medium">kung1</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>14</td>
-                            <td>Xiaosun1_</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">14</td>
+                            <td class="font-medium">Xiaosun1_</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>15</td>
-                            <td>mehg</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">15</td>
+                            <td class="font-medium">mehg</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>16</td>
-                            <td>123yun</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">16</td>
+                            <td class="font-medium">123yun</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>17</td>
-                            <td>uippp</td>
-                            <td>矿透</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">17</td>
+                            <td class="font-medium">uippp</td>
+                            <td><span class="reason-tag xray">矿透</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>18</td>
-                            <td>HAEDN</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">18</td>
+                            <td class="font-medium">HAEDN</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                         <tr>
-                            <td>19</td>
-                            <td>ret</td>
-                            <td>开挂</td>
-                            <td>永久封禁</td>
+                        <tr>
+                            <td class="text-gray-400">19</td>
+                            <td class="font-medium">ret</td>
+                            <td><span class="reason-tag cheating">开挂</span></td>
+                            <td><span class="status-tag">永久封禁</span></td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
-             <p class="text-center text-gray-400 text-sm mt-6">前车之覆，后车之鉴。</p>
-             <p class="text-center text-gray-400 text-sm mt-2">不要开挂，大家安好。</p>
+
+            <div class="mt-12 text-center space-y-3">
+                <p class="text-lg text-gray-300">前车之覆，后车之鉴</p>
+                <p class="text-gray-400">不要开挂，大家安好</p>
+            </div>
         </div>
     </section>
 
-    <footer class="bg-gray-900 py-8 text-center text-gray-500">
-        <p>&copy; 2025 Eterma MC. All rights reserved.</p>
+    <footer class="bg-gray-900/50 backdrop-blur-md py-8 text-center border-t border-gray-800">
+        <p class="text-gray-400">&copy; 2025 Eterma MC. All rights reserved.</p>
     </footer>
-
 </body>
 </html>
