@@ -4,103 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eterma MC - 无规则，真自由！</title>
+    <link rel="icon" type="image/png" href="icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 添加一些自定义样式，让页面更具吸引力 */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* 深色背景 */
-            color: #e2e8f0; /* 浅色文字 */
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            color: #e2e8f0;
             line-height: 1.6;
+            min-height: 100vh;
         }
+        
         .hero-bg {
-            background-image: url('https://placehold.co/1920x1080/2d3748/e2e8f0?text=Awaiting+Image'); /* 占位背景图，可以替换成你的MC截图或宣传图 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://placehold.co/1920x1080/2d3748/e2e8f0?text=Awaiting+Image');
             background-size: cover;
             background-position: center;
-            /* 调整背景叠加层的颜色和透明度，让背景图更突出 */
+            background-attachment: fixed;
             position: relative;
         }
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6); /* 黑色叠加层，透明度调整 */
-            z-index: 1;
+
+        .hero-content {
+            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1s ease-out;
         }
-        .hero-bg > div {
-            position: relative;
-            z-index: 2; /* 确保文字内容在叠加层上方 */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .btn-primary {
-            background-color: #48bb78; /* 绿色按钮 */
-            color: #1a202c;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
             padding: 1rem 2rem;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             font-size: 1.25rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
         }
+
         .btn-primary:hover {
-            background-color: #38a169; /* 鼠标悬停时的颜色 */
-        }
-         .btn-secondary {
-            background-color: #4a5568; /* 灰色按钮 */
-            color: #e2e8f0;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            display: inline-block; /* 使链接表现得像块级元素以便应用 padding 和 margin */
-            margin-top: 1.5rem; /* 与上方内容的间距 */
-        }
-        .btn-secondary:hover {
-            background-color: #64748b; /* 鼠标悬停时的颜色 */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #16a34a, #15803d);
         }
 
         .card {
-            background-color: #2d3748; /* 卡片背景 */
-            border-radius: 0.75rem;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 1rem;
             padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            /* 添加一些边框颜色或者细微的阴影 */
-            border: 1px solid rgba(74, 85, 104, 0.5); /* 浅灰色边框 */
         }
-        .copy-container {
-            display: flex;
-            /* 将 flex 方向改为 column, 使子元素垂直排列 */
-            flex-direction: column;
-            align-items: center; /* 垂直居中对齐 */
-            gap: 0.5rem; /* 文本和复制按钮之间的间距 */
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
         }
+
         .copy-button {
-            background-color: #4a5568; /* 灰色按钮 */
+            background: rgba(74, 85, 104, 0.5);
             color: #e2e8f0;
             padding: 0.5rem;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .copy-button:hover {
-            background-color: #64748b; /* 鼠标悬停时的颜色 */
+            background: rgba(74, 85, 104, 0.8);
+            transform: translateY(-1px);
         }
-        .copy-button svg {
-            width: 1.25rem; /* SVG 图标大小 */
-            height: 1.25rem;
+
+        .section-transition {
+            position: relative;
+            overflow: hidden;
         }
+
+        .section-transition::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.1));
+        }
+
         .copied-feedback {
-            color: #48bb78; /* 绿色文字 */
-            font-size: 0.875rem; /* 小号文字 */
-            /* 调整提示信息的边距 */
+            color: #22c55e;
+            font-size: 0.875rem;
+            font-weight: 500;
             margin-top: 0.5rem;
-            margin-left: 0;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+
         .copied-feedback.show {
             opacity: 1;
         }
@@ -118,41 +131,47 @@
 </head>
 <body class="antialiased">
 
-    <header class="hero-bg h-screen flex items-center justify-center text-center">
-        <div class="bg-black bg-opacity-50 p-8 rounded-lg max-w-2xl mx-auto">
-            <h1 class="text-5xl md:text-6xl font-bold mb-4">Eterma MC</h1>
-            <p class="text-xl md:text-2xl mb-8">释放你的创造力，体验真正的自由！</p>
-            <a href="#join" class="btn-primary inline-block">立即加入服务器</a>
+    <header class="hero-bg min-h-screen flex items-center justify-center text-center px-4">
+        <div class="hero-content p-8 rounded-2xl max-w-3xl mx-auto">
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+                Eterma MC
+            </h1>
+            <p class="text-2xl md:text-3xl mb-12 text-gray-200">释放你的创造力，体验真正的自由！</p>
+            <a href="#join" class="btn-primary inline-block">
+                立即加入服务器
+            </a>
         </div>
     </header>
 
-    <section id="join" class="py-16 px-4">
+    <section id="join" class="py-24 px-4 section-transition">
         <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-8">服务器信息</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                服务器信息
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <div class="card">
-                    <h3 class="text-2xl font-semibold mb-4">服务器 IP</h3>
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-200">服务器 IP</h3>
                     <div class="copy-container">
-                        <p id="server-ip" class="text-2xl font-mono break-words">eterma.2m.pub</p>
-                        <button class="copy-button" onclick="copyToClipboard('server-ip', this)">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.305 9.305 0 0 1 1.5.124Rb9.75 0 0 0 5.625-4.724M9.75 14.25v-2.25m3 3v-2.25m3 3v-2.25M9.75 21.75v-3C9.75 18.336 9.336 18 8.811 18H2.25M16.5 7.5h.008v.008H16.5V7.5Zm-3 0h.008v.008H13.5V7.5Z" />
+                        <p id="server-ip" class="text-2xl font-mono break-words text-emerald-400 mb-4">eterma.2m.pub</p>
+                        <button class="copy-button group" onclick="copyToClipboard('server-ip', this)">
+                            <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                             </svg>
                         </button>
                         <span id="ip-feedback" class="copied-feedback">已复制!</span>
                     </div>
                 </div>
                 <div class="card">
-                    <h3 class="text-2xl font-semibold mb-4">服务器端口</h3>
-                    <p class="text-3xl font-mono">25565</p>
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-200">服务器端口</h3>
+                    <p class="text-3xl font-mono text-emerald-400">25565</p>
                 </div>
-                 <div class="card">
-                    <h3 class="text-2xl font-semibold mb-4">QQ 群号</h3>
+                <div class="card">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-200">QQ 群号</h3>
                     <div class="copy-container">
-                        <p id="qq-group" class="text-2xl font-mono">1035332547</p>
-                         <button class="copy-button" onclick="copyToClipboard('qq-group', this)">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.305 9.305 0 0 1 1.5.124Rb9.75 0 0 0 5.625-4.724M9.75 14.25v-2.25m3 3v-2.25m3 3v-2.25M9.75 21.75v-3C9.75 18.336 9.336 18 8.811 18H2.25M16.5 7.5h.008v.008H16.5V7.5Zm-3 0h.008v.008H13.5V7.5Z" />
+                        <p id="qq-group" class="text-2xl font-mono text-emerald-400 mb-4">1035332547</p>
+                        <button class="copy-button group" onclick="copyToClipboard('qq-group', this)">
+                            <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                             </svg>
                         </button>
                         <span id="qq-feedback" class="copied-feedback">已复制!</span>
@@ -162,20 +181,27 @@
         </div>
     </section>
 
-    <section class="rules-section py-16 px-4">
+    <section class="rules-section py-24 px-4 section-transition">
         <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-8">服务器规则</h2>
-            <div class="card max-w-2xl mx-auto">
-                <h3 class="text-2xl font-semibold mb-4">无规则服务器</h3>
-                <p class="text-xl mb-4">在 Eterma MC，我们相信真正的自由。没有繁琐的规则，没有限制，你可以尽情探索、建造和互动。</p>
-                <p class="text-xl font-bold text-red-400">但请注意：严禁使用任何形式的外挂！</p>
-                <p class="text-lg mt-4">我们致力于维护一个公平的游戏环境，外挂行为将导致封禁。</p>
-                <a href="https://earth1283.github.io/eterma/bans.html" class="btn-secondary" target="_blank">查看封禁列表</a>
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-400">
+                服务器规则
+            </h2>
+            <div class="card max-w-3xl mx-auto">
+                <h3 class="text-3xl font-semibold mb-6 text-gray-200">无规则服务器</h3>
+                <p class="text-xl mb-6 text-gray-300">在 Eterma MC，我们相信真正的自由。没有繁琐的规则，没有限制，你可以尽情探索、建造和互动。</p>
+                <div class="bg-red-900/30 p-6 rounded-xl mb-6 border border-red-500/20">
+                    <p class="text-2xl font-bold text-red-400 mb-2">⚠️ 重要提醒</p>
+                    <p class="text-xl text-red-300">严禁使用任何形式的外挂！</p>
+                </div>
+                <p class="text-lg text-gray-400 mb-8">我们致力于维护一个公平的游戏环境，外挂行为将导致封禁。</p>
+                <a href="https://earth1283.github.io/eterma/bans.html" class="inline-block px-6 py-3 bg-gray-700/50 hover:bg-gray-600/50 text-gray-200 rounded-lg transition-all duration-300 hover:transform hover:-translate-y-1" target="_blank">
+                    查看封禁列表 →
+                </a>
             </div>
         </div>
     </section>
 
-    <footer class="bg-gray-900 py-8 text-center text-gray-500">
+    <footer class="bg-gray-900/50 backdrop-blur-md py-8 text-center text-gray-400 border-t border-gray-800">
         <p>&copy; 2025 Eterma MC. All rights reserved.</p>
     </footer>
 
