@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eterma MC 服务器规则</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header-bg {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .important {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rule-list {
+            text-align: left;
+            margin: 0 auto 2rem auto;
+            max-width: 600px;
+        }
+
+        .rule-list li {
+            margin-bottom: 1rem;
+            font-size: 1.15rem;
+            color: #e0e7ef;
+            transition: transform 0.2s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .rule-list li:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(5px);
+        }
+
+        .rule-list strong {
+            color: #38bdf8;
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+
+        .title-gradient::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, #22c55e 0%, #0ea5e9 100%);
+            transform: scaleX(0.7);
+            opacity: 0.5;
+        }
+
+        .ban-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .ban-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.15);
+        }
+
+        .ban-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .ban-button:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .ban-button svg {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .ban-button:hover svg {
+            transform: translateX(4px);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-bg py-6 sticky top-0 z-20">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-4xl font-bold title-gradient">服务器规则</h1>
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg">返回主页</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-16 px-6">
+        <div class="container mx-auto fade-in">
+            <div class="mb-12 text-center space-y-4">
+                <h2 class="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+                    Eterma MC 服务器准则
+                </h2>
+                <p class="text-gray-400 text-lg">简单明了，人人适用</p>
+            </div>
+
+            <div class="card max-w-2xl mx-auto">
+                <h2 class="text-3xl font-semibold mb-6 text-gray-200 text-center">我们的理念</h2>
+                <p class="text-lg text-gray-300 mb-6 text-center">
+                    Eterma MC 致力于打造一个真正自由、开放的 Minecraft 服务器。我们没有繁琐的规则，只有最基本的底线，保障每位玩家的公平与体验。
+                </p>
+                <div class="important text-center">
+                    <p class="text-2xl font-bold mb-2">⚠️ 绝对禁止外挂</p>
+                    <p class="text-lg">任何形式的外挂、作弊、破坏服务器公平性的行为都将被永久封禁。</p>
+                </div>
+                <!-- 规则列表，易于维护：只需增删下面的 <li> 即可 -->
+                <ul class="rule-list list-disc list-inside">
+                    <li><strong>1.</strong> 禁止使用外挂、脚本、自动化工具等作弊行为。</li>
+                    <li><strong>2.</strong> 禁止恶意攻击服务器或影响他人正常游戏。</li>
+                    <li><strong>3.</strong> 尊重他人，文明交流，禁止人身攻击与歧视言论。</li>
+                    <li><strong>4.</strong> 不得利用服务器漏洞牟利或破坏游戏环境。</li>
+                    <li><strong>5.</strong> 服从管理员管理，遇到问题请及时反馈。</li>
+                </ul>
+                <div class="ban-warning">
+                    <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ 违规处罚公示</h3>
+                    <p class="text-gray-300 mb-4">目前已有多名玩家因使用外挂被永久封禁，请引以为戒</p>
+                    <a href="bans.html" class="ban-button">
+                        查看封禁名单
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    </a>
+                </div>
+                <p class="text-gray-400 text-sm text-center mt-6 mb-2">如有疑问或建议，欢迎加入 QQ 群：<span class="text-emerald-400 font-mono">1035332547</span></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900/50 backdrop-blur-md py-8 text-center text-gray-400 border-t border-gray-800 mt-8">
+        <p>&copy; 2025 Eterma MC. All rights reserved.</p>
+    </footer>
+
+    <!--
+    维护说明：
+    - 如需修改规则，只需编辑上方 <ul class="rule-list"> 内的 <li> 项目。
+    - 其他内容建议保持不变以保证风格统一。
+    -->
+</body>
+</html>
