@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eterma MC 更新日志</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('images/background1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .hero-content {
+            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .update-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .update-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .version-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .change-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .change-type.new {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .change-type.fix {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .change-type.improvement {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .change-type.removal {
+            background: rgba(107, 114, 128, 0.2);
+            color: #d1d5db;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+
+        .change-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .change-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .change-list li:last-child {
+            border-bottom: none;
+        }
+
+        .change-content {
+            flex: 1;
+        }
+
+        .section-transition {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-transition::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.1));
+        }
+
+        .fade-in {
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Latest update highlight */
+        .latest-update {
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .latest-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="hero-bg min-h-screen flex items-center justify-center text-center px-4">
+        <div class="hero-content p-8 rounded-2xl max-w-4xl mx-auto">
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+                服务器公告
+            </h1>
+            <div class="bg-emerald-900/30 p-8 rounded-2xl mb-8 border border-emerald-500/20">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-4">🎉 最新公告</h2>
+                <p class="text-xl text-emerald-300 mb-4">欢迎来到 Eterma MC！</p>
+                <p class="text-lg text-gray-300">
+                    我们刚刚完成了服务器的重大更新！新功能包括优化的性能、更好的反作弊系统，以及全新的游戏体验。
+                    感谢所有玩家的支持和反馈！
+                </p>
+            </div>
+            <a href="#updates" class="inline-block px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-all duration-300 hover:transform hover:-translate-y-1">
+                查看更新日志 ↓
+            </a>
+        </div>
+    </header>
+
+    <nav class="bg-gray-900/50 backdrop-blur-md py-4 px-4 sticky top-0 z-10 border-b border-gray-800">
+        <div class="container mx-auto flex items-center justify-between">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+                更新日志
+            </h1>
+            <a href="index.html" class="text-gray-400 hover:text-white transition-colors">
+                返回主页
+            </a>
+        </div>
+    </nav>
+
+    <section id="updates" class="py-16 px-4 section-transition">
+        <div class="container mx-auto max-w-4xl fade-in">
+            
+            <!-- 
+            ===========================================
+            添加新更新的说明：
+            1. 复制下面的 update-card 结构
+            2. 修改版本号和日期
+            3. 修改更新内容
+            4. 如果是最新更新，添加 "latest-update" class 和 latest-badge
+            5. 将新的更新卡片放在最上面
+            ===========================================
+            -->
+
+            <!-- 最新更新 - 版本 1.2.0 -->
+            <div class="update-card latest-update relative">
+                <div class="latest-badge">最新</div>
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="version-tag">v1.2.0</span>
+                    <span class="date-tag">2025-06-12</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">重大更新 - 性能优化与新功能</h3>
+                <ul class="change-list">
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">全新的反作弊系统，更有效地检测和防止外挂行为</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type improvement">优化</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">服务器性能大幅提升，减少延迟和卡顿现象</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">新增多个生物群系，丰富探索体验</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type fix">修复</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">修复了玩家背包物品偶尔丢失的问题</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type improvement">优化</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">优化了服务器重启机制，减少对玩家游戏体验的影响</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 版本 1.1.5 -->
+            <div class="update-card">
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="version-tag">v1.1.5</span>
+                    <span class="date-tag">2025-06-05</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">热修复更新</h3>
+                <ul class="change-list">
+                    <li>
+                        <span class="change-type fix">修复</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">修复了服务器偶尔崩溃的问题</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type fix">修复</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">修复了某些区块无法正常加载的问题</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type improvement">优化</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">优化了内存使用，提升服务器稳定性</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 版本 1.1.0 -->
+            <div class="update-card">
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="version-tag">v1.1.0</span>
+                    <span class="date-tag">2025-05-28</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">功能更新</h3>
+                <ul class="change-list">
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">新增封禁列表页面，透明化管理</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">新增 QQ 群功能，方便玩家交流</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type improvement">优化</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">优化了网站界面，提升用户体验</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type fix">修复</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">修复了玩家聊天系统的一些小问题</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 版本 1.0.0 -->
+            <div class="update-card">
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="version-tag">v1.0.0</span>
+                    <span class="date-tag">2025-05-15</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">服务器正式启动</h3>
+                <ul class="change-list">
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">🎉 Eterma MC 服务器正式上线！</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">无规则游戏模式，真正的自由体验</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">基础反作弊系统，维护公平游戏环境</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="change-type new">新增</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">官方网站上线，提供服务器信息</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 
+            ===========================================
+            如何添加新的更新：
+            
+            1. 复制下面的模板：
+            
+            <div class="update-card latest-update relative">
+                <div class="latest-badge">最新</div>
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="version-tag">v版本号</span>
+                    <span class="date-tag">日期</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-200">更新标题</h3>
+                <ul class="change-list">
+                    <li>
+                        <span class="change-type 类型">标签</span>
+                        <div class="change-content">
+                            <p class="text-gray-300">更新内容描述</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            2. 修改以下内容：
+            - 版本号：v1.3.0 等
+            - 日期：2025-06-20 等
+            - 更新标题：描述这次更新的主要内容
+            - 更新内容：每个 <li> 是一个更新项目
+            
+            3. 标签类型：
+            - new：新增功能
+            - fix：修复问题
+            - improvement：优化改进
+            - removal：移除功能
+            
+            4. 注意事项：
+            - 新更新放在最上面
+            - 只有最新的更新才加 "latest-update" class 和 latest-badge
+            - 记得移除之前更新的 "latest-update" class 和 latest-badge
+            ===========================================
+            -->
+
+        </div>
+    </section>
+
+    <footer class="bg-gray-900/50 backdrop-blur-md py-8 text-center border-t border-gray-800">
+        <p class="text-gray-400">&copy; 2025 Eterma MC. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
