@@ -29,6 +29,12 @@
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
             animation: fadeInUp 1s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes fadeInUp {
@@ -51,6 +57,20 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
+            animation: slideInFromRight 0.5s ease-out;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--card-index, 0) * 0.15s);
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .update-card:hover {
@@ -68,6 +88,12 @@
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .version-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .date-tag {
@@ -79,6 +105,12 @@
             background: rgba(59, 130, 246, 0.2);
             color: #93c5fd;
             border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .date-tag:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
         }
 
         .change-type {
@@ -89,30 +121,12 @@
             font-weight: 500;
             margin-right: 0.5rem;
             margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
         }
 
-        .change-type.new {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-
-        .change-type.fix {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .change-type.improvement {
-            background: rgba(234, 179, 8, 0.2);
-            color: #fde047;
-            border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-
-        .change-type.removal {
-            background: rgba(107, 114, 128, 0.2);
-            color: #d1d5db;
-            border: 1px solid rgba(107, 114, 128, 0.3);
+        .change-type:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
         }
 
         .change-list {
@@ -126,10 +140,12 @@
             display: flex;
             align-items: flex-start;
             gap: 1rem;
+            transition: background-color 0.2s ease;
         }
 
-        .change-list li:last-child {
-            border-bottom: none;
+        .change-list li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
         }
 
         .change-content {
@@ -183,6 +199,32 @@
             font-size: 0.875rem;
             font-weight: 600;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Nav link hover effect */
+        nav a {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(to right, #22c55e, #16a34a);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
     </style>
 </head>
@@ -387,5 +429,28 @@
         <p class="text-gray-400">&copy; 2025 Eterma MC. All rights reserved.</p>
     </footer>
 
+    <script>
+        // Initialize card animation delays
+        document.querySelectorAll('.update-card').forEach((card, index) => {
+            card.style.setProperty('--card-index', index);
+        });
+
+        // Intersection Observer for cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Observe all cards
+        document.querySelectorAll('.update-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>
