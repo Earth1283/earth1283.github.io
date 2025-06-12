@@ -3,91 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirect</title>
-    <script>
-        function redirectToMineHorizon() {
-            // Generate a random number (0 or 1)
-            const randomNumber = Math.floor(Math.random() * 2);
-
-            // Define the two possible URLs
-            const url1 = 'https://earth1283.github.io/MineHorizon/index.html';
-            const url2 = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-
-            // Redirect to either URL based on the random number
-            if (randomNumber === 0) {
-                window.location.href = url1;
-            } else {
-                window.location.href = url2;
-            }
-        }
-    </script>
+    <title>earth1283 - Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            color: #e2e8f0;
         }
 
-        .redirect-button {
-            padding: 20px 40px;
-            font-size: 24px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, animation 1s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
+        .project-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        .redirect-button:hover {
-            background-color: #45a049;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px);
+        .project-card:hover {
+            transform: translateY(-5px);
         }
 
-        .redirect-button:active {
-            background-color: #367c39;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transform: translateY(0);
-        }
-
-        .redirect-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.5s ease;
-            z-index: 0;
-        }
-
-        .redirect-button:hover::before {
-            transform: scaleX(1);
-        }
-
-        .redirect-button span {
-            position: relative;
-            z-index: 1;
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
     </style>
 </head>
-<body>
-    <button class="redirect-button" onclick="redirectToMineHorizon()">
-        <span>Click Me!</span>
-    </button>
+<body class="min-h-screen">
+    <header class="py-16 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="gradient-text">earth1283</span>
+            </h1>
+            <p class="text-xl text-gray-400">Developer & Minecraft Enthusiast</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold mb-8 text-center">My Projects</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Eterma MC Project Card -->
+            <a href="/eterma/" class="project-card rounded-xl overflow-hidden shadow-lg">
+                <div class="relative">
+                    <img src="/eterma/images/background1.png" alt="Eterma MC Server" class="w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold mb-2">Eterma MC</h3>
+                    <p class="text-gray-400">A unique Minecraft server focused on freedom and creativity. Experience true freedom with minimal rules.</p>
+                    <div class="mt-4 inline-block px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition-colors">
+                        View Project →
+                    </div>
+                </div>
+            </a>
+
+            <!-- MineHorizon Project Card -->
+            <a href="/MineHorizon/" class="project-card rounded-xl overflow-hidden shadow-lg">
+                <div class="relative">
+                    <img src="/MineHorizon/Heart.png" alt="MineHorizon Server" class="w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold mb-2">MineHorizon</h3>
+                    <p class="text-gray-400">A welcoming Minecraft community featuring Lifesteal mode, practice servers, and regular events.</p>
+                    <div class="mt-4 inline-block px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition-colors">
+                        View Project →
+                    </div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="text-center py-8 mt-16 text-gray-500">
+        <p>&copy; 2025 earth1283. All rights reserved.</p>
+    </footer>
 </body>
 </html>
