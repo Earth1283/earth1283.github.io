@@ -245,12 +245,131 @@
         </div>
     </section>
 
+    <section class="py-24 px-4 section-transition" style="background-color: #1a1f2e;">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-400">
+                服务器画廊
+            </h2>
+            <div class="card max-w-5xl mx-auto">
+                <div class="relative">
+                    <div id="gallery-container" class="relative overflow-hidden rounded-xl aspect-[16/9]">
+                        <!-- Images will be inserted here by JavaScript -->
+                    </div>
+                    
+                    <!-- Navigation buttons -->
+                    <button id="prevButton" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button id="nextButton" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                    <!-- Image info overlay -->
+                    <div id="imageInfo" class="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 backdrop-blur-sm">
+                        <p id="imageDescription" class="text-lg mb-2">暂无描述</p>
+                        <p id="imageAuthor" class="text-sm text-gray-300">作者：未知</p>
+                    </div>
+                </div>
+                
+                <!-- Dot indicators -->
+                <div id="dotIndicators" class="flex justify-center space-x-2 mt-4">
+                    <!-- Dots will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer class="bg-gray-900/50 backdrop-blur-md py-8 text-center text-gray-400 border-t border-gray-800">
         <p>&copy; 2025 Eterma MC. All rights reserved.</p>
     </footer>
 
     <script>
-        // JavaScript for copy to clipboard functionality
+        // Gallery functionality
+        const galleryData = {
+            "1": {
+                "author": "腐竹",
+                "description": "暂无",
+                "filename": "background1.png"
+            },
+            "2": {
+                "author": "腐竹",
+                "description": "暂无",
+                "filename": "background2.png"
+            }
+        };
+
+        let currentImageIndex = 0;
+        const totalImages = Object.keys(galleryData).length;
+
+        function createGalleryElements() {
+            const container = document.getElementById('gallery-container');
+            const dotContainer = document.getElementById('dotIndicators');
+
+            // Create images
+            Object.values(galleryData).forEach((imageData, index) => {
+                const img = document.createElement('img');
+                img.src = `gallery/${imageData.filename}`;
+                img.alt = imageData.description || '服务器图片';
+                img.className = 'absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500';
+                img.style.opacity = index === 0 ? '1' : '0';
+                img.style.zIndex = index === 0 ? '1' : '0';
+                container.appendChild(img);
+
+                // Create dot indicator
+                const dot = document.createElement('button');
+                dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${index === 0 ? 'bg-white' : 'bg-gray-400'}`;
+                dot.onclick = () => showImage(index);
+                dotContainer.appendChild(dot);
+            });
+        }
+
+        function showImage(index) {
+            const images = document.getElementById('gallery-container').getElementsByTagName('img');
+            const dots = document.getElementById('dotIndicators').getElementsByTagName('button');
+            const imageData = Object.values(galleryData)[index];
+
+            // Update images
+            Array.from(images).forEach((img, i) => {
+                img.style.opacity = i === index ? '1' : '0';
+                img.style.zIndex = i === index ? '1' : '0';
+            });
+
+            // Update dots
+            Array.from(dots).forEach((dot, i) => {
+                dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${i === index ? 'bg-white' : 'bg-gray-400'}`;
+            });
+
+            // Update info
+            document.getElementById('imageDescription').textContent = imageData.description || '暂无描述';
+            document.getElementById('imageAuthor').textContent = `作者：${imageData.author || '未知'}`;
+
+            currentImageIndex = index;
+        }
+
+        function nextImage() {
+            showImage((currentImageIndex + 1) % totalImages);
+        }
+
+        function prevImage() {
+            showImage((currentImageIndex - 1 + totalImages) % totalImages);
+        }
+
+        // Initialize gallery
+        document.addEventListener('DOMContentLoaded', () => {
+            createGalleryElements();
+
+            document.getElementById('nextButton').onclick = nextImage;
+            document.getElementById('prevButton').onclick = prevImage;
+
+            // Auto-advance every 5 seconds
+            setInterval(nextImage, 5000);
+        });
+
+        // Copy to clipboard functionality
         async function copyToClipboard(elementId, buttonElement) {
             const textElement = document.getElementById(elementId);
             if (!textElement) {
