@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eterma MC - 活动日历</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header-bg {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .event-tag::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .event-tag.special {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c4b5fd;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .event-tag.special::before {
+            background: #a855f7;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+        }
+
+        .event-tag.maintenance {
+            background: rgba(234, 179, 8, 0.15);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .event-tag.maintenance::before {
+            background: #eab308;
+            box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+        }
+
+        .event-tag.competition {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .event-tag.competition::before {
+            background: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+
+        .title-gradient::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+            transform: scaleX(0.7);
+            opacity: 0.5;
+        }
+
+        .event-date {
+            font-family: 'Inter', monospace;
+            font-weight: 500;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-bg py-6 sticky top-0 z-20">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-4xl font-bold title-gradient">活动日历</h1>
+                <a href="index" class="text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg">返回主页</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-16 px-6">
+        <div class="container mx-auto max-w-4xl fade-in">
+            <div class="mb-12 text-center space-y-4">
+                <h2 class="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+                    服务器活动安排
+                </h2>
+                <p class="text-gray-400 text-lg">不要错过精彩活动哦！</p>
+            </div>
+
+            <!-- 活动列表开始 -->
+            <!-- 维护提示：要添加新活动，复制下面的 <div class="event-card mb-6"> 整个部分并修改内容即可 -->
+            <div class="space-y-6">
+                <!-- 活动 1 -->
+                <div class="event-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="event-tag special">特别活动</span>
+                        <span class="event-date">2025年6月15日 14:00</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-purple-300">夏日嘉年华</h3>
+                    <p class="text-gray-300 mb-4">
+                        为期一周的夏日庆典活动开幕！参与各种小游戏赢取独特奖励。活动包括：
+                    </p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-2">
+                        <li>水上跑酷竞速</li>
+                        <li>建筑大赛：夏日主题</li>
+                        <li>团队生存挑战</li>
+                        <li>限时寻宝活动</li>
+                    </ul>
+                </div>
+
+                <!-- 活动 2 -->
+                <div class="event-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="event-tag maintenance">维护通知</span>
+                        <span class="event-date">2025年6月20日 03:00</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-yellow-300">服务器例行维护</h3>
+                    <p class="text-gray-300">
+                        服务器将进行例行维护和性能优化，预计持续2小时。维护期间服务器将暂时关闭。
+                    </p>
+                </div>
+
+                <!-- 活动 3 -->
+                <div class="event-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="event-tag competition">比赛活动</span>
+                        <span class="event-date">2025年6月25日 19:00</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-blue-300">PVP 锦标赛</h3>
+                    <p class="text-gray-300 mb-4">
+                        首届 Eterma MC PVP 锦标赛开始报名！赢取丰厚奖励和专属称号。
+                    </p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-2">
+                        <li>单人竞技模式</li>
+                        <li>2v2 团队战</li>
+                        <li>生存游戏模式</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 活动列表结束 -->
+
+            <div class="mt-16 text-center space-y-4">
+                <p class="text-xl font-semibold text-gray-300">关注更多活动</p>
+                <p class="text-gray-400">加入 QQ 群获取最新活动资讯：<span class="text-purple-400 font-mono">1035332547</span></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900/70 backdrop-blur-xl py-8 text-center border-t border-gray-800 mt-8">
+        <div class="container mx-auto px-6">
+            <p class="text-gray-400">&copy; 2025 Eterma MC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!--
+    维护说明：
+    1. 要添加新活动，复制 <div class="event-card"> 部分并根据需要修改内容
+    2. 活动类型标签：
+       - special：特别活动（紫色）
+       - maintenance：维护通知（黄色）
+       - competition：比赛活动（蓝色）
+    3. 建议按日期顺序排列活动
+    4. 过期活动可以直接删除对应的 <div class="event-card"> 部分
+    -->
+</body>
+</html>
