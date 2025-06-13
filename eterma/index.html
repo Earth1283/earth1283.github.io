@@ -245,38 +245,41 @@
         </div>
     </section>
 
-    <section class="py-24 px-4 section-transition" style="background-color: #1a1f2e;">
-        <div class="container mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-400">
+    <section class="relative py-24 section-transition overflow-hidden" style="background-color: #1a1f2e;">
+        <div class="container mx-auto text-center px-0">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-400 px-4">
                 服务器画廊
             </h2>
-            <div class="card max-w-5xl mx-auto">
+            <div class="max-w-[2000px] mx-auto">
                 <div class="relative">
-                    <div id="gallery-container" class="relative overflow-hidden rounded-xl aspect-[16/9]">
+                    <div id="gallery-container" class="relative overflow-hidden aspect-[21/9]">
                         <!-- Images will be inserted here by JavaScript -->
                     </div>
                     
                     <!-- Navigation buttons -->
-                    <button id="prevButton" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    <button id="prevButton" class="absolute left-8 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white/90 p-4 rounded-full backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button id="nextButton" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition-all duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <button id="nextButton" class="absolute right-8 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white/90 p-4 rounded-full backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
 
                     <!-- Image info overlay -->
-                    <div id="imageInfo" class="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 backdrop-blur-sm">
-                        <p id="imageDescription" class="text-lg mb-2">暂无描述</p>
-                        <p id="imageAuthor" class="text-sm text-gray-300">作者：未知</p>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+                    <div id="imageInfo" class="absolute bottom-0 left-0 right-0 px-8 py-6">
+                        <div class="container max-w-7xl mx-auto">
+                            <p id="imageDescription" class="text-xl mb-2 text-white/90">暂无描述</p>
+                            <p id="imageAuthor" class="text-sm text-white/70">作者：未知</p>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Dot indicators -->
-                <div id="dotIndicators" class="flex justify-center space-x-2 mt-4">
+                <div id="dotIndicators" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex justify-center space-x-3 z-10">
                     <!-- Dots will be inserted here by JavaScript -->
                 </div>
             </div>
@@ -289,6 +292,7 @@
 
     <script>
         // Gallery functionality
+        // basically dscriptions.json
         const galleryData = {
             "1": {
                 "author": "腐竹",
