@@ -16,6 +16,53 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            background-attachment: fixed;
+        }
+
+        /* Animated Background Elements */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-gradient::before,
+        .bg-gradient::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            animation: 15s rotate linear infinite;
+        }
+
+        .bg-gradient::before {
+            width: 120vmax;
+            background: radial-gradient(
+                rgba(124, 58, 237, 0.05) 0%,
+                rgba(16, 185, 129, 0.05) 30%,
+                transparent 70%
+            );
+            animation-direction: reverse;
+        }
+
+        .bg-gradient::after {
+            width: 100vmax;
+            background: radial-gradient(
+                rgba(59, 130, 246, 0.05) 0%,
+                rgba(236, 72, 153, 0.05) 30%,
+                transparent 70%
+            );
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg) translate(-50%, -50%); }
+            to { transform: rotate(360deg) translate(-50%, -50%); }
         }
         
         body::before {
@@ -46,74 +93,135 @@
         }
 
         .card {
-            background: rgba(30, 41, 59, 0.3);
+            --gradient-start: rgba(99, 102, 241, 0.5);
+            --gradient-end: rgba(16, 185, 129, 0.5);
+            background: rgba(30, 41, 59, 0.2);
             border-radius: 2rem;
             padding: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            z-index: 1;
+            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 100%;
+            inset: 0;
+            border-radius: 2rem;
+            padding: 2px;
             background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
+                135deg,
+                var(--gradient-start),
+                var(--gradient-end)
             );
-            transition: 0.5s;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--x, 50%) var(--y, 50%),
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
         }
 
         .card:hover {
-            transform: translateY(-5px) scale(1.02);
+            transform: translateY(-5px);
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.3),
                 0 15px 20px rgba(0, 0, 0, 0.2),
                 0 0 60px rgba(99, 102, 241, 0.1);
         }
 
-        .card:hover::before {
-            left: 100%;
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .purple-card {
+            --gradient-start: rgba(168, 85, 247, 0.5);
+            --gradient-end: rgba(236, 72, 153, 0.5);
         }
 
         .refresh-button {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 4px 12px rgba(59,130,246,0.1),
-                0 0 20px rgba(59,130,246,0.1);
-            letter-spacing: 0.03em;
+            --btn-gradient-start: rgba(59, 130, 246, 0.8);
+            --btn-gradient-end: rgba(16, 185, 129, 0.8);
+            background: linear-gradient(135deg, var(--btn-gradient-start), var(--btn-gradient-end));
             position: relative;
-            overflow: hidden;
+            letter-spacing: 0.03em;
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            transform: perspective(1000px) translateZ(0);
+        }
+
+        .refresh-button:hover {
+            transform: perspective(1000px) translateZ(20px);
+            box-shadow: 
+                0 10px 30px -10px var(--btn-gradient-start),
+                0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .refresh-button span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: inherit;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            gap: 0.5rem;
+        }
+
+        .refresh-button:hover span {
+            background: rgba(30, 41, 59, 0.6);
         }
 
         .refresh-button::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            transition: 0.5s;
+            inset: -5px;
+            background: linear-gradient(135deg, var(--btn-gradient-start), var(--btn-gradient-end));
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
         .refresh-button:hover::before {
-            left: 100%;
+            opacity: 1;
         }
 
         .refresh-button:active {
@@ -121,9 +229,17 @@
         }
 
         .refresh-button:disabled {
-            opacity: 0.7;
+            opacity: 0.5;
             cursor: not-allowed;
-            box-shadow: none;
+        }
+
+        .refresh-button:disabled::before {
+            display: none;
+        }
+
+        .purple-button {
+            --btn-gradient-start: rgba(168, 85, 247, 0.8);
+            --btn-gradient-end: rgba(236, 72, 153, 0.8);
         }
 
         .server-icon {
@@ -169,6 +285,94 @@
             transform: translateY(0);
         }
 
+        /* Modern UI Elements */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.06),
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .glass-button {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            transform-origin: center;
+        }
+
+        .glass-button:hover {
+            transform: scale(1.02);
+        }
+
+        .glass-button span {
+            display: block;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-radius: 11px;
+            transition: background 0.3s;
+        }
+
+        .glass-button:hover span {
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .glass-icon {
+            position: relative;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(16, 185, 129, 0.5));
+        }
+
+        .glass-icon::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: inherit;
+            border-radius: inherit;
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .glass-icon:hover::before {
+            opacity: 0.5;
+        }
+
+        .glass-divider {
+            height: 1px;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            margin: 2rem 0;
+        }
+
         /* Animated background gradient */
         @keyframes gradient-shift {
             0% { background-position: 0% 50%; }
@@ -183,10 +387,167 @@
             100% { transform: translateY(0px); }
         }
 
+        /* Shine effect */
+        @keyframes shine {
+            from {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            to {
+                transform: translateX(200%) rotate(45deg);
+            }
+        }
+
         .floating {
             animation: float 6s ease-in-out infinite;
         }
+
+        .mouse-position-tracker {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Additional card effects */
+        .card {
+            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Neon glow effect for online status */
+        .status-online {
+            color: #22c55e;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-offline {
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Enhanced button styles */
+        .refresh-button {
+            transform: perspective(1000px) translateZ(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .refresh-button:hover {
+            transform: perspective(1000px) translateZ(20px);
+            box-shadow: 
+                0 10px 30px -10px var(--btn-gradient-start),
+                0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Card status display enhancements */
+        .status-display {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-display:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Player count pill */
+        .player-count {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .player-count:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .player-count svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mouse tracking for cards
+            const cards = document.querySelectorAll('.mouse-position-tracker');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / card.clientWidth) * 100;
+                    const y = ((e.clientY - rect.top) / card.clientHeight) * 100;
+                    card.style.setProperty('--mouse-x', `${x}%`);
+                    card.style.setProperty('--mouse-y', `${y}%`);
+                });
+            });
+
+            // Copy to clipboard functionality
+            function setupClipboard(buttonId, text, feedbackId) {
+                const button = document.getElementById(buttonId);
+                const feedback = document.getElementById(feedbackId);
+                
+                button.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        feedback.classList.add('show');
+                        
+                        // Add success animation to the button
+                        button.style.transform = 'scale(0.95)';
+                        button.style.transition = 'transform 0.1s ease';
+                        
+                        setTimeout(() => {
+                            button.style.transform = '';
+                            feedback.classList.remove('show');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                    }
+                });
+            }
+
+            setupClipboard('server-ip-1', 'eterma.2m.pub', 'ip1-feedback');
+            setupClipboard('server-ip-2', 'mc.leapmotorintl.com', 'ip2-feedback');
+
+            // Initialize server status
+            const server1 = new ServerStatus('eterma.2m.pub', 'statusDisplay1', 'refreshButton1');
+            const server2 = new ServerStatus('mc.leapmotorintl.com', 'statusDisplay2', 'refreshButton2');
+
+            // Initial fetch
+            server1.fetchStatus();
+            server2.fetchStatus();
+
+            // Auto refresh every 30 seconds
+            setInterval(() => {
+                server1.fetchStatus();
+                server2.fetchStatus();
+            }, 30000);
+        });
+    </script>
 </head>
 <body>
     <div class="min-h-screen py-12 px-4 relative z-10">
@@ -218,8 +579,31 @@
                             <span id="ip1-feedback" class="copied-feedback absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm opacity-0 transition-opacity duration-300">已复制!</span>
                         </span>
                     </p>
-                    <div id="statusDisplay1" class="mb-8">
-                        <p class="text-xl font-semibold text-gray-300">正在加载服务器状态...</p>
+                    <div id="statusDisplay1" class="status-display">
+                        <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            正在加载服务器状态...
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="player-count">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>在线玩家</span>
+                        </div>
+                        <div class="player-count">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>延迟</span>
+                        </div>
                     </div>
 
                     <button id="refreshButton1" class="refresh-button bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2 mx-auto w-full">
@@ -242,8 +626,31 @@
                     </p>
                     <p class="text-sm text-gray-400 mb-6">所有规则均不适用</p>
                     
-                    <div id="statusDisplay2" class="mb-8">
-                        <p class="text-xl font-semibold text-gray-300">正在加载服务器状态...</p>
+                    <div id="statusDisplay2" class="mb-8 status-display">
+                        <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            正在加载服务器状态...
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="player-count">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>在线玩家</span>
+                        </div>
+                        <div class="player-count">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>延迟</span>
+                        </div>
                     </div>
 
                     <button id="refreshButton2" class="refresh-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2 mx-auto w-full">
@@ -270,8 +677,8 @@
 
             async fetchStatus() {
                 this.displayElement.innerHTML = `
-                    <p class="text-xl font-semibold text-gray-300 flex items-center justify-center">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
+                        <svg class="animate-spin w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -285,24 +692,48 @@
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     const data = await response.json();
 
-                    if (data.online) {
-                        const playersOnline = data.players?.online ?? 'N/A';
-                        const playersMax = data.players?.max ?? 'N/A';
-                        this.displayElement.innerHTML = `
-                            <p class="text-2xl font-bold text-emerald-400 mb-2">在线</p>
-                            <p class="text-xl text-gray-300">在线玩家：<span class="font-semibold text-emerald-400">${playersOnline}</span> / <span class="font-semibold text-emerald-400">${playersMax}</span></p>
-                        `;
-                    } else {
-                        this.displayElement.innerHTML = `
-                            <p class="text-2xl font-bold text-red-400 mb-2">离线</p>
-                            <p class="text-lg text-gray-400">请稍后再试</p>
-                        `;
-                    }
-                } catch (error) {
-                    console.error('Error fetching server status:', error);
+                    const statusClass = data.online ? 'status-online' : 'status-offline';
+                    const statusText = data.online ? '在线' : '离线';
+                    const playersOnline = data.players?.online ?? 0;
+                    const playersMax = data.players?.max ?? 0;
+                    const ping = data.debug?.ping ?? 'N/A';
+
                     this.displayElement.innerHTML = `
-                        <p class="text-xl font-bold text-red-400 mb-2">检查失败</p>
-                        <p class="text-lg text-gray-400">无法获取服务器信息</p>
+                        <div class="text-center mb-4">
+                            <span class="${statusClass} text-2xl font-bold flex items-center justify-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="${data.online ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
+                                </svg>
+                                ${statusText}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="player-count">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <span>${playersOnline}/${playersMax}</span>
+                            </div>
+                            <div class="player-count">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>${ping}ms</span>
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    this.displayElement.innerHTML = `
+                        <p class="text-xl font-semibold text-red-400 flex items-center justify-center gap-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            无法获取服务器状态
+                        </p>
                     `;
                 } finally {
                     this.refreshButton.disabled = false;
@@ -323,59 +754,6 @@
             server1.fetchStatus();
             server2.fetchStatus();
         }, 30000);
-    </script>
-
-    <script>
-        // Add click event listeners for the server IPs
-        document.getElementById('server-ip-1').addEventListener('click', async function() {
-            await copyToClipboard(this.textContent, 'ip1-feedback');
-        });
-
-        document.getElementById('server-ip-2').addEventListener('click', async function() {
-            await copyToClipboard(this.textContent, 'ip2-feedback');
-        });
-
-        // Copy to clipboard function
-        async function copyToClipboard(text, feedbackId) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showFeedback(feedbackId);
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-                // Fallback for older browsers
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showFeedback(feedbackId, true);
-                } catch (err) {
-                    console.error('Fallback copy failed: ', err);
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-
-        function showFeedback(elementId, isFallback = false) {
-            const feedbackEl = document.getElementById(elementId);
-            if (feedbackEl) {
-                if (isFallback) {
-                    feedbackEl.textContent = '已复制! (Fallback)';
-                }
-                feedbackEl.classList.add('show');
-                setTimeout(() => {
-                    feedbackEl.classList.remove('show');
-                    if (isFallback) {
-                        feedbackEl.textContent = '已复制!';
-                    }
-                }, 2000);
-            }
-        }
     </script>
 </body>
 </html>
