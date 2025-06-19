@@ -27,16 +27,37 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
+        /* Modern Glass Effects */
         .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(30, 41, 59, 0.2);
             border-radius: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(
+                135deg,
+                rgba(239, 68, 68, 0.5),
+                rgba(234, 179, 8, 0.5)
+            );
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         table {
@@ -46,7 +67,10 @@
         }
 
         th {
-            background: rgba(51, 65, 85, 0.7);
+            background: rgba(51, 65, 85, 0.4);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
             font-weight: 600;
             color: #e2e8f0;
             text-transform: uppercase;
@@ -72,8 +96,26 @@
         }
 
         tbody tr {
-            transition: all 0.3s ease;
             position: relative;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(239, 68, 68, 0.1),
+                transparent
+            );
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        tbody tr:hover::before {
+            transform: translateX(100%);
         }
 
         tbody tr:hover {
@@ -107,6 +149,8 @@
             font-size: 0.875rem;
             font-weight: 500;
             transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .reason-tag::before {
@@ -116,6 +160,23 @@
             height: 6px;
             border-radius: 50%;
             margin-right: 8px;
+        }
+
+        .reason-tag::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-100%) rotate(45deg);
+            animation: shimmer 3s infinite;
         }
 
         .reason-tag.cheating {
@@ -215,6 +276,36 @@
             background: linear-gradient(90deg, #f87171 0%, #fb923c 100%);
             transform: scaleX(0.7);
             opacity: 0.5;
+        }
+
+        /* Floating animation */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .mouse-position-tracker {
+            --x: 50%;
+            --y: 50%;
+        }
+
+        .mouse-position-tracker::before {
+            content: '';
+            position: absolute;
+            top: var(--y);
+            left: var(--x);
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 20;
         }
     </style>
 </head>
@@ -380,5 +471,23 @@
             <p class="text-gray-400">&copy; 2025 Eterma MC. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.table-container');
+            
+            container.classList.add('mouse-position-tracker');
+            container.addEventListener('mousemove', e => {
+                const rect = container.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / container.clientWidth) * 100;
+                const y = ((e.clientY - rect.top) / container.clientHeight) * 100;
+                container.style.setProperty('--x', `${x}%`);
+                container.style.setProperty('--y', `${y}%`);
+            });
+
+            // Add floating animation to the table container
+            container.classList.add('floating');
+        });
+    </script>
 </body>
 </html>

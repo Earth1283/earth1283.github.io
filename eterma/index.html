@@ -28,7 +28,8 @@
             backdrop-filter: blur(8px);
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 1s ease-out;
+            animation: fadeInUp 1s ease-out, glowPulse 3s ease-in-out infinite;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes fadeInUp {
@@ -42,8 +43,13 @@
             }
         }
 
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2); }
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
             color: white;
             padding: 1rem 2rem;
             border-radius: 0.75rem;
@@ -52,6 +58,19 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
         .btn-primary:hover {
@@ -61,18 +80,52 @@
         }
 
         .card {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 1rem;
+            background: rgba(30, 41, 59, 0.2);
+            border-radius: 1.5rem;
             padding: 2rem;
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.5),
+                rgba(16, 185, 129, 0.5)
+            );
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--x, 50%) var(--y, 50%),
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::after {
+            opacity: 1;
         }
 
         .copy-button {
@@ -98,11 +151,15 @@
         .section-transition::before {
             content: '';
             position: absolute;
-            top: -50px;
+            top: -100px;
             left: 0;
             right: 0;
-            height: 50px;
-            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.1));
+            height: 100px;
+            background: linear-gradient(to bottom, 
+                transparent,
+                rgba(15, 23, 42, 0.2)
+            );
+            backdrop-filter: blur(10px);
         }
 
         .copied-feedback {
@@ -125,6 +182,23 @@
 
         .rules-section {
             background-color: #1a202c; /* 保持和 body 背景色一致，形成对比 */
+        }
+
+        /* Mouse tracking for cards */
+        .mouse-position-tracker {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating animation for sections */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
     </style>
@@ -291,6 +365,38 @@
     </footer>
 
     <script>
+        // Mouse tracking for cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.classList.add('mouse-position-tracker');
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / card.clientWidth) * 100;
+                    const y = ((e.clientY - rect.top) / card.clientHeight) * 100;
+                    card.style.setProperty('--x', `${x}%`);
+                    card.style.setProperty('--y', `${y}%`);
+                });
+            });
+
+            // Add floating animation to sections
+            document.querySelectorAll('section').forEach((section, index) => {
+                if (index % 2 === 0) { // Alternate sections
+                    section.classList.add('floating');
+                }
+            });
+
+            // Initialize gallery
+            createGalleryElements();
+
+            document.getElementById('nextButton').onclick = nextImage;
+            document.getElementById('prevButton').onclick = prevImage;
+
+            // Auto-advance every 5 seconds
+            setInterval(nextImage, 5000);
+        });
+
         // Gallery functionality
         const galleryData = {
             "1": {
@@ -360,17 +466,6 @@
         function prevImage() {
             showImage((currentImageIndex - 1 + totalImages) % totalImages);
         }
-
-        // Initialize gallery
-        document.addEventListener('DOMContentLoaded', () => {
-            createGalleryElements();
-
-            document.getElementById('nextButton').onclick = nextImage;
-            document.getElementById('prevButton').onclick = prevImage;
-
-            // Auto-advance every 5 seconds
-            setInterval(nextImage, 5000);
-        });
 
         // Copy to clipboard functionality
         async function copyToClipboard(elementId, buttonElement) {
