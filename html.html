@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Live Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            gap: 1px;
+            background: #444;
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1e1e2e;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #2a2a3e;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .panel-header {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .aspect-ratio-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .aspect-ratio-control label {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .aspect-ratio-control select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .aspect-ratio-control select:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+        }
+
+        .editor-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .CodeMirror {
+            height: 100% !important;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .preview-container {
+            flex: 1;
+            position: relative;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .preview-frame-wrapper {
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .preview-frame {
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .resize-handle {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background: #64ffda;
+            border-radius: 50%;
+            cursor: nw-resize;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .preview-frame-wrapper:hover .resize-handle {
+            opacity: 1;
+        }
+
+        .status-bar {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            color: #64ffda;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: #64ffda;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .editor-panel, .preview-panel {
+                border-radius: 0;
+            }
+            
+            .controls {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    HTML Editor
+                </div>
+                <div class="toolbar">
+                    <button class="btn" onclick="formatCode()">Format</button>
+                    <button class="btn" onclick="clearEditor()">Clear</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <textarea id="htmlEditor"></textarea>
+            </div>
+            <div class="status-bar">
+                <span id="editorStatus">Ready</span>
+                <span id="lineCount">Lines: 0</span>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Live Preview
+                </div>
+                <div class="controls">
+                    <div class="aspect-ratio-control">
+                        <label for="aspectRatio">Aspect Ratio:</label>
+                        <select id="aspectRatio" onchange="updateAspectRatio()">
+                            <option value="16:9">16:9 (Desktop)</option>
+                            <option value="4:3">4:3 (Tablet)</option>
+                            <option value="9:16">9:16 (Mobile)</option>
+                            <option value="1:1">1:1 (Square)</option>
+                            <option value="3:4">3:4 (Portrait)</option>
+                            <option value="free">Free</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="refreshPreview()">Refresh</button>
+                </div>
+            </div>
+            <div class="preview-container">
+                <div class="preview-frame-wrapper" id="previewWrapper">
+                    <iframe id="previewFrame" class="preview-frame"></iframe>
+                    <div class="resize-handle" id="resizeHandle"></div>
+                </div>
+            </div>
+            <div class="status-bar">
+                <span id="previewStatus">Preview ready</span>
+                <span id="previewSize">Size: 800x450</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/xml-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchtags.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/xml-fold.min.js"></script>
+
+    <script>
+        let editor;
+        let previewFrame;
+        let previewWrapper;
+        let isResizing = false;
+        let updateTimeout;
+
+        // Initialize CodeMirror
+        function initEditor() {
+            editor = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
+                mode: 'htmlmixed',
+                theme: 'monokai',
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                matchTags: true,
+                indentUnit: 2,
+                smartIndent: true,
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete",
+                    "Ctrl-/": "toggleComment",
+                    "Ctrl-D": "deleteLine",
+                    "Ctrl-Shift-D": "duplicateLine",
+                    "Alt-Up": "goLineUp",
+                    "Alt-Down": "goLineDown"
+                },
+                hintOptions: {
+                    completeSingle: false,
+                    hint: CodeMirror.hint.html
+                }
+            });
+
+            // Auto-completion on typing
+            editor.on('inputRead', function(cm, change) {
+                if (!cm.state.completionActive && 
+                    change.text[0].match(/^[a-zA-Z<]$/)) {
+                    CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+                }
+            });
+
+            // Update preview on changes
+            editor.on('change', function(cm) {
+                clearTimeout(updateTimeout);
+                updateTimeout = setTimeout(updatePreview, 300);
+                updateStatus();
+            });
+
+            // Set initial content
+            editor.setValue(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to HTML Live Editor!</h1>
+        <p>Start coding and see your changes in real-time.</p>
+        <p>Use Ctrl+Space for auto-completion.</p>
+    </div>
+</body>
+</html>`);
+        }
+
+        // Initialize preview
+        function initPreview() {
+            previewFrame = document.getElementById('previewFrame');
+            previewWrapper = document.getElementById('previewWrapper');
+            updatePreview();
+            updateAspectRatio();
+        }
+
+        // Update preview content
+        function updatePreview() {
+            const code = editor.getValue();
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            previewFrame.onload = function() {
+                URL.revokeObjectURL(url);
+                document.getElementById('previewStatus').textContent = 'Preview updated';
+                setTimeout(() => {
+                    document.getElementById('previewStatus').textContent = 'Preview ready';
+                }, 2000);
+            };
+            
+            previewFrame.src = url;
+        }
+
+        // Update aspect ratio
+        function updateAspectRatio() {
+            const aspectRatio = document.getElementById('aspectRatio').value;
+            const container = document.querySelector('.preview-container');
+            const containerRect = container.getBoundingClientRect();
+            const maxWidth = containerRect.width - 40;
+            const maxHeight = containerRect.height - 40;
+            
+            let width, height;
+            
+            switch (aspectRatio) {
+                case '16:9':
+                    width = Math.min(maxWidth, 800);
+                    height = width * 9 / 16;
+                    break;
+                case '4:3':
+                    width = Math.min(maxWidth, 800);
+                    height = width * 3 / 4;
+                    break;
+                case '9:16':
+                    height = Math.min(maxHeight, 600);
+                    width = height * 9 / 16;
+                    break;
+                case '1:1':
+                    width = height = Math.min(maxWidth, maxHeight, 500);
+                    break;
+                case '3:4':
+                    height = Math.min(maxHeight, 600);
+                    width = height * 3 / 4;
+                    break;
+                case 'free':
+                    width = Math.min(maxWidth, 800);
+                    height = Math.min(maxHeight, 600);
+                    break;
+                default:
+                    width = 800;
+                    height = 450;
+            }
+            
+            previewWrapper.style.width = width + 'px';
+            previewWrapper.style.height = height + 'px';
+            
+            updateSizeDisplay();
+        }
+
+        // Update size display
+        function updateSizeDisplay() {
+            const rect = previewWrapper.getBoundingClientRect();
+            document.getElementById('previewSize').textContent = 
+                `Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`;
+        }
+
+        // Update editor status
+        function updateStatus() {
+            const lineCount = editor.lineCount();
+            const cursor = editor.getCursor();
+            document.getElementById('lineCount').textContent = `Lines: ${lineCount}`;
+            document.getElementById('editorStatus').textContent = 
+                `Line ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+        }
+
+        // Format code
+        function formatCode() {
+            const code = editor.getValue();
+            // Simple formatting - you could integrate a proper formatter here
+            const formatted = code
+                .replace(/></g, '>\n<')
+                .replace(/^\s+|\s+$/gm, '')
+                .split('\n')
+                .map((line, index, array) => {
+                    let indent = 0;
+                    for (let i = 0; i < index; i++) {
+                        if (array[i].includes('<') && !array[i].includes('</') && !array[i].includes('/>')) {
+                            indent++;
+                        }
+                        if (array[i].includes('</')) {
+                            indent--;
+                        }
+                    }
+                    if (line.includes('</')) {
+                        indent--;
+                    }
+                    return '  '.repeat(Math.max(0, indent)) + line;
+                })
+                .join('\n');
+            
+            editor.setValue(formatted);
+            document.getElementById('editorStatus').textContent = 'Code formatted';
+            setTimeout(() => updateStatus(), 2000);
+        }
+
+        // Clear editor
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all code?')) {
+                editor.setValue('');
+                document.getElementById('editorStatus').textContent = 'Editor cleared';
+                setTimeout(() => updateStatus(), 2000);
+            }
+        }
+
+        // Refresh preview
+        function refreshPreview() {
+            updatePreview();
+        }
+
+        // Resize functionality
+        function initResize() {
+            const resizeHandle = document.getElementById('resizeHandle');
+            
+            resizeHandle.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                document.addEventListener('mousemove', handleResize);
+                document.addEventListener('mouseup', stopResize);
+                e.preventDefault();
+            });
+            
+            function handleResize(e) {
+                if (!isResizing) return;
+                
+                const container = document.querySelector('.preview-container');
+                const containerRect = container.getBoundingClientRect();
+                const newWidth = Math.max(200, Math.min(e.clientX - containerRect.left, containerRect.width - 40));
+                const newHeight = Math.max(150, Math.min(e.clientY - containerRect.top, containerRect.height - 40));
+                
+                previewWrapper.style.width = newWidth + 'px';
+                previewWrapper.style.height = newHeight + 'px';
+                
+                // Update aspect ratio selector to "free" when manually resizing
+                document.getElementById('aspectRatio').value = 'free';
+                updateSizeDisplay();
+            }
+            
+            function stopResize() {
+                isResizing = false;
+                document.removeEventListener('mousemove', handleResize);
+                document.removeEventListener('mouseup', stopResize);
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor();
+            initPreview();
+            initResize();
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                setTimeout(updateAspectRatio, 100);
+            });
+        });
+    </script>
+</body>
+</html>
