@@ -192,22 +192,61 @@
             transform: translateY(1px);
         }
 
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
+        /* --- CodeMirror Hint/Intellisense Styling --- */
+        .CodeMirror-hints {
+            background: rgba(30, 41, 59, 0.7) !important;
+            backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            border: 1.5px solid rgba(100,255,218,0.18);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 1.5px 8px rgba(100,255,218,0.08);
+            color: #e0e0e0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 15px;
+            padding: 0.25rem 0;
+            animation: glassyFadeIn 0.25s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes glassyFadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .CodeMirror-hint {
+            padding: 0.5rem 1.5rem 0.5rem 2.5rem;
+            border-radius: 0.75rem;
+            margin: 0 0.5rem;
+            position: relative;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .CodeMirror-hint-active {
+            background: linear-gradient(90deg, rgba(100,255,218,0.12), rgba(100,255,218,0.04));
+            color: #64ffda;
+        }
+        .cm-hint-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.1em;
+            height: 1.1em;
+            opacity: 0.8;
+        }
+        .cm-hint-desc {
+            display: block;
+            font-size: 0.85em;
+            color: #a5b4fc;
+            margin-top: 2px;
+            opacity: 0.8;
+        }
+        /* Scrollbar for hints */
+        .CodeMirror-hints::-webkit-scrollbar {
             width: 8px;
         }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
+        .CodeMirror-hints::-webkit-scrollbar-thumb {
+            background: rgba(100,255,218,0.12);
             border-radius: 4px;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
+        .CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+            background: rgba(100,255,218,0.22);
         }
 
         /* Mobile responsive */
@@ -561,6 +600,70 @@
                 document.removeEventListener('mouseup', stopResize);
             }
         }
+
+        // Enhance CodeMirror HTML hints with icons/descriptions (intellisense-like)
+        const htmlTagInfo = {
+            html: {icon: '📄', desc: 'HTML root element'},
+            head: {icon: '🧠', desc: 'Document metadata container'},
+            body: {icon: '🖥️', desc: 'Document content'},
+            div: {icon: '⬛', desc: 'Generic container'},
+            span: {icon: '🔖', desc: 'Inline container'},
+            h1: {icon: '🔠', desc: 'Heading 1'},
+            h2: {icon: '🔠', desc: 'Heading 2'},
+            h3: {icon: '🔠', desc: 'Heading 3'},
+            p: {icon: '📄', desc: 'Paragraph'},
+            a: {icon: '🔗', desc: 'Hyperlink'},
+            img: {icon: '🖼️', desc: 'Image'},
+            input: {icon: '⌨️', desc: 'Input field'},
+            button: {icon: '🔘', desc: 'Button'},
+            script: {icon: '📜', desc: 'JavaScript code'},
+            style: {icon: '🎨', desc: 'CSS styles'},
+            link: {icon: '🔗', desc: 'External resource link'},
+            meta: {icon: 'ℹ️', desc: 'Metadata'},
+            ul: {icon: '📋', desc: 'Unordered list'},
+            ol: {icon: '🔢', desc: 'Ordered list'},
+            li: {icon: '•', desc: 'List item'},
+            table: {icon: '📊', desc: 'Table'},
+            tr: {icon: '➡️', desc: 'Table row'},
+            td: {icon: '⬜', desc: 'Table cell'},
+            th: {icon: '🔲', desc: 'Table header cell'},
+            form: {icon: '📝', desc: 'Form'},
+            label: {icon: '🏷️', desc: 'Label'},
+            nav: {icon: '🧭', desc: 'Navigation'},
+            section: {icon: '📦', desc: 'Section'},
+            article: {icon: '📰', desc: 'Article'},
+            footer: {icon: '🔻', desc: 'Footer'},
+            header: {icon: '🔺', desc: 'Header'},
+            main: {icon: '📃', desc: 'Main content'},
+            // ...add more as needed...
+        };
+
+        // Patch CodeMirror HTML hint rendering
+        CodeMirror.registerHelper('hint', 'html', function(cm, options) {
+            const inner = CodeMirror.hint.html(cm, options);
+            if (!inner || !inner.list) return inner;
+            inner.list = inner.list.map(item => {
+                if (typeof item === 'string') {
+                    const info = htmlTagInfo[item.toLowerCase()];
+                    if (info) {
+                        item = {
+                            text: item,
+                            displayText: item,
+                            render: function(el, self, data) {
+                                el.innerHTML = `<span class='cm-hint-icon'>${info.icon}</span> ${item}<span class='cm-hint-desc'>${info.desc}</span>`;
+                            }
+                        };
+                    }
+                }
+                return item;
+            });
+            return inner;
+        });
+
+        // Ensure tab/enter/arrow keys work for completion
+        CodeMirror.commands.autocomplete = function(cm) {
+            cm.showHint({completeSingle: false});
+        };
 
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
