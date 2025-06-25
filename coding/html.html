@@ -638,15 +638,17 @@
             // ...add more as needed...
         };
 
-        // Patch CodeMirror HTML hint rendering
-        CodeMirror.registerHelper('hint', 'html', function(cm, options) {
-            const inner = CodeMirror.hint.html(cm, options);
-            if (!inner || !inner.list) return inner;
-            inner.list = inner.list.map(item => {
-                if (typeof item === 'string') {
-                    const info = htmlTagInfo[item.toLowerCase()];
-                    if (info) {
-                        item = {
+        // Patch CodeMirror HTML hint rendering (fix: only style tag completions, preserve default for others)
+        (function() {
+            const origHtmlHint = CodeMirror.hint.html;
+            CodeMirror.hint.html = function(cm, options) {
+                const inner = origHtmlHint(cm, options);
+                if (!inner || !inner.list) return inner;
+                inner.list = inner.list.map(item => {
+                    // Only style tag completions (not attribute/value completions)
+                    if (typeof item === 'string' && htmlTagInfo[item.toLowerCase()]) {
+                        const info = htmlTagInfo[item.toLowerCase()];
+                        return {
                             text: item,
                             displayText: item,
                             render: function(el, self, data) {
@@ -654,11 +656,12 @@
                             }
                         };
                     }
-                }
-                return item;
-            });
-            return inner;
-        });
+                    // If it's already an object or not a tag, leave as is
+                    return item;
+                });
+                return inner;
+            };
+        })();
 
         // Ensure tab/enter/arrow keys work for completion
         CodeMirror.commands.autocomplete = function(cm) {

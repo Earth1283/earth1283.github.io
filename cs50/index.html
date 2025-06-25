@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README Viewer</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter for a clean, modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for Markdown to HTML conversion -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- highlight.js for syntax highlighting in code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        /* Custom styles for the rendered markdown content */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+
+        /* General element styling */
+        .markdown-body h1, .markdown-body h2 {
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+
+        .markdown-body h1 { font-size: 2em; font-weight: 600; }
+        .markdown-body h2 { font-size: 1.5em; font-weight: 600; }
+        .markdown-body h3 { font-size: 1.25em; font-weight: 600; }
+        .markdown-body h4 { font-size: 1em; font-weight: 600; }
+        .markdown-body h5 { font-size: 0.875em; font-weight: 600; }
+        .markdown-body h6 { font-size: 0.85em; color: #57606a; }
+
+        .markdown-body p {
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Code blocks */
+        .markdown-body pre {
+            background-color: #161b22;
+            padding: 16px;
+            border-radius: 6px;
+            overflow: auto;
+            margin-bottom: 16px;
+            line-height: 1.45;
+        }
+        
+        .markdown-body code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 85%;
+        }
+
+        .markdown-body :not(pre) > code {
+            background-color: rgba(27,31,35,0.07);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 6px;
+        }
+
+        /* Blockquotes */
+        .markdown-body blockquote {
+            margin-left: 0;
+            padding: 0 1em;
+            color: #57606a;
+            border-left: 0.25em solid #d0d7de;
+            margin-bottom: 16px;
+        }
+
+        /* Lists */
+        .markdown-body ul, .markdown-body ol {
+            padding-left: 2em;
+            margin-bottom: 16px;
+        }
+        .markdown-body ul { list-style-type: disc; }
+        .markdown-body ol { list-style-type: decimal; }
+        .markdown-body li > p { margin-bottom: 0.25em; }
+        
+        /* Tables */
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+            display: block;
+            overflow: auto;
+        }
+        .markdown-body th, .markdown-body td {
+            border: 1px solid #d0d7de;
+            padding: 8px 12px;
+        }
+        .markdown-body th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+
+        /* Horizontal Rule */
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <main id="content" class="markdown-body">
+        <!-- The rendered README will be injected here -->
+        <div class="flex items-center justify-center h-screen">
+             <div class="text-center">
+                <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-4 text-lg font-medium text-gray-600">Loading README...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Configuration ---
+            const readmePath = 'readme.md';
+
+            // Fallback content in case readme.md is not found or for demonstration.
+                        const fallbackContent = `
+            Hai!
+            `;
+
+            const contentElement = document.getElementById('content');
+            
+            // --- Fetch and Render Logic ---
+            fetch(readmePath)
+                .then(response => {
+                    if (!response.ok) {
+                        // If the file is not found, throw an error to be caught by the .catch block
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    renderMarkdown(markdown);
+                })
+                .catch(error => {
+                    console.warn(`Could not fetch ${readmePath}. Displaying fallback content. Error: \`, error);
+                    renderMarkdown(fallbackContent);
+                });
+
+            // --- Render Function ---
+            function renderMarkdown(markdown) {
+                // Convert Markdown to HTML using Marked.js
+                contentElement.innerHTML = marked.parse(markdown);
+
+                // Apply syntax highlighting to all <pre><code> blocks
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
