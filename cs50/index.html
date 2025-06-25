@@ -149,7 +149,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <p class="mt-4 text-lg font-medium text-gray-600">Loading README...</p>
+                <p class="mt-4 text-lg font-medium text-gray-600">Loading README from GitHub...</p>
             </div>
         </div>
     </main>
@@ -157,11 +157,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // --- Configuration ---
-            const readmePath = 'earth1283.github.io/cs50/readme.md';
+            // URL to the raw markdown file on GitHub
+            const readmePath = 'https://raw.githubusercontent.com/Earth1283/CS50/main/readme.md';
 
-            // Fallback content in case readme.md is not found or for demonstration.
-                        const fallbackContent = `
-            Hai!
+            // Fallback content in case the fetch fails.
+            const fallbackContent = `
+# Error fetching README
+
+This is a fallback README. If you see this, it means the script couldn't fetch the README file from the specified URL.
+
+Please check the URL in the script and your internet connection.
+
+---
+
+### Example Code Block
+
+\`\`\`javascript
+// This is a javascript code block
+function greet(name) {
+  console.log(\`Hello, \${name}!\`);
+}
+
+greet('World');
+\`\`\`
             `;
 
             const contentElement = document.getElementById('content');
@@ -170,8 +188,8 @@
             fetch(readmePath)
                 .then(response => {
                     if (!response.ok) {
-                        // If the file is not found, throw an error to be caught by the .catch block
-                        throw new Error('Network response was not ok');
+                        // If the file is not found or there's a network error, throw an error to be caught by the .catch block
+                        throw new Error(`Network response was not ok. Status: ${response.status}`);
                     }
                     return response.text();
                 })
@@ -179,7 +197,7 @@
                     renderMarkdown(markdown);
                 })
                 .catch(error => {
-                    console.warn(`Could not fetch ${readmePath}. Displaying fallback content. Error: \`, error);
+                    console.error(`Could not fetch README from ${readmePath}. Displaying fallback content. Error: `, error);
                     renderMarkdown(fallbackContent);
                 });
 
@@ -195,5 +213,6 @@
             }
         });
     </script>
+
 </body>
 </html>
