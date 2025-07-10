@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartSteal - 心跳掠夺生存服务器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: white;
+            background-image: url('https://www.minecraft.net/content/dam/minecraft/touchup-2020/minecraft-background-behavior-1800x1012.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 0;
+            border-bottom: 4px solid var(--primary);
+            text-align: center;
+        }
+        
+        .logo {
+            font-family: 'Minecraft', sans-serif;
+            font-size: 3.5rem;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            margin: 0;
+        }
+        
+        .subtitle {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+        
+        .server-info {
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-box {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            flex: 1;
+            min-width: 300px;
+            margin: 10px;
+        }
+        
+        .status-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-top: 0;
+        }
+        
+        .status-online {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .status-offline {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+        
+        .btn-accent:hover {
+            background-color: #f39c12;
+        }
+        
+        .section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            color: var(--accent);
+            font-size: 2rem;
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            font-family: 'Minecraft', sans-serif;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .feature {
+            flex: 1;
+            min-width: 250px;
+            background-color: rgba(44, 62, 80, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-top: 0;
+        }
+        
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .player {
+            background-color: rgba(52, 152, 219, 0.2);
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .version-info {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .server-info {
+                flex-direction: column;
+            }
+            
+            .status-box {
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">HeartSteal</h1>
+            <p class="subtitle">心跳掠夺 · 极限生存 · 团队争霸</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="server-info">
+            <div class="status-box">
+                <h2 class="status-title">服务器状态</h2>
+                <p>IP: <strong>mc.leapmotorintl.com</strong></p>
+                <p>版本: <strong>1.13-1.21.7 (推荐1.21+)</strong></p>
+                <p>状态: <span id="server-status" class="status-online">加载中...</span></p>
+                <p>在线玩家: <span id="online-players">0</span>/<span id="max-players">0</span></p>
+                <div id="player-list" class="player-list"></div>
+            </div>
+            
+            <div class="status-box">
+                <h2 class="status-title">快速加入</h2>
+                <p>准备好开始心跳掠夺的冒险了吗？立即加入我们！</p>
+                <a href="minecraft://?addExternalServer=HeartSteal|mc.leapmotorintl.com" class="btn">一键加入 (Java版)</a>
+                <button id="download-texture" class="btn btn-accent">下载材质包</button>
+                <p class="version-info">推荐使用 Minecraft 1.21+ 版本以获得最佳体验</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">心跳掠夺玩法</h2>
+            <p>HeartSteal 是一个独特的心跳掠夺生存服务器，玩家可以通过击败其他玩家获得额外生命值，同时也要保护好自己的生命！</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3 class="feature-title">❤ 心跳掠夺</h3>
+                    <p>击败其他玩家将掠夺他们的一颗心脏(半颗生命值)，同时获得一颗完整的心脏！</p>
+                    <p>初始生命值为10颗心，最高可累积至20颗心。</p>
+                    <p>当生命值降至0时，你将被永久封禁！</p>
+                </div>
+                
+                <div class="feature">
+                    <h3 class="feature-title">🛒 商店系统</h3>
+                    <p>丰富的商店系统，可以买卖物品、装备和特殊道具。</p>
+                    <p>使用<strong>/shop</strong>命令打开商店界面。</p>
+                    <p>玩家之间也可以自由交易，建立你的商业帝国！</p>
+                </div>
+                
+                <div class="feature">
+                    <h3 class="feature-title">👥 团队工会</h3>
+                    <p>创建或加入团队，与队友共享资源、领地。</p>
+                    <p>团队战争、团队任务和团队排行榜等你挑战！</p>
+                    <p>使用<strong>/team</strong>命令管理你的团队。</p>
+                </div>
+                
+                <div class="feature">
+                    <h3 class="feature-title">🏡 领地圈地</h3>
+                    <p>使用Residence插件保护你的领地免受他人破坏。</p>
+                    <p>通过<strong>/res create</strong>创建领地，<strong>/res subzone</strong>创建子区域。</p>
+                    <p>可以设置权限，允许或禁止特定玩家进入。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">游戏规则</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3 class="feature-title">✅ 允许行为</h3>
+                    <ul>
+                        <li>PVP战斗与心跳掠夺</li>
+                        <li>团队合作与竞争</li>
+                        <li>自由建造与交易</li>
+                        <li>合理的陷阱设置</li>
+                    </ul>
+                </div>
+                
+                <div class="feature">
+                    <h3 class="feature-title">❌ 禁止行为</h3>
+                    <ul>
+                        <li>任何形式的作弊</li>
+                        <li>恶意破坏他人建筑</li>
+                        <li>使用漏洞或BUG</li>
+                        <li>辱骂或其他不文明行为</li>
+                    </ul>
+                </div>
+                
+                <div class="feature">
+                    <h3 class="feature-title">🏆 奖励系统</h3>
+                    <ul>
+                        <li>每日登录奖励</li>
+                        <li>击杀排行榜奖励</li>
+                        <li>团队成就奖励</li>
+                        <li>节日特殊活动</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">新手教程</h2>
+            <p>如果你是第一次玩心跳掠夺服务器，请按照以下步骤开始你的冒险：</p>
+            <ol>
+                <li>使用<strong>/spawn</strong>命令传送到主城安全区</li>
+                <li>在主城周围收集基础资源</li>
+                <li>尽快建立你的第一个领地(<strong>/res create 领地名</strong>)</li>
+                <li>加入一个团队或创建自己的团队</li>
+                <li>谨慎与其他玩家互动，保护你的心脏！</li>
+            </ol>
+            <p>更多详细教程请在游戏中输入<strong>/help</strong>查看。</p>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 HeartSteal Minecraft Server. 保留所有权利。</p>
+            <p>Minecraft 是 Mojang Studios 的注册商标。本服务器与 Mojang/Microsoft 无关联。</p>
+        </div>
+    </footer>
+    
+    <script>
+        // 服务器状态查询
+        async function fetchServerStatus() {
+            try {
+                const response = await fetch(`https://api.mcsrvstat.us/3/mc.leapmotorintl.com`);
+                const data = await response.json();
+                
+                if (data.online) {
+                    document.getElementById('server-status').textContent = '在线';
+                    document.getElementById('server-status').className = 'status-online';
+                    document.getElementById('online-players').textContent = data.players.online;
+                    document.getElementById('max-players').textContent = data.players.max;
+                    
+                    // 显示玩家列表
+                    const playerList = document.getElementById('player-list');
+                    playerList.innerHTML = '';
+                    
+                    if (data.players.list) {
+                        data.players.list.forEach(player => {
+                            const playerElement = document.createElement('div');
+                            playerElement.className = 'player';
+                            playerElement.innerHTML = `
+                                <img src="https://mc-heads.net/avatar/${player}/32" alt="${player}" class="player-avatar">
+                                <span>${player}</span>
+                            `;
+                            playerList.appendChild(playerElement);
+                        });
+                    }
+                } else {
+                    document.getElementById('server-status').textContent = '离线';
+                    document.getElementById('server-status').className = 'status-offline';
+                }
+            } catch (error) {
+                console.error('获取服务器状态失败:', error);
+                document.getElementById('server-status').textContent = '状态查询失败';
+            }
+        }
+        
+        // 材质包下载
+        document.getElementById('download-texture').addEventListener('click', function() {
+            // 假设材质包位于同一目录下的texture.zip文件
+            const link = document.createElement('a');
+            link.href = 'texture.zip';
+            link.download = 'HeartSteal_TexturePack.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('材质包下载开始！请将其放入你的resourcepacks文件夹。');
+        });
+        
+        // 页面加载时获取服务器状态
+        window.addEventListener('load', fetchServerStatus);
+        
+        // 每30秒刷新一次状态
+        setInterval(fetchServerStatus, 30000);
+    </script>
+</body>
+</html>
