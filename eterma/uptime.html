@@ -3,757 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="icon.png">
-    <title>Eterma MC - 服务器状态</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>HeartSteal - 极限生存与掠夺的MC服务器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: #e2e8f0;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            background-attachment: fixed;
-        }
-
-        /* Animated Background Elements */
-        .bg-gradient {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-gradient::before,
-        .bg-gradient::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            animation: 15s rotate linear infinite;
-        }
-
-        .bg-gradient::before {
-            width: 120vmax;
-            background: radial-gradient(
-                rgba(124, 58, 237, 0.05) 0%,
-                rgba(16, 185, 129, 0.05) 30%,
-                transparent 70%
-            );
-            animation-direction: reverse;
-        }
-
-        .bg-gradient::after {
-            width: 100vmax;
-            background: radial-gradient(
-                rgba(59, 130, 246, 0.05) 0%,
-                rgba(236, 72, 153, 0.05) 30%,
-                transparent 70%
-            );
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg) translate(-50%, -50%); }
-            to { transform: rotate(360deg) translate(-50%, -50%); }
+        :root {
+            --primary: #ff5555;
+            --secondary: #55aaff;
+            --dark: #2d2d2d;
+            --light: #f5f5f5;
+            --accent: #ffaa00;
         }
         
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, 
-                rgba(124, 58, 237, 0.1) 0%,
-                rgba(16, 185, 129, 0.05) 25%,
-                transparent 70%);
-            animation: rotate 30s linear infinite;
-            z-index: 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+            color: var(--light);
+            background-image: url('resources/background.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            line-height: 1.6;
         }
-
-        .hero-content {
-            backdrop-filter: blur(16px);
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
+        
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            min-height: 100vh;
         }
-
-        .card {
-            --gradient-start: rgba(99, 102, 241, 0.5);
-            --gradient-end: rgba(16, 185, 129, 0.5);
-            background: rgba(30, 41, 59, 0.2);
-            border-radius: 2rem;
-            padding: 2.5rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        header {
+            background: linear-gradient(to right, var(--dark), var(--primary), var(--dark));
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
         }
-
-        @keyframes cardEntrance {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-                filter: blur(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
+        
+        h1, h2, h3 {
+            font-family: 'Minecraft', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 2rem;
-            padding: 2px;
-            background: linear-gradient(
-                135deg,
-                var(--gradient-start),
-                var(--gradient-end)
-            );
-            -webkit-mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            z-index: -1;
+        
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
         }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                circle at var(--x, 50%) var(--y, 50%),
-                rgba(255, 255, 255, 0.1) 0%,
-                transparent 50%
-            );
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: -1;
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 15px 20px rgba(0, 0, 0, 0.2),
-                0 0 60px rgba(99, 102, 241, 0.1);
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
-        .purple-card {
-            --gradient-start: rgba(168, 85, 247, 0.5);
-            --gradient-end: rgba(236, 72, 153, 0.5);
-        }
-
-        .refresh-button {
-            --btn-gradient-start: rgba(59, 130, 246, 0.8);
-            --btn-gradient-end: rgba(16, 185, 129, 0.8);
-            background: linear-gradient(135deg, var(--btn-gradient-start), var(--btn-gradient-end));
-            position: relative;
-            letter-spacing: 0.03em;
-            backdrop-filter: blur(8px);
-            border: none;
-            padding: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            transform: perspective(1000px) translateZ(0);
-        }
-
-        .refresh-button:hover {
-            transform: perspective(1000px) translateZ(20px);
-            box-shadow: 
-                0 10px 30px -10px var(--btn-gradient-start),
-                0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .refresh-button span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: inherit;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-            gap: 0.5rem;
-        }
-
-        .refresh-button:hover span {
-            background: rgba(30, 41, 59, 0.6);
-        }
-
-        .refresh-button::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            background: linear-gradient(135deg, var(--btn-gradient-start), var(--btn-gradient-end));
-            filter: blur(20px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-
-        .refresh-button:hover::before {
-            opacity: 1;
-        }
-
-        .refresh-button:active {
-            transform: scale(0.97);
-        }
-
-        .refresh-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .refresh-button:disabled::before {
-            display: none;
-        }
-
-        .purple-button {
-            --btn-gradient-start: rgba(168, 85, 247, 0.8);
-            --btn-gradient-end: rgba(236, 72, 153, 0.8);
-        }
-
-        .server-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem auto;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-        }
-
-        .fade-in {
-            animation: fadeIn 0.7s cubic-bezier(.4,2,.6,1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .copied-feedback {
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.1);
-            padding: 6px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            white-space: nowrap;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
-            transform: translateY(4px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .copied-feedback.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Modern UI Elements */
-        .glass-card {
-            background: rgba(30, 41, 59, 0.2);
-            border-radius: 24px;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(255, 255, 255, 0.06),
-                transparent 40%
-            );
-            opacity: 0;
-            transition: opacity 0.3s;
+        
+        .server-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
-
-        .glass-card:hover::before {
-            opacity: 1;
+        
+        .server-status {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(45, 45, 45, 0.8);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 85, 85, 0.3);
         }
-
-        .glass-button {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1px;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-            transform-origin: center;
+        
+        .status-container {
+            margin-top: 1.5rem;
         }
-
-        .glass-button:hover {
-            transform: scale(1.02);
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .glass-button span {
+        
+        .status-label {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .status-value {
+            color: var(--light);
+        }
+        
+        .online {
+            color: #55ff55;
+        }
+        
+        .offline {
+            color: var(--primary);
+        }
+        
+        .player-list {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+        
+        .player {
+            display: inline-block;
+            margin: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background-color: rgba(85, 170, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .join-btn {
             display: block;
-            background: rgba(30, 41, 59, 0.8);
-            padding: 0.75rem 1.5rem;
-            border-radius: 11px;
-            transition: background 0.3s;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(to right, var(--primary), #ff3333);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
-        .glass-button:hover span {
-            background: rgba(30, 41, 59, 0.6);
-        }
-
-        .glass-icon {
-            position: relative;
-            border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(16, 185, 129, 0.5));
-        }
-
-        .glass-icon::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            background: inherit;
-            border-radius: inherit;
-            filter: blur(8px);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .glass-icon:hover::before {
-            opacity: 0.5;
-        }
-
-        .glass-divider {
-            height: 1px;
-            background: linear-gradient(
-                to right,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            margin: 2rem 0;
-        }
-
-        /* Animated background gradient */
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Floating animation for cards */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Shine effect */
-        @keyframes shine {
-            from {
-                transform: translateX(-100%) rotate(45deg);
-            }
-            to {
-                transform: translateX(200%) rotate(45deg);
-            }
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .mouse-position-tracker {
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Additional card effects */
-        .card {
-            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes cardEntrance {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-                filter: blur(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
-
-        /* Neon glow effect for online status */
-        .status-online {
-            color: #22c55e;
-            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-offline {
-            color: #ef4444;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Enhanced button styles */
-        .refresh-button {
-            transform: perspective(1000px) translateZ(0);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .refresh-button:hover {
-            transform: perspective(1000px) translateZ(20px);
-            box-shadow: 
-                0 10px 30px -10px var(--btn-gradient-start),
-                0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        /* Card status display enhancements */
-        .status-display {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .status-display:hover {
-            background: rgba(0, 0, 0, 0.3);
+        
+        .join-btn:hover {
+            background: linear-gradient(to right, #ff3333, var(--primary));
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 85, 85, 0.4);
         }
-
-        /* Player count pill */
-        .player-count {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 999px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: linear-gradient(to right, var(--secondary), #3388ff);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
-        .player-count:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #3388ff, var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(85, 170, 255, 0.4);
         }
-
-        .player-count svg {
-            width: 16px;
-            height: 16px;
-            opacity: 0.7;
+        
+        .server-ip {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 1px dashed var(--accent);
+        }
+        
+        .version-info {
+            color: var(--accent);
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+        
+        .features {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .feature-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--dark);
+        }
+        
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--dark);
+            color: var(--light);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(255, 85, 85, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+            background-color: rgba(45, 45, 45, 0.8);
+            border-radius: 0 0 10px 10px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .feature-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-item h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery img {
+            width: 100%;
+            border-radius: 5px;
+            transition: transform 0.3s;
+            border: 2px solid var(--dark);
+        }
+        
+        .gallery img:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--dark);
+            margin-top: 3rem;
+            border-top: 4px solid var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .server-info {
+                flex-direction: column;
+            }
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mouse tracking for cards
-            const cards = document.querySelectorAll('.mouse-position-tracker');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / card.clientWidth) * 100;
-                    const y = ((e.clientY - rect.top) / card.clientHeight) * 100;
-                    card.style.setProperty('--mouse-x', `${x}%`);
-                    card.style.setProperty('--mouse-y', `${y}%`);
-                });
-            });
-
-            // Copy to clipboard functionality
-            function setupClipboard(buttonId, text, feedbackId) {
-                const button = document.getElementById(buttonId);
-                const feedback = document.getElementById(feedbackId);
-                
-                button.addEventListener('click', async () => {
-                    try {
-                        await navigator.clipboard.writeText(text);
-                        feedback.classList.add('show');
-                        
-                        // Add success animation to the button
-                        button.style.transform = 'scale(0.95)';
-                        button.style.transition = 'transform 0.1s ease';
-                        
-                        setTimeout(() => {
-                            button.style.transform = '';
-                            feedback.classList.remove('show');
-                        }, 2000);
-                    } catch (err) {
-                        console.error('Failed to copy: ', err);
-                    }
-                });
-            }
-
-            setupClipboard('server-ip-1', 'eterma.2m.pub', 'ip1-feedback');
-            setupClipboard('server-ip-2', 'mc.leapmotorintl.com', 'ip2-feedback');
-
-            // Initialize server status
-            const server1 = new ServerStatus('eterma.2m.pub', 'statusDisplay1', 'refreshButton1');
-            const server2 = new ServerStatus('mc.leapmotorintl.com', 'statusDisplay2', 'refreshButton2');
-
-            // Initial fetch
-            server1.fetchStatus();
-            server2.fetchStatus();
-
-            // Auto refresh every 30 seconds
-            setInterval(() => {
-                server1.fetchStatus();
-                server2.fetchStatus();
-            }, 30000);
-        });
-    </script>
 </head>
 <body>
-    <div class="min-h-screen py-12 px-4 relative z-10">
-        <div class="container mx-auto max-w-6xl">
-            <div class="text-center mb-8">
-                <a href="index" class="inline-flex items-center justify-center px-6 py-3 bg-gray-800/30 hover:bg-gray-700/40 text-gray-200 rounded-xl backdrop-blur-md transition-all duration-300 hover:transform hover:-translate-y-1 space-x-2 border border-gray-700/30">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    <span>返回主页</span>
-                </a>
-            </div>
-
-            <h1 class="text-6xl font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-emerald-400 to-cyan-400 relative">
-                服务器状态
-                <span class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-violet-400/50 via-emerald-400/50 to-cyan-400/50 rounded-full blur-sm"></span>
-            </h1>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- 常规服务器 -->
-                <div class="card fade-in">
-                    <div class="server-icon">
-                        <img src="icon.png" alt="常规服务器" class="w-14 h-14 rounded-full border-2 border-emerald-500" />
-                    </div>
-                    <h2 class="text-2xl font-bold mb-4 text-emerald-400">常规服务器</h2>
-                    <p class="text-lg text-gray-300 mb-6">服务器地址：
-                        <span class="relative inline-block">
-                            <span id="server-ip-1" class="font-mono text-emerald-400 cursor-pointer hover:text-emerald-300 transition-colors">eterma.2m.pub</span>
-                            <span id="ip1-feedback" class="copied-feedback absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm opacity-0 transition-opacity duration-300">已复制!</span>
-                        </span>
-                    </p>
-                    <div id="statusDisplay1" class="status-display">
-                        <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            正在加载服务器状态...
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="player-count">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            <span>在线玩家</span>
-                        </div>
-                        <div class="player-count">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>版本</span>
-                        </div>
-                    </div>
-
-                    <button id="refreshButton1" class="refresh-button bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2 mx-auto w-full">
-                        <span>🔄</span>
-                        <span>刷新状态</span>
-                    </button>
-                </div>
-
-                <!-- 无规则生存服务器 -->
-                <div class="card fade-in">
-                    <div class="server-icon">
-                        <img src="icon.png" alt="无规则生存服务器" class="w-14 h-14 rounded-full border-2 border-purple-500" />
-                    </div>
-                    <h2 class="text-2xl font-bold mb-4 text-purple-400">无规则生存服务器</h2>
-                    <p class="text-lg text-gray-300 mb-2">服务器地址：
-                        <span class="relative inline-block">
-                            <span id="server-ip-2" class="font-mono text-purple-400 cursor-pointer hover:text-purple-300 transition-colors">mc.leapmotorintl.com</span>
-                            <span id="ip2-feedback" class="copied-feedback absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm opacity-0 transition-opacity duration-300">已复制!</span>
-                        </span>
-                    </p>
-                    <p class="text-sm text-gray-400 mb-6">所有规则均不适用</p>
+    <div class="overlay">
+        <header>
+            <h1>HeartSteal</h1>
+            <div class="subtitle">极限生存 · 掠夺心跳 · 建立王国</div>
+        </header>
+        
+        <div class="container">
+            <div class="server-info">
+                <div class="server-status">
+                    <h2>服务器状态</h2>
+                    <div class="version-info">支持版本: 1.13-1.21.7 | 推荐使用1.21+</div>
                     
-                    <div id="statusDisplay2" class="mb-8 status-display">
-                        <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            正在加载服务器状态...
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="player-count">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            <span>在线玩家</span>
+                    <div class="status-container" id="server-status">
+                        <div class="status-item">
+                            <span class="status-label">状态:</span>
+                            <span class="status-value" id="status">检查中...</span>
                         </div>
-                        <div class="player-count">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>延迟</span>
+                        <div class="status-item">
+                            <span class="status-label">在线玩家:</span>
+                            <span class="status-value" id="players">0/0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">延迟:</span>
+                            <span class="status-value" id="ping">- ms</span>
+                        </div>
+                        
+                        <div class="player-list" id="player-list">
+                            <!-- 玩家列表将通过JS动态加载 -->
                         </div>
                     </div>
-
-                    <button id="refreshButton2" class="refresh-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 mb-4 flex items-center justify-center gap-2 mx-auto w-full">
-                        <span>🔄</span>
-                        <span>刷新状态</span>
-                    </button>
+                    
+                    <div class="server-ip">
+                        IP: <strong>mc.leapmotorintl.com</strong>
+                    </div>
+                    
+                    <button class="join-btn" onclick="copyIP()">加入服务器</button>
+                    <button class="download-btn" onclick="downloadTexturePack()">下载材质包</button>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-tabs">
+                        <button class="tab-btn active" onclick="openTab(event, 'lifesteal')">心跳掠夺</button>
+                        <button class="tab-btn" onclick="openTab(event, 'towny')">Towny圈地</button>
+                        <button class="tab-btn" onclick="openTab(event, 'shop')">商店系统</button>
+                    </div>
+                    
+                    <div id="lifesteal" class="tab-content active">
+                        <div class="feature-item">
+                            <h3>❤️ 心跳掠夺玩法 ❤️</h3>
+                            <p>在HeartSteal服务器中，玩家之间的战斗将变得更加刺激！击败其他玩家可以夺取他们的"心跳"（生命值）。</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>每击杀一名玩家，你将获得1颗额外的心（半颗心）</li>
+                                <li>被击杀的玩家将失去1颗心</li>
+                                <li>生命值最低为半颗心（不会完全死亡）</li>
+                                <li>Boss战和特殊事件可获得额外生命</li>
+                                <li>交易系统可用金币购买生命值</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>⚔️ 战斗规则 ⚔️</h3>
+                            <p>为了维护游戏平衡，我们设定了以下规则：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>新手保护：前3天或前10小时游戏时间不受心跳掠夺</li>
+                                <li>安全区：主城和指定区域禁止PVP</li>
+                                <li>复仇系统：被击杀后可追踪凶手位置</li>
+                                <li>排行榜：显示心跳最多的玩家</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="towny" class="tab-content">
+                        <div class="feature-item">
+                            <h3>🏰 Towny圈地系统 🏰</h3>
+                            <p>建立你的城镇，与朋友共同发展，抵御敌人的入侵！</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>创建自己的城镇或加入现有城镇</li>
+                                <li>圈地保护你的建筑和资源</li>
+                                <li>设置税收、法律和城镇权限</li>
+                                <li>与其他城镇结盟或宣战</li>
+                                <li>发展城镇等级解锁更多功能</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>💰 经济系统 💰</h3>
+                            <p>完善的城镇经济体系：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>每日任务获得金币</li>
+                                <li>玩家间自由交易</li>
+                                <li>城镇银行系统</li>
+                                <li>拍卖行和商店系统</li>
+                                <li>资源回收换取金币</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="shop" class="tab-content">
+                        <div class="feature-item">
+                            <h3>🛒 服务器商店 🛒</h3>
+                            <p>我们提供公平的商店系统，让游戏体验更加丰富：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>游戏内货币商店（不卖装备，保持平衡）</li>
+                                <li>装饰物品和特效</li>
+                                <li>个性化称号和名牌</li>
+                                <li>宠物和坐骑</li>
+                                <li>便利功能（家数量、传送权限等）</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>🎁 福利系统 🎁</h3>
+                            <p>每日登录和活动奖励：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>连续登录奖励</li>
+                                <li>在线时长奖励</li>
+                                <li>节日特殊活动</li>
+                                <li>成就系统</li>
+                                <li>新手礼包</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <p class="text-center text-gray-400 mt-8">每 30 秒自动刷新一次</p>
+            
+            <h2 style="margin-top: 3rem; text-align: center; color: var(--accent);">服务器截图</h2>
+            <div class="gallery">
+                <img src="resources/screenshot1.png" alt="服务器截图1">
+                <img src="resources/screenshot2.png" alt="服务器截图2">
+                <img src="resources/screenshot3.png" alt="服务器截图3">
+                <img src="resources/screenshot4.png" alt="服务器截图4">
+            </div>
         </div>
+        
+        <footer>
+            <p>© 2023 HeartSteal Minecraft 服务器 | 保留所有权利</p>
+            <p>服务器IP: mc.leapmotorintl.com | 推荐版本: 1.21+</p>
+        </footer>
     </div>
-
+    
     <script>
-        class ServerStatus {
-            constructor(address, displayId, buttonId) {
-                this.address = address;
-                this.displayElement = document.getElementById(displayId);
-                this.refreshButton = document.getElementById(buttonId);
-                this.apiUrl = `https://api.mcsrvstat.us/2/${address}`;
+        // 服务器状态检查
+        async function checkServerStatus() {
+            const serverIP = 'mc.leapmotorintl.com';
+            try {
+                const response = await fetch(`https://api.mcsrvstat.us/2/${serverIP}`);
+                const data = await response.json();
                 
-                this.refreshButton.addEventListener('click', () => this.fetchStatus());
-            }
-
-            async fetchStatus() {
-                this.displayElement.innerHTML = `
-                    <p class="text-xl font-semibold text-gray-300 flex items-center justify-center gap-3">
-                        <svg class="animate-spin w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        正在检查状态...
-                    </p>
-                `;
-                this.refreshButton.disabled = true;
-
-                try {
-                    const response = await fetch(this.apiUrl);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
-
-                    const statusClass = data.online ? 'status-online' : 'status-offline';
-                    const statusText = data.online ? '在线' : '离线';
-                    const playersOnline = data.players?.online ?? 0;
-                    const playersMax = data.players?.max ?? 0;
-                    const ping = data.debug?.ping ?? 'N/A';
-
-                    this.displayElement.innerHTML = `
-                        <div class="text-center mb-4">
-                            <span class="${statusClass} text-2xl font-bold flex items-center justify-center gap-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="${data.online ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
-                                </svg>
-                                ${statusText}
-                            </span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="player-count">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                                <span>${playersOnline}/${playersMax}</span>
-                            </div>
-                            <div class="player-count">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M6 9l6 6 6-6" />
-                                </svg>
-                                <span>版本: ${data.version ?? 'N/A'}</span>
-                            </div>
-                        </div>
-                    `;
-                } catch (error) {
-                    this.displayElement.innerHTML = `
-                        <p class="text-xl font-semibold text-red-400 flex items-center justify-center gap-2">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            无法获取服务器状态
-                        </p>
-                    `;
-                } finally {
-                    this.refreshButton.disabled = false;
+                if (data.online) {
+                    document.getElementById('status').textContent = '在线';
+                    document.getElementById('status').className = 'status-value online';
+                    document.getElementById('players').textContent = `${data.players.online}/${data.players.max}`;
+                    document.getElementById('ping').textContent = `${data.debug.ping ? '✔' : '❌'} ${data.debug.ping ? data.debug.ping + 'ms' : ''}`;
+                    
+                    // 更新玩家列表
+                    const playerList = document.getElementById('player-list');
+                    playerList.innerHTML = '';
+                    
+                    if (data.players.list && data.players.list.length > 0) {
+                        data.players.list.forEach(player => {
+                            const playerElement = document.createElement('span');
+                            playerElement.className = 'player';
+                            playerElement.textContent = player;
+                            playerList.appendChild(playerElement);
+                        });
+                    } else {
+                        playerList.textContent = '暂无在线玩家';
+                    }
+                } else {
+                    document.getElementById('status').textContent = '离线';
+                    document.getElementById('status').className = 'status-value offline';
+                    document.getElementById('players').textContent = '0/0';
+                    document.getElementById('ping').textContent = '❌';
+                    document.getElementById('player-list').textContent = '服务器当前离线';
                 }
+            } catch (error) {
+                console.error('获取服务器状态失败:', error);
+                document.getElementById('status').textContent = '状态检查失败';
+                document.getElementById('status').className = 'status-value offline';
             }
         }
-
-        // Initialize both servers
-        const server1 = new ServerStatus('eterma.2m.pub', 'statusDisplay1', 'refreshButton1');
-        const server2 = new ServerStatus('mc.leapmotorintl.com', 'statusDisplay2', 'refreshButton2');
-
-        // Initial status check
-        server1.fetchStatus();
-        server2.fetchStatus();
-
-        // Auto refresh every 30 seconds
-        setInterval(() => {
-            server1.fetchStatus();
-            server2.fetchStatus();
-        }, 30000);
+        
+        // 复制服务器IP
+        function copyIP() {
+            const ip = 'mc.leapmotorintl.com';
+            navigator.clipboard.writeText(ip).then(() => {
+                alert(`已复制服务器IP: ${ip}\n请打开Minecraft并加入服务器！`);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                prompt('请手动复制服务器IP:', ip);
+            });
+        }
+        
+        // 下载材质包
+        function downloadTexturePack() {
+            // 假设texture.zip位于同一目录下
+            const texturePackUrl = 'texture.zip';
+            
+            // 创建一个隐藏的下载链接并点击它
+            const link = document.createElement('a');
+            link.href = texturePackUrl;
+            link.download = 'HeartSteal_TexturePack.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('材质包下载已开始！下载完成后，请将其放入Minecraft的resourcepacks文件夹中。');
+        }
+        
+        // 标签页切换
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabButtons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+        
+        // 页面加载时检查服务器状态
+        window.onload = function() {
+            checkServerStatus();
+            // 每60秒刷新一次状态
+            setInterval(checkServerStatus, 60000);
+        };
     </script>
 </body>
 </html>
