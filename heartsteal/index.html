@@ -3,396 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeartSteal - 心跳掠夺生存服务器</title>
-    <link href="https://fonts.googleapis.com/css2?family=Minecraft&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>HeartSteal - 极限生存与掠夺的MC服务器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #e74c3c;
-            --secondary: #2c3e50;
-            --accent: #f1c40f;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
+            --primary: #ff5555;
+            --secondary: #55aaff;
+            --dark: #2d2d2d;
+            --light: #f5f5f5;
+            --accent: #ffaa00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #1a1a1a;
-            color: white;
-            background-image: url('https://www.minecraft.net/content/dam/minecraft/touchup-2020/minecraft-background-behavior-1800x1012.jpg');
+            color: var(--light);
+            background-image: url('resources/background.png');
             background-size: cover;
             background-attachment: fixed;
+            background-position: center;
+            line-height: 1.6;
+        }
+        
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--dark), var(--primary), var(--dark));
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Minecraft', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px 0;
-            border-bottom: 4px solid var(--primary);
-            text-align: center;
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .logo {
-            font-family: 'Minecraft', sans-serif;
-            font-size: 3.5rem;
-            color: var(--primary);
-            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            margin: 0;
-        }
-        
-        .subtitle {
-            color: var(--accent);
-            font-size: 1.2rem;
-            margin-top: 5px;
+            padding: 2rem;
         }
         
         .server-info {
-            background-color: rgba(44, 62, 80, 0.9);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
         
-        .status-box {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid var(--primary);
+        .server-status {
             flex: 1;
             min-width: 300px;
-            margin: 10px;
+            background-color: rgba(45, 45, 45, 0.8);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 85, 85, 0.3);
         }
         
-        .status-title {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-top: 0;
+        .status-container {
+            margin-top: 1.5rem;
         }
         
-        .status-online {
-            color: #2ecc71;
-            font-weight: bold;
-        }
-        
-        .status-offline {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: var(--primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            margin: 5px;
-        }
-        
-        .btn:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-accent {
-            background-color: var(--accent);
-            color: var(--dark);
-        }
-        
-        .btn-accent:hover {
-            background-color: #f39c12;
-        }
-        
-        .section {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        .section-title {
-            color: var(--accent);
-            font-size: 2rem;
-            margin-top: 0;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 10px;
-            font-family: 'Minecraft', sans-serif;
-        }
-        
-        .features {
+        .status-item {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .feature {
-            flex: 1;
-            min-width: 250px;
-            background-color: rgba(44, 62, 80, 0.7);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s;
+        .status-label {
+            color: var(--secondary);
+            font-weight: bold;
         }
         
-        .feature:hover {
-            transform: translateY(-5px);
+        .status-value {
+            color: var(--light);
         }
         
-        .feature-title {
+        .online {
+            color: #55ff55;
+        }
+        
+        .offline {
             color: var(--primary);
-            font-size: 1.3rem;
-            margin-top: 0;
         }
         
         .player-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
         }
         
         .player {
-            background-color: rgba(52, 152, 219, 0.2);
-            padding: 8px 12px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
+            display: inline-block;
+            margin: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background-color: rgba(85, 170, 255, 0.2);
+            border-radius: 3px;
         }
         
-        .player-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 10px;
+        .join-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(to right, var(--primary), #ff3333);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        footer {
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px 0;
+        .join-btn:hover {
+            background: linear-gradient(to right, #ff3333, var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 85, 85, 0.4);
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: linear-gradient(to right, var(--secondary), #3388ff);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #3388ff, var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(85, 170, 255, 0.4);
+        }
+        
+        .server-ip {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
             text-align: center;
-            margin-top: 40px;
-            border-top: 4px solid var(--primary);
+            font-size: 1.2rem;
+            border: 1px dashed var(--accent);
         }
         
         .version-info {
-            color: #95a5a6;
-            font-size: 0.9rem;
+            color: var(--accent);
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+        
+        .features {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .feature-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--dark);
+        }
+        
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--dark);
+            color: var(--light);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(255, 85, 85, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+            background-color: rgba(45, 45, 45, 0.8);
+            border-radius: 0 0 10px 10px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .feature-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-item h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery img {
+            width: 100%;
+            border-radius: 5px;
+            transition: transform 0.3s;
+            border: 2px solid var(--dark);
+        }
+        
+        .gallery img:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--dark);
+            margin-top: 3rem;
+            border-top: 4px solid var(--primary);
         }
         
         @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
             .server-info {
                 flex-direction: column;
-            }
-            
-            .status-box {
-                width: 100%;
-                margin: 10px 0;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <div class="overlay">
+        <header>
+            <h1>HeartSteal</h1>
+            <div class="subtitle">极限生存 · 掠夺心跳 · 建立王国</div>
+        </header>
+        
         <div class="container">
-            <h1 class="logo">HeartSteal</h1>
-            <p class="subtitle">心跳掠夺 · 极限生存 · 团队争霸</p>
-        </div>
-    </header>
-    
-    <div class="container">
-        <div class="server-info">
-            <div class="status-box">
-                <h2 class="status-title">服务器状态</h2>
-                <p>IP: <strong>mc.leapmotorintl.com</strong></p>
-                <p>版本: <strong>1.13-1.21.7 (推荐1.21+)</strong></p>
-                <p>状态: <span id="server-status" class="status-online">加载中...</span></p>
-                <p>在线玩家: <span id="online-players">0</span>/<span id="max-players">0</span></p>
-                <div id="player-list" class="player-list"></div>
+            <div class="server-info">
+                <div class="server-status">
+                    <h2>服务器状态</h2>
+                    <div class="version-info">支持版本: 1.13-1.21.7 | 推荐使用1.21+</div>
+                    
+                    <div class="status-container" id="server-status">
+                        <div class="status-item">
+                            <span class="status-label">状态:</span>
+                            <span class="status-value" id="status">检查中...</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">在线玩家:</span>
+                            <span class="status-value" id="players">0/0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">延迟:</span>
+                            <span class="status-value" id="ping">- ms</span>
+                        </div>
+                        
+                        <div class="player-list" id="player-list">
+                            <!-- 玩家列表将通过JS动态加载 -->
+                        </div>
+                    </div>
+                    
+                    <div class="server-ip">
+                        IP: <strong>mc.leapmotorintl.com</strong>
+                    </div>
+                    
+                    <button class="join-btn" onclick="copyIP()">加入服务器</button>
+                    <button class="download-btn" onclick="downloadTexturePack()">下载材质包</button>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-tabs">
+                        <button class="tab-btn active" onclick="openTab(event, 'lifesteal')">心跳掠夺</button>
+                        <button class="tab-btn" onclick="openTab(event, 'towny')">Towny圈地</button>
+                        <button class="tab-btn" onclick="openTab(event, 'shop')">商店系统</button>
+                    </div>
+                    
+                    <div id="lifesteal" class="tab-content active">
+                        <div class="feature-item">
+                            <h3>❤️ 心跳掠夺玩法 ❤️</h3>
+                            <p>在HeartSteal服务器中，玩家之间的战斗将变得更加刺激！击败其他玩家可以夺取他们的"心跳"（生命值）。</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>每击杀一名玩家，你将获得1颗额外的心（半颗心）</li>
+                                <li>被击杀的玩家将失去1颗心</li>
+                                <li>生命值最低为半颗心（不会完全死亡）</li>
+                                <li>Boss战和特殊事件可获得额外生命</li>
+                                <li>交易系统可用金币购买生命值</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>⚔️ 战斗规则 ⚔️</h3>
+                            <p>为了维护游戏平衡，我们设定了以下规则：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>新手保护：前3天或前10小时游戏时间不受心跳掠夺</li>
+                                <li>安全区：主城和指定区域禁止PVP</li>
+                                <li>复仇系统：被击杀后可追踪凶手位置</li>
+                                <li>排行榜：显示心跳最多的玩家</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="towny" class="tab-content">
+                        <div class="feature-item">
+                            <h3>🏰 Towny圈地系统 🏰</h3>
+                            <p>建立你的城镇，与朋友共同发展，抵御敌人的入侵！</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>创建自己的城镇或加入现有城镇</li>
+                                <li>圈地保护你的建筑和资源</li>
+                                <li>设置税收、法律和城镇权限</li>
+                                <li>与其他城镇结盟或宣战</li>
+                                <li>发展城镇等级解锁更多功能</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>💰 经济系统 💰</h3>
+                            <p>完善的城镇经济体系：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>每日任务获得金币</li>
+                                <li>玩家间自由交易</li>
+                                <li>城镇银行系统</li>
+                                <li>拍卖行和商店系统</li>
+                                <li>资源回收换取金币</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="shop" class="tab-content">
+                        <div class="feature-item">
+                            <h3>🛒 服务器商店 🛒</h3>
+                            <p>我们提供公平的商店系统，让游戏体验更加丰富：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>游戏内货币商店（不卖装备，保持平衡）</li>
+                                <li>装饰物品和特效</li>
+                                <li>个性化称号和名牌</li>
+                                <li>宠物和坐骑</li>
+                                <li>便利功能（家数量、传送权限等）</li>
+                            </ul>
+                        </div>
+                        <div class="feature-item">
+                            <h3>🎁 福利系统 🎁</h3>
+                            <p>每日登录和活动奖励：</p>
+                            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                                <li>连续登录奖励</li>
+                                <li>在线时长奖励</li>
+                                <li>节日特殊活动</li>
+                                <li>成就系统</li>
+                                <li>新手礼包</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="status-box">
-                <h2 class="status-title">快速加入</h2>
-                <p>准备好开始心跳掠夺的冒险了吗？立即加入我们！</p>
-                <a href="minecraft://?addExternalServer=HeartSteal|mc.leapmotorintl.com" class="btn">一键加入 (Java版)</a>
-                <button id="download-texture" class="btn btn-accent">下载材质包</button>
-                <p class="version-info">推荐使用 Minecraft 1.21+ 版本以获得最佳体验</p>
+            <h2 style="margin-top: 3rem; text-align: center; color: var(--accent);">服务器截图</h2>
+            <div class="gallery">
+                <img src="resources/screenshot1.png" alt="服务器截图1">
+                <img src="resources/screenshot2.png" alt="服务器截图2">
+                <img src="resources/screenshot3.png" alt="服务器截图3">
+                <img src="resources/screenshot4.png" alt="服务器截图4">
             </div>
         </div>
         
-        <div class="section">
-            <h2 class="section-title">心跳掠夺玩法</h2>
-            <p>HeartSteal 是一个独特的心跳掠夺生存服务器，玩家可以通过击败其他玩家获得额外生命值，同时也要保护好自己的生命！</p>
-            
-            <div class="features">
-                <div class="feature">
-                    <h3 class="feature-title">❤ 心跳掠夺</h3>
-                    <p>击败其他玩家将掠夺他们的一颗心脏(半颗生命值)，同时获得一颗完整的心脏！</p>
-                    <p>初始生命值为10颗心，最高可累积至20颗心。</p>
-                    <p>当生命值降至0时，你将被永久封禁！</p>
-                </div>
-                
-                <div class="feature">
-                    <h3 class="feature-title">🛒 商店系统</h3>
-                    <p>丰富的商店系统，可以买卖物品、装备和特殊道具。</p>
-                    <p>使用<strong>/shop</strong>命令打开商店界面。</p>
-                    <p>玩家之间也可以自由交易，建立你的商业帝国！</p>
-                </div>
-                
-                <div class="feature">
-                    <h3 class="feature-title">👥 团队工会</h3>
-                    <p>创建或加入团队，与队友共享资源、领地。</p>
-                    <p>团队战争、团队任务和团队排行榜等你挑战！</p>
-                    <p>使用<strong>/team</strong>命令管理你的团队。</p>
-                </div>
-                
-                <div class="feature">
-                    <h3 class="feature-title">🏡 领地圈地</h3>
-                    <p>使用Residence插件保护你的领地免受他人破坏。</p>
-                    <p>通过<strong>/res create</strong>创建领地，<strong>/res subzone</strong>创建子区域。</p>
-                    <p>可以设置权限，允许或禁止特定玩家进入。</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2 class="section-title">游戏规则</h2>
-            <div class="features">
-                <div class="feature">
-                    <h3 class="feature-title">✅ 允许行为</h3>
-                    <ul>
-                        <li>PVP战斗与心跳掠夺</li>
-                        <li>团队合作与竞争</li>
-                        <li>自由建造与交易</li>
-                        <li>合理的陷阱设置</li>
-                    </ul>
-                </div>
-                
-                <div class="feature">
-                    <h3 class="feature-title">❌ 禁止行为</h3>
-                    <ul>
-                        <li>任何形式的作弊</li>
-                        <li>恶意破坏他人建筑</li>
-                        <li>使用漏洞或BUG</li>
-                        <li>辱骂或其他不文明行为</li>
-                    </ul>
-                </div>
-                
-                <div class="feature">
-                    <h3 class="feature-title">🏆 奖励系统</h3>
-                    <ul>
-                        <li>每日登录奖励</li>
-                        <li>击杀排行榜奖励</li>
-                        <li>团队成就奖励</li>
-                        <li>节日特殊活动</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2 class="section-title">新手教程</h2>
-            <p>如果你是第一次玩心跳掠夺服务器，请按照以下步骤开始你的冒险：</p>
-            <ol>
-                <li>使用<strong>/spawn</strong>命令传送到主城安全区</li>
-                <li>在主城周围收集基础资源</li>
-                <li>尽快建立你的第一个领地(<strong>/res create 领地名</strong>)</li>
-                <li>加入一个团队或创建自己的团队</li>
-                <li>谨慎与其他玩家互动，保护你的心脏！</li>
-            </ol>
-            <p>更多详细教程请在游戏中输入<strong>/help</strong>查看。</p>
-        </div>
+        <footer>
+            <p>© 2023 HeartSteal Minecraft 服务器 | 保留所有权利</p>
+            <p>服务器IP: mc.leapmotorintl.com | 推荐版本: 1.21+</p>
+        </footer>
     </div>
     
-    <footer>
-        <div class="container">
-            <p>© 2025 HeartSteal Minecraft Server. 保留所有权利。</p>
-            <p>Minecraft 是 Mojang Studios 的注册商标。本服务器与 Mojang/Microsoft 无关联。</p>
-        </div>
-    </footer>
-    
     <script>
-        // 服务器状态查询
-        async function fetchServerStatus() {
+        // 服务器状态检查
+        async function checkServerStatus() {
+            const serverIP = 'mc.leapmotorintl.com';
             try {
-                const response = await fetch(`https://api.mcsrvstat.us/3/mc.leapmotorintl.com`);
+                const response = await fetch(`https://api.mcsrvstat.us/2/${serverIP}`);
                 const data = await response.json();
                 
                 if (data.online) {
-                    document.getElementById('server-status').textContent = '在线';
-                    document.getElementById('server-status').className = 'status-online';
-                    document.getElementById('online-players').textContent = data.players.online;
-                    document.getElementById('max-players').textContent = data.players.max;
+                    document.getElementById('status').textContent = '在线';
+                    document.getElementById('status').className = 'status-value online';
+                    document.getElementById('players').textContent = `${data.players.online}/${data.players.max}`;
+                    document.getElementById('ping').textContent = `${data.debug.ping ? '✔' : '❌'} ${data.debug.ping ? data.debug.ping + 'ms' : ''}`;
                     
-                    // 显示玩家列表
+                    // 更新玩家列表
                     const playerList = document.getElementById('player-list');
                     playerList.innerHTML = '';
                     
-                    if (data.players.list) {
+                    if (data.players.list && data.players.list.length > 0) {
                         data.players.list.forEach(player => {
-                            const playerElement = document.createElement('div');
+                            const playerElement = document.createElement('span');
                             playerElement.className = 'player';
-                            playerElement.innerHTML = `
-                                <img src="https://mc-heads.net/avatar/${player}/32" alt="${player}" class="player-avatar">
-                                <span>${player}</span>
-                            `;
+                            playerElement.textContent = player;
                             playerList.appendChild(playerElement);
                         });
+                    } else {
+                        playerList.textContent = '暂无在线玩家';
                     }
                 } else {
-                    document.getElementById('server-status').textContent = '离线';
-                    document.getElementById('server-status').className = 'status-offline';
+                    document.getElementById('status').textContent = '离线';
+                    document.getElementById('status').className = 'status-value offline';
+                    document.getElementById('players').textContent = '0/0';
+                    document.getElementById('ping').textContent = '❌';
+                    document.getElementById('player-list').textContent = '服务器当前离线';
                 }
             } catch (error) {
                 console.error('获取服务器状态失败:', error);
-                document.getElementById('server-status').textContent = '状态查询失败';
+                document.getElementById('status').textContent = '状态检查失败';
+                document.getElementById('status').className = 'status-value offline';
             }
         }
         
-        // 材质包下载
-        document.getElementById('download-texture').addEventListener('click', function() {
-            // 假设材质包位于同一目录下的texture.zip文件
+        // 复制服务器IP
+        function copyIP() {
+            const ip = 'mc.leapmotorintl.com';
+            navigator.clipboard.writeText(ip).then(() => {
+                alert(`已复制服务器IP: ${ip}\n请打开Minecraft并加入服务器！`);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                prompt('请手动复制服务器IP:', ip);
+            });
+        }
+        
+        // 下载材质包
+        function downloadTexturePack() {
+            // 假设texture.zip位于同一目录下
+            const texturePackUrl = 'texture.zip';
+            
+            // 创建一个隐藏的下载链接并点击它
             const link = document.createElement('a');
-            link.href = 'texture.zip';
+            link.href = texturePackUrl;
             link.download = 'HeartSteal_TexturePack.zip';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            alert('材质包下载开始！请将其放入你的resourcepacks文件夹。');
-        });
+            alert('材质包下载已开始！下载完成后，请将其放入Minecraft的resourcepacks文件夹中。');
+        }
         
-        // 页面加载时获取服务器状态
-        window.addEventListener('load', fetchServerStatus);
+        // 标签页切换
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabButtons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
         
-        // 每30秒刷新一次状态
-        setInterval(fetchServerStatus, 30000);
+        // 页面加载时检查服务器状态
+        window.onload = function() {
+            checkServerStatus();
+            // 每60秒刷新一次状态
+            setInterval(checkServerStatus, 60000);
+        };
     </script>
 </body>
 </html>
