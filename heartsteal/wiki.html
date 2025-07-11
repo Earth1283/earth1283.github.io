@@ -73,14 +73,9 @@
         =================================
         SIDEBAR / NAVIGATION
         =================================
-        This is the navigation bar on the left.
-        To add a new link:
-        1. Copy one of the `<a>` tags.
-        2. Change the `data-target` to a new unique name (e.g., "my-new-section").
-        3. Change the text and icon.
-        4. Go to the MAIN CONTENT area and create a new div with an id that matches your `data-target`.
+        The sidebar now extends to the bottom of the page.
         -->
-        <aside id="sidebar" class="bg-gray-800/50 backdrop-blur-sm w-64 p-6 fixed lg:static top-0 left-0 h-full z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <aside id="sidebar" class="bg-gray-800/50 backdrop-blur-sm w-64 flex-shrink-0 p-6 fixed lg:static top-0 left-0 h-full z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <div class="flex items-center gap-3 mb-10">
                 <i data-lucide="heart-pulse" class="text-indigo-400 w-10 h-10"></i>
                 <h1 class="text-2xl font-bold text-white">HeartSteal</h1>
@@ -89,6 +84,10 @@
                 <a href="#" data-target="home" class="nav-link bg-gray-700/50 text-white flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
                     <i data-lucide="home"></i>
                     <span>主页</span>
+                </a>
+                <a href="#" data-target="getting-started" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="compass"></i>
+                    <span>新手入门</span>
                 </a>
                 <a href="#" data-target="rules" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
                     <i data-lucide="scale"></i>
@@ -118,7 +117,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto h-screen">
+        <main class="flex-1 p-4 sm:p-6 lg:p-10">
             <!-- Mobile Header -->
             <header class="lg:hidden flex justify-between items-center mb-6">
                  <div class="flex items-center gap-2">
@@ -132,24 +131,14 @@
                 </button>
             </header>
 
-            <!-- 
-            =================================
-            MAIN CONTENT SECTIONS
-            =================================
-            Each `div` here is a "page". The `id` of the div must match the `data-target` of a link in the sidebar.
-            To edit the content of a page, just change the text inside the corresponding div.
-            -->
-
             <!-- Home Section -->
             <div id="home" class="content-section active">
                 <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
                     <h2 class="text-4xl font-black text-white mb-4 animate-pulse bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">欢迎来到 HeartSteal 服务器!</h2>
                     <p class="text-lg text-gray-300 mb-8">一个充满挑战与刺激的生存服务器。在这里，每一次击杀都至关重要。</p>
-                    
                     <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
                         <h3 class="text-sm font-semibold text-indigo-400 mb-2">服务器信息</h3>
                         <p class="text-gray-400 mb-4">使用以下信息加入我们的世界：</p>
-                        
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-xs text-gray-500">服务器IP地址</label>
@@ -165,6 +154,32 @@
                                 <label class="block text-xs text-gray-500">支持版本</label>
                                 <p class="text-lg text-white font-mono bg-gray-800 p-3 rounded-md">1.13 ~ 1.21.7 (推荐使用 1.21+)</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Getting Started Section -->
+            <div id="getting-started" class="content-section">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">新手入门指南</h2>
+                    <p class="text-lg text-gray-300 mb-8">刚加入服务器？别担心，按照这些步骤开始你的冒险吧！</p>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="tree-pine"></i> 第一步：生存基础</h3>
+                            <p>像正常的生存模式一样，先撸树，制作基础工具。你的首要目标是找到食物并远离夜晚的怪物。</p>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="shield"></i> 第二步：寻找安全区</h3>
+                            <p>主城是绝对安全的区域。但你需要在野外建立自己的家。使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/towny map</code> 查看地图，寻找远离其他城镇的区域来避免早期冲突。</p>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="flag"></i> 第三步：建立你的城镇</h3>
+                            <p>一旦你攒够了建立城镇所需的金钱，就找一个心仪的地方输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town new [城镇名]</code>。这将保护你的第一个地块，你的家园就有了保障！</p>
+                        </div>
+                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="dollar-sign"></i> 第四步：开始赚钱</h3>
+                            <p>通过挖矿、耕种或狩猎收集资源，然后使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sellgui</code> 或 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sell hand</code> 将它们出售给系统商店来赚取第一桶金。金钱是扩张城镇和购买装备的基础。</p>
                         </div>
                     </div>
                 </div>
@@ -208,11 +223,16 @@
                         </div>
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
                             <h3 class="text-xl font-bold text-red-500 mb-2 flex items-center gap-2"><i data-lucide="shield-off"></i> 生命耗尽</h3>
-                            <p>当你的生命值上限降至零时，你将被服务器暂时封禁。请珍惜你的每一颗心。</p>
+                            <p>当你的生命值上限降至零时，你将被服务器<strong class="text-white">暂时封禁24小时</strong>。请珍惜你的每一颗心，谨慎行事。</p>
                         </div>
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
                             <h3 class="text-xl font-bold text-green-500 mb-2 flex items-center gap-2"><i data-lucide="gem"></i> 如何获得心？</h3>
-                            <p>除了击杀玩家，你还可以通过完成特殊任务、参与服务器活动或使用稀有物品来恢复或增加你的生命值上限。</p>
+                            <p>除了击杀玩家，你还可以通过以下方式恢复或增加你的生命值上限：</p>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li><strong>合成生命核心:</strong> 通过收集稀有材料可以合成生命核心，使用后可增加生命上限。</li>
+                                <li><strong>参与服务器活动:</strong> 管理员会不定期举办活动，获胜者可以获得生命奖励。</li>
+                                <li><strong>从其他玩家处购买:</strong> 你可以在玩家商店中寻找出售生命核心的商人。</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -225,22 +245,28 @@
                     <p class="text-lg text-gray-300 mb-8">Towny可以让你建立和管理自己的城镇，保护你的财产，并与朋友一起发展。</p>
                     <div class="space-y-6">
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
-                            <h3 class="text-xl font-bold text-indigo-400 mb-2">基础概念</h3>
-                            <p><strong class="text-white">城镇 (Town):</strong> 玩家创建和管理的区域。城镇内的土地受到保护。</p>
-                            <p><strong class="text-white">地块 (Plot):</strong> 城镇被划分为16x16的地块，可以分配给居民。</p>
-                            <p><strong class="text-white">国家 (Nation):</strong> 多个城镇可以联合起来组成一个国家，共同发展。</p>
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2">常用指令</h3>
+                            <ul class="space-y-2 list-disc list-inside text-gray-300 columns-1 md:columns-2">
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town new [城镇名]</code> - 创建新城镇</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town claim</code> - 占领脚下地块</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town unclaim</code> - 取消占领地块</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town add [玩家ID]</code> - 邀请玩家</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town kick [玩家ID]</code> - 踢出居民</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town deposit [金额]</code> - 向城镇银行存款</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town set spawn</code> - 设置城镇传送点</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot fs [价格]</code> - 出售你站立的地块</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot nfs</code> - 取消出售地块</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot claim</code> - 购买待售地块</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/res set perm ...</code> - 设置地块权限</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/nation new [国家名]</code> - 建立国家</li>
+                            </ul>
                         </div>
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
-                            <h3 class="text-xl font-bold text-indigo-400 mb-2">常用指令</h3>
-                            <ul class="space-y-2 list-disc list-inside text-gray-300">
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town new [城镇名]</code> - 创建一个新城镇。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town claim</code> - 占领你脚下的地块作为城镇领地。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town add [玩家ID]</code> - 邀请玩家加入你的城镇。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town deposit [金额]</code> - 向城镇银行存款，用于支付维护费。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot fs [价格]</code> - 将你站立的地块出售。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot claim</code> - 购买你站立的待售地块。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/res set perm [friend/ally/outsider] [build/destroy/switch/itemuse] [on/off]</code> - 设置你的地块权限。</li>
-                                <li>输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town</code> 或 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot</code> 查看更多指令。</li>
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2">市长小贴士</h3>
+                             <ul class="list-disc list-inside mt-2 space-y-2">
+                                <li><strong>税收:</strong> 使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town set taxes [金额]</code> 来设置每日税收，这是维持城镇运营和扩张的重要资金来源。</li>
+                                <li><strong>地块类型:</strong> 使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot set [类型]</code> (例如 arena, embassy, shop) 来设置特殊地块，给予它们不同的功能。</li>
+                                <li><strong>保持活跃:</strong> 长期不在线的市长可能会导致城镇变为废墟。请确保定期登录或设置副市长。</li>
                             </ul>
                         </div>
                         <!-- Iframe for Squaremap -->
@@ -250,7 +276,7 @@
                             </h3>
                             <p class="mb-4 text-gray-300">通过下面的动态地图查看城镇和玩家位置。加载可能需要一些时间。</p>
                             <div class="w-full h-96 lg:h-[500px] rounded-lg border-2 border-gray-700 overflow-hidden">
-                                <iframe src="http://mc5.leapmotorintl.com:40" class="w-full h-full"></iframe>
+                                <iframe src="http://mc5.leapmotorintl.com:40" class="w-full h-full" style="border:0;"></iframe>
                             </div>
                         </div>
                     </div>
@@ -267,22 +293,22 @@
                             <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="store"></i> QuickShop - 玩家商店</h3>
                             <p class="mb-4">你可以创建自己的箱子商店来向其他玩家出售或收购物品。</p>
                             <ol class="list-decimal list-inside space-y-2">
-                                <li><strong class="text-white">创建出售商店:</strong> 手持想要出售的物品，<strong class="text-amber-400">左键</strong>点击一个箱子，然后在聊天框输入该物品的<strong class="text-green-400">单价</strong>。</li>
-                                <li><strong class="text-white">创建收购商店:</strong> 手持想要收购的物品，<strong class="text-amber-400">左键</strong>点击一个箱子，然后在聊天框输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">buy</code>，再输入你愿意支付的<strong class="text-green-400">单价</strong>。</li>
-                                <li><strong class="text-white">交易:</strong> 其他玩家<strong class="text-amber-400">左键</strong>点击你的商店牌子即可购买，<strong class="text-amber-400">右键</strong>即可出售。</li>
+                                <li><strong class="text-white">创建出售商店:</strong> 放置一个箱子，将要出售的物品放进去。然后手持该物品，<strong class="text-amber-400">左键</strong>点击箱子，并在聊天框中输入你希望的<strong class="text-green-400">单个物品售价</strong>。</li>
+                                <li><strong class="text-white">创建收购商店:</strong> 放置一个箱子（确保里面有足够的钱支付）。手持你想要收购的物品，<strong class="text-amber-400">左键</strong>点击箱子，然后在聊天框中输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/qs buy</code>，再输入你愿意支付的<strong class="text-green-400">单个物品收购价</strong>。</li>
+                                <li><strong class="text-white">进行交易:</strong> 找到其他玩家的商店，<strong class="text-amber-400">左键</strong>点击商店牌子即可按标价购买，<strong class="text-amber-400">右键</strong>点击即可按标价出售。</li>
                             </ul>
                         </div>
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
                              <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="shopping-cart"></i> 快速出售</h3>
                              <p class="mb-4">快速将你背包里的物品卖给系统换取金钱。</p>
                              <ul class="space-y-2 list-disc list-inside text-gray-300">
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sell hand</code> - 出售你<strong class="text-white">手中</strong>的全部同类物品。</li>
-                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sellgui</code> - 打开一个GUI界面，将背包里的物品拖入其中即可出售。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sell hand</code> - 出售你<strong class="text-white">手中</strong>拿着的<strong class="text-white">全部</strong>同类物品。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sellgui</code> - 打开一个图形界面，将背包里<strong class="text-white">任何可出售的物品</strong>拖入其中即可一次性出售。更方便，但需要你手动操作。</li>
                              </ul>
                         </div>
                         <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
                             <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="server"></i> /shop - 系统商店</h3>
-                            <p>使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/shop</code> 指令可以打开系统商店 (由Nascraft插件提供)。在这里你可以购买服务器提供的基础物品，或将你的物品出售给系统。</p>
+                            <p>使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/shop</code> 指令可以打开系统商店 (由Nascraft插件提供)。在这里你可以购买服务器提供的基础物品（如食物、方块），或将你的物品出售给系统（通常价格低于玩家交易）。</p>
                         </div>
                     </div>
                 </div>
@@ -427,8 +453,7 @@
                     setupCopyButton(this, ip, copyBtnText, '复制');
                 });
             }
-
-            // --- QQ ID Copy Button ---
+            
             if (copyQqBtn) {
                 copyQqBtn.addEventListener('click', function() {
                     const qqId = document.getElementById('qq-id').innerText;
