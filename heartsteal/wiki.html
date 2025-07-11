@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartSteal 服务器维基</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a clean, modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Icon library for icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Use the Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark background */
+        }
+
+        /* Custom scrollbar for a more polished look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        /* Animation for content sections fading in */
+        .content-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        /* The active section is displayed */
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styling for the mobile menu button (hamburger) */
+        .menu-button-line {
+            transition: all 0.3s ease-in-out;
+        }
+        .menu-button.open .line-1 {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-button.open .line-2 {
+            opacity: 0;
+        }
+        .menu-button.open .line-3 {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="flex min-h-screen">
+        <!-- 
+        =================================
+        SIDEBAR / NAVIGATION
+        =================================
+        This is the navigation bar on the left.
+        To add a new link:
+        1. Copy one of the `<a>` tags.
+        2. Change the `data-target` to a new unique name (e.g., "my-new-section").
+        3. Change the text and icon.
+        4. Go to the MAIN CONTENT area and create a new div with an id that matches your `data-target`.
+        -->
+        <aside id="sidebar" class="bg-gray-800/50 backdrop-blur-sm w-64 p-6 fixed lg:static top-0 left-0 h-full z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="flex items-center gap-3 mb-10">
+                <i data-lucide="heart-pulse" class="text-indigo-400 w-10 h-10"></i>
+                <h1 class="text-2xl font-bold text-white">HeartSteal</h1>
+            </div>
+            <nav id="nav-menu" class="space-y-2">
+                <a href="#" data-target="home" class="nav-link bg-gray-700/50 text-white flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="home"></i>
+                    <span>主页</span>
+                </a>
+                <a href="#" data-target="rules" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="scale"></i>
+                    <span>服务器规则</span>
+                </a>
+                <a href="#" data-target="gameplay" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="swords"></i>
+                    <span>游戏玩法</span>
+                </a>
+                <a href="#" data-target="towny" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="building-2"></i>
+                    <span>Towny 指南</span>
+                </a>
+                <a href="#" data-target="economy" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="coins"></i>
+                    <span>经济系统</span>
+                </a>
+                <a href="#" data-target="join" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="log-in"></i>
+                    <span>如何加入</span>
+                </a>
+                 <a href="#" data-target="contact" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-indigo-500 hover:text-white">
+                    <i data-lucide="message-square"></i>
+                    <span>联系我们</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto h-screen">
+            <!-- Mobile Header -->
+            <header class="lg:hidden flex justify-between items-center mb-6">
+                 <div class="flex items-center gap-2">
+                    <i data-lucide="heart-pulse" class="text-indigo-400 w-8 h-8"></i>
+                    <h1 class="text-xl font-bold text-white">HeartSteal</h1>
+                </div>
+                <button id="menu-button" class="menu-button z-30 p-2">
+                    <div class="w-6 h-0.5 bg-white my-1 line-1 menu-button-line"></div>
+                    <div class="w-6 h-0.5 bg-white my-1 line-2 menu-button-line"></div>
+                    <div class="w-6 h-0.5 bg-white my-1 line-3 menu-button-line"></div>
+                </button>
+            </header>
+
+            <!-- 
+            =================================
+            MAIN CONTENT SECTIONS
+            =================================
+            Each `div` here is a "page". The `id` of the div must match the `data-target` of a link in the sidebar.
+            To edit the content of a page, just change the text inside the corresponding div.
+            -->
+
+            <!-- Home Section -->
+            <div id="home" class="content-section active">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-4 animate-pulse bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">欢迎来到 HeartSteal 服务器!</h2>
+                    <p class="text-lg text-gray-300 mb-8">一个充满挑战与刺激的生存服务器。在这里，每一次击杀都至关重要。</p>
+                    
+                    <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
+                        <h3 class="text-sm font-semibold text-indigo-400 mb-2">服务器信息</h3>
+                        <p class="text-gray-400 mb-4">使用以下信息加入我们的世界：</p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs text-gray-500">服务器IP地址</label>
+                                <div class="flex items-center gap-4 bg-gray-800 p-3 rounded-md">
+                                    <span id="server-ip" class="text-lg text-white font-mono">heartsteal.2m.pub</span>
+                                    <button id="copy-ip-btn" class="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm transition-all duration-200 flex items-center gap-2">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                        <span id="copy-btn-text">复制</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500">支持版本</label>
+                                <p class="text-lg text-white font-mono bg-gray-800 p-3 rounded-md">1.13 ~ 1.21.7 (推荐使用 1.21+)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rules Section -->
+            <div id="rules" class="content-section">
+                 <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">服务器规则</h2>
+                    <p class="text-lg text-gray-300 mb-8">为了保证所有玩家的良好体验，请遵守以下规则。违反规则将受到惩罚。</p>
+                    <ul class="space-y-4 list-inside">
+                        <li class="flex items-start gap-3 p-4 bg-gray-900/50 rounded-lg border-l-4 border-indigo-500">
+                            <i data-lucide="gavel" class="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0"></i>
+                            <span><strong class="text-white">尊重他人:</strong> 禁止任何形式的歧视、骚扰、人身攻击或仇恨言论。</span>
+                        </li>
+                        <li class="flex items-start gap-3 p-4 bg-gray-900/50 rounded-lg border-l-4 border-indigo-500">
+                            <i data-lucide="ban" class="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0"></i>
+                            <span><strong class="text-white">禁止作弊:</strong> 严禁使用任何作弊客户端、外挂、透视、飞行等不正当手段获取优势。</span>
+                        </li>
+                        <li class="flex items-start gap-3 p-4 bg-gray-900/50 rounded-lg border-l-4 border-indigo-500">
+                            <i data-lucide="bug" class="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0"></i>
+                            <span><strong class="text-white">禁止利用BUG:</strong> 禁止恶意利用服务器或游戏BUG。如发现BUG请及时向管理员报告。</span>
+                        </li>
+                        <li class="flex items-start gap-3 p-4 bg-gray-900/50 rounded-lg border-l-4 border-indigo-500">
+                            <i data-lucide="megaphone" class="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0"></i>
+                            <span><strong class="text-white">文明交流:</strong> 禁止在公共频道刷屏、发布广告或不当内容。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Gameplay Section -->
+            <div id="gameplay" class="content-section">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">核心玩法: 偷心</h2>
+                    <p class="text-lg text-gray-300 mb-8">本服务器的核心机制是“偷心”。生命值是你最宝贵的资源。</p>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="heart-crack"></i> 击杀与偷心</h3>
+                            <p>每次成功击杀一名玩家，你将会从他身上偷取一颗心（即2点生命值上限）。被击杀的玩家将永久失去这颗心。</p>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-red-500 mb-2 flex items-center gap-2"><i data-lucide="shield-off"></i> 生命耗尽</h3>
+                            <p>当你的生命值上限降至零时，你将被服务器暂时封禁。请珍惜你的每一颗心。</p>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-green-500 mb-2 flex items-center gap-2"><i data-lucide="gem"></i> 如何获得心？</h3>
+                            <p>除了击杀玩家，你还可以通过完成特殊任务、参与服务器活动或使用稀有物品来恢复或增加你的生命值上限。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Towny Guide Section -->
+            <div id="towny" class="content-section">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">Towny 指南</h2>
+                    <p class="text-lg text-gray-300 mb-8">Towny可以让你建立和管理自己的城镇，保护你的财产，并与朋友一起发展。</p>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2">基础概念</h3>
+                            <p><strong class="text-white">城镇 (Town):</strong> 玩家创建和管理的区域。城镇内的土地受到保护。</p>
+                            <p><strong class="text-white">地块 (Plot):</strong> 城镇被划分为16x16的地块，可以分配给居民。</p>
+                            <p><strong class="text-white">国家 (Nation):</strong> 多个城镇可以联合起来组成一个国家，共同发展。</p>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2">常用指令</h3>
+                            <ul class="space-y-2 list-disc list-inside text-gray-300">
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town new [城镇名]</code> - 创建一个新城镇。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town claim</code> - 占领你脚下的地块作为城镇领地。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town add [玩家ID]</code> - 邀请玩家加入你的城镇。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town deposit [金额]</code> - 向城镇银行存款，用于支付维护费。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot fs [价格]</code> - 将你站立的地块出售。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot claim</code> - 购买你站立的待售地块。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/res set perm [friend/ally/outsider] [build/destroy/switch/itemuse] [on/off]</code> - 设置你的地块权限。</li>
+                                <li>输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/town</code> 或 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/plot</code> 查看更多指令。</li>
+                            </ul>
+                        </div>
+                        <!-- Iframe for Squaremap -->
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                                <i data-lucide="map"></i> 实时服务器地图
+                            </h3>
+                            <p class="mb-4 text-gray-300">通过下面的动态地图查看城镇和玩家位置。加载可能需要一些时间。</p>
+                            <div class="w-full h-96 lg:h-[500px] rounded-lg border-2 border-gray-700 overflow-hidden">
+                                <iframe src="http://mc5.leapmotorintl.com:40" class="w-full h-full"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Economy Section -->
+            <div id="economy" class="content-section">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">经济系统指南</h2>
+                    <p class="text-lg text-gray-300 mb-8">学习如何在服务器中赚钱和交易，成为商业巨头！</p>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="store"></i> QuickShop - 玩家商店</h3>
+                            <p class="mb-4">你可以创建自己的箱子商店来向其他玩家出售或收购物品。</p>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong class="text-white">创建出售商店:</strong> 手持想要出售的物品，<strong class="text-amber-400">左键</strong>点击一个箱子，然后在聊天框输入该物品的<strong class="text-green-400">单价</strong>。</li>
+                                <li><strong class="text-white">创建收购商店:</strong> 手持想要收购的物品，<strong class="text-amber-400">左键</strong>点击一个箱子，然后在聊天框输入 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">buy</code>，再输入你愿意支付的<strong class="text-green-400">单价</strong>。</li>
+                                <li><strong class="text-white">交易:</strong> 其他玩家<strong class="text-amber-400">左键</strong>点击你的商店牌子即可购买，<strong class="text-amber-400">右键</strong>即可出售。</li>
+                            </ul>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                             <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="shopping-cart"></i> 快速出售</h3>
+                             <p class="mb-4">快速将你背包里的物品卖给系统换取金钱。</p>
+                             <ul class="space-y-2 list-disc list-inside text-gray-300">
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sell hand</code> - 出售你<strong class="text-white">手中</strong>的全部同类物品。</li>
+                                <li><code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/sellgui</code> - 打开一个GUI界面，将背包里的物品拖入其中即可出售。</li>
+                             </ul>
+                        </div>
+                        <div class="p-6 bg-gray-900/50 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="server"></i> /shop - 系统商店</h3>
+                            <p>使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">/shop</code> 指令可以打开系统商店 (由Nascraft插件提供)。在这里你可以购买服务器提供的基础物品，或将你的物品出售给系统。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How to Join Section -->
+            <div id="join" class="content-section">
+                 <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">如何加入服务器</h2>
+                    <p class="text-lg text-gray-300 mb-8">只需几个简单步骤，即可开始你的偷心之旅！</p>
+                    <ol class="list-decimal list-inside space-y-4 text-gray-300">
+                        <li class="p-4 bg-gray-900/50 rounded-lg">
+                            <strong class="text-white">第一步:</strong> 启动你的Minecraft Java版客户端。我们推荐使用 <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">1.21+</code> 版本以获得最佳体验。
+                        </li>
+                        <li class="p-4 bg-gray-900/50 rounded-lg">
+                            <strong class="text-white">第二步:</strong> 在主菜单点击“多人游戏 (Multiplayer)”。
+                        </li>
+                        <li class="p-4 bg-gray-900/50 rounded-lg">
+                            <strong class="text-white">第三步:</strong> 点击“添加服务器 (Add Server)”按钮。
+                        </li>
+                        <li class="p-4 bg-gray-900/50 rounded-lg">
+                            <strong class="text-white">第四步:</strong> 在“服务器地址 (Server Address)”一栏中，输入我们的IP: <code class="bg-gray-700 px-2 py-1 rounded text-indigo-300">heartsteal.2m.pub</code>
+                        </li>
+                        <li class="p-4 bg-gray-900/50 rounded-lg">
+                            <strong class="text-white">第五步:</strong> 点击“完成 (Done)”，然后在服务器列表中找到HeartSteal，点击“加入服务器 (Join Server)”。
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div id="contact" class="content-section">
+                <div class="bg-gray-800/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <h2 class="text-4xl font-black text-white mb-6">联系我们</h2>
+                    <p class="text-lg text-gray-300 mb-8">遇到问题或有任何建议？通过以下方式找到我们！</p>
+                    <div class="max-w-lg mx-auto">
+                        <div class="flex flex-col sm:flex-row items-center gap-4 p-6 bg-gray-900/50 rounded-lg border border-gray-700 hover:border-indigo-500 transition-all duration-200">
+                            <i data-lucide="message-circle" class="w-10 h-10 text-indigo-400 flex-shrink-0"></i>
+                            <div class="flex-grow text-center sm:text-left">
+                                <h3 class="text-white font-bold text-lg">QQ群</h3>
+                                <p class="text-gray-400">群号: <span id="qq-id">1053101449</span></p>
+                            </div>
+                            <button id="copy-qq-btn" class="mt-2 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm transition-all duration-200 flex items-center gap-2 w-full sm:w-auto justify-center">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                                <span id="copy-qq-btn-text">复制群号</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const copyIpBtn = document.getElementById('copy-ip-btn');
+            const copyQqBtn = document.getElementById('copy-qq-btn');
+            const menuButton = document.getElementById('menu-button');
+            const sidebar = document.getElementById('sidebar');
+
+            // --- Navigation Logic ---
+            function switchTab(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-gray-700/50', 'text-white');
+                });
+
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+
+                const targetLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+                if (targetLink) {
+                    targetLink.classList.add('bg-gray-700/50', 'text-white');
+                }
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    switchTab(targetId);
+                    
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.add('-translate-x-full');
+                        menuButton.classList.remove('open');
+                    }
+                });
+            });
+
+            // --- Generic Copy Button Logic ---
+            function setupCopyButton(button, textToCopy, buttonTextElement, originalText) {
+                function fallbackCopy(text) {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        updateButtonState();
+                    } catch (err) {
+                        console.error('Fallback: Oops, unable to copy', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+
+                function updateButtonState() {
+                    buttonTextElement.innerText = '已复制!';
+                    button.querySelector('i').setAttribute('data-lucide', 'check');
+                    lucide.createIcons();
+                    setTimeout(() => {
+                        buttonTextElement.innerText = originalText;
+                        button.querySelector('i').setAttribute('data-lucide', 'copy');
+                        lucide.createIcons();
+                    }, 2000);
+                }
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy).then(updateButtonState).catch(() => fallbackCopy(textToCopy));
+                } else {
+                    fallbackCopy(textToCopy);
+                }
+            }
+
+            // --- IP Address Copy Button ---
+            if (copyIpBtn) {
+                copyIpBtn.addEventListener('click', function() {
+                    const ip = document.getElementById('server-ip').innerText;
+                    const copyBtnText = document.getElementById('copy-btn-text');
+                    setupCopyButton(this, ip, copyBtnText, '复制');
+                });
+            }
+
+            // --- QQ ID Copy Button ---
+            if (copyQqBtn) {
+                copyQqBtn.addEventListener('click', function() {
+                    const qqId = document.getElementById('qq-id').innerText;
+                    const copyBtnText = document.getElementById('copy-qq-btn-text');
+                    setupCopyButton(this, qqId, copyBtnText, '复制群号');
+                });
+            }
+
+            // --- Mobile Menu Toggle ---
+            menuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+                this.classList.toggle('open');
+            });
+
+            // Set the initial active tab (Home)
+            switchTab('home');
+        });
+    </script>
+</body>
+</html>
