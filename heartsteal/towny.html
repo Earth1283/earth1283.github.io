@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Towny 教程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        
+        /* --- Animation Keyframes --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header Animations --- */
+        header h1 {
+            animation: fadeInDown 0.6s ease-out 0.2s backwards;
+        }
+        header p {
+            animation: fadeInDown 0.6s ease-out 0.4s backwards;
+        }
+
+        /* --- Scroll Animations --- */
+        .animate-on-scroll {
+            opacity: 0; /* Hidden by default */
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* --- Interactive Element Styling --- */
+        .command {
+            font-family: 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", monospace;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .command-block {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .command-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        .command-block:hover .command {
+            background-color: #374151; /* bg-gray-700 */
+        }
+
+        /* --- Sidebar Styling --- */
+        .sidebar-link {
+            transition: background-color 0.2s, color 0.2s, transform 0.2s, border-left-color 0.2s;
+        }
+        .sidebar-link:hover {
+            transform: translateX(5px);
+            background-color: #1f2937; /* bg-gray-800 */
+        }
+        .sidebar-link.active {
+            color: #34d399; /* emerald-400 */
+            font-weight: 700;
+            border-left-color: #34d399;
+            transform: translateX(5px);
+        }
+
+        /* --- Notification Balloon --- */
+        #copy-notification {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <!-- Header -->
+    <header class="py-6 bg-gray-900 border-b border-gray-700 sticky top-0 z-20 overflow-hidden">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">Towny 插件指令教程</h1>
+            <p class="mt-2 text-md text-gray-400">点击指令即可复制</p>
+        </div>
+    </header>
+
+    <div class="container mx-auto flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-1/4 lg:w-1/5 p-6 md:sticky md:top-[105px] md:h-[calc(100vh-105px)] overflow-y-auto">
+            <nav id="sidebar-nav">
+                <ul class="space-y-2">
+                    <li><a href="#section-basic" class="sidebar-link block p-2 rounded border-l-4 border-transparent">基础指令</a></li>
+                    <li><a href="#section-player" class="sidebar-link block p-2 rounded border-l-4 border-transparent">玩家与好友</a></li>
+                    <li><a href="#section-town" class="sidebar-link block p-2 rounded border-l-4 border-transparent">城镇指令</a></li>
+                    <li><a href="#section-town-management" class="sidebar-link block p-2 rounded border-l-4 border-transparent">城镇管理</a></li>
+                    <li><a href="#section-plot" class="sidebar-link block p-2 rounded border-l-4 border-transparent">地块管理</a></li>
+                    <li><a href="#section-nation" class="sidebar-link block p-2 rounded border-l-4 border-transparent">国家指令</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="w-full md:w-3/4 lg:w-4/5 p-6 md:p-10">
+            <div class="space-y-12">
+
+                <!-- Section: 基础指令 -->
+                <section id="section-basic" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">基础指令</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/towny</p><p class="text-gray-400 mt-1">查看Towny插件基本信息。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/towny ?</p><p class="text-gray-400 mt-1">查看Towny指令的帮助列表。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/towny map</p><p class="text-gray-400 mt-1">查看城镇区块地图。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/towny prices</p><p class="text-gray-400 mt-1">查看建立城镇/国家等的价格。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/towny time</p><p class="text-gray-400 mt-1">查看新一天到来前所需的时间 (用于收税)。</p></div>
+                    </div>
+                </section>
+
+                <!-- Section: 玩家与好友 -->
+                <section id="section-player" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">玩家与好友</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/resident</p><p class="text-gray-400 mt-1">查看自己的玩家信息。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/resident [玩家名]</p><p class="text-gray-400 mt-1">查看其他玩家的信息。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/resident friend add [玩家名]</p><p class="text-gray-400 mt-1">添加好友。好友可以拥有你地块的权限。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/resident friend remove [玩家名]</p><p class="text-gray-400 mt-1">移除好友。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/resident list</p><p class="text-gray-400 mt-1">查看在线玩家列表。</p></div>
+                    </div>
+                </section>
+
+                <!-- Section: 城镇指令 -->
+                <section id="section-town" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">城镇指令</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town</p><p class="text-gray-400 mt-1">查看自己所在城镇的信息。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town new [城镇名]</p><p class="text-gray-400 mt-1">在你站立的区块上建立一个新城镇。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town list</p><p class="text-gray-400 mt-1">查看服务器城镇列表。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town join [城镇名]</p><p class="text-gray-400 mt-1">加入一个开放的城镇。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town leave</p><p class="text-gray-400 mt-1">离开你所在的城镇。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town spawn</p><p class="text-gray-400 mt-1">传送到你的城镇传送点。</p></div>
+                         <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town online</p><p class="text-gray-400 mt-1">查看镇内在线的玩家。</p></div>
+                    </div>
+                </section>
+
+                <!-- Section: 城镇管理 -->
+                <section id="section-town-management" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">城镇管理</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town claim</p><p class="text-gray-400 mt-1">为你的城镇占领脚下的地块。需要城镇银行有足够的资金。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town unclaim</p><p class="text-gray-400 mt-1">取消占领脚下的地块。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town deposit [数量]</p><p class="text-gray-400 mt-1">向城镇银行存钱。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town withdraw [数量]</p><p class="text-gray-400 mt-1">从城镇银行取钱 (仅限镇长/助理)。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town set mayor [玩家名]</p><p class="text-gray-400 mt-1">将镇长的职位移交给另一位居民。这是一个不可逆的操作！</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town set taxes [金额]</p><p class="text-gray-400 mt-1">设置居民每天需要缴纳的税款。税款会自动从居民的余额中扣除并存入城镇银行。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town set board [信息]</p><p class="text-gray-400 mt-1">设置城镇公告板信息, 居民上线时会看到。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/town toggle public</p><p class="text-gray-400 mt-1">切换城镇的开放状态。开放状态下，任何玩家都可以通过 /town join 加入，无需邀请。</p></div>
+                    </div>
+                </section>
+
+                <!-- Section: 地块管理 -->
+                <section id="section-plot" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">地块管理</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/plot claim</p><p class="text-gray-400 mt-1">为自己认领一块可用的地块。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/plot forsale [价格]</p><p class="text-gray-400 mt-1">将你拥有的地块上架出售。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/plot notforsale</p><p class="text-gray-400 mt-1">取消出售你的地块。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/plot set shop</p><p class="text-gray-400 mt-1">将该地块设置为商店地块。需要先放置一个箱子。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg">
+                            <p class="command text-lime-400" title="点击复制">/plot set perm [类型] [权限] [on/off]</p>
+                            <p class="text-gray-400 mt-1">设置地块权限。这是管理地块访问权限的核心指令。</p>
+                            <p class="text-gray-400 mt-2 text-sm">
+                                <strong class="text-gray-300">类型:</strong> `resident` (镇民), `ally` (盟友), `outsider` (外人), `friend` (好友)。<br>
+                                <strong class="text-gray-300">权限:</strong> `build` (放置方块), `destroy` (破坏方块), `switch` (使用按钮/拉杆), `itemuse` (使用箱子/工作台)。<br>
+                                <strong class="text-gray-300">示例:</strong> `/plot set perm friend build on` 允许好友在此地块上放置方块。
+                            </p>
+                        </div>
+                         <div class="command-block p-4 bg-gray-800 rounded-lg">
+                            <p class="command text-lime-400" title="点击复制">/plot toggle [pvp/fire/explosion/mobs]</p>
+                            <p class="text-gray-400 mt-1">切换地块上的特定游戏机制。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: 国家指令 -->
+                <section id="section-nation" class="scroll-mt-24 animate-on-scroll">
+                    <h2 class="text-2xl font-bold text-cyan-400 mb-4 border-b border-gray-700 pb-2">国家指令</h2>
+                    <div class="space-y-4">
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation</p><p class="text-gray-400 mt-1">查看自己所在国家的信息。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation new [国家名]</p><p class="text-gray-400 mt-1">建立一个新国家 (需要是镇长)。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation list</p><p class="text-gray-400 mt-1">查看服务器国家列表。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation add [城镇名]</p><p class="text-gray-400 mt-1">邀请一个城镇加入你的国家。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation kick [城镇名]</p><p class="text-gray-400 mt-1">从你的国家中移除一个城镇。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation ally add [国家名]</p><p class="text-gray-400 mt-1">与其他国家结盟。</p></div>
+                        <div class="command-block p-4 bg-gray-800 rounded-lg"><p class="command text-lime-400" title="点击复制">/nation enemy add [国家名]</p><p class="text-gray-400 mt-1">与其他国家宣战。</p></div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Copy Notification Balloon -->
+    <div id="copy-notification" class="fixed bottom-10 right-10 bg-emerald-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transform translate-y-4">
+        指令已复制!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Copy to Clipboard Functionality ---
+            const commandBlocks = document.querySelectorAll('.command-block');
+            const notification = document.getElementById('copy-notification');
+            let notificationTimeout;
+
+            commandBlocks.forEach(block => {
+                const commandEl = block.querySelector('.command');
+                if (commandEl) {
+                    block.addEventListener('click', () => {
+                        const commandText = commandEl.innerText;
+                        
+                        const textarea = document.createElement('textarea');
+                        textarea.value = commandText;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        try {
+                            document.execCommand('copy');
+                            showNotification();
+                        } catch (err) {
+                            console.error('无法复制指令:', err);
+                        }
+                        document.body.removeChild(textarea);
+                    });
+                }
+            });
+
+            function showNotification() {
+                clearTimeout(notificationTimeout);
+                notification.classList.remove('opacity-0', 'translate-y-4');
+                notification.classList.add('opacity-100', 'translate-y-0');
+                notificationTimeout = setTimeout(() => {
+                    notification.classList.remove('opacity-100', 'translate-y-0');
+                    notification.classList.add('opacity-0', 'translate-y-4');
+                }, 2000);
+            }
+
+            // --- Sidebar and Scroll Animation Logic ---
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('#sidebar-nav a');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2 // A good threshold for both nav and animation
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Trigger scroll animation
+                        entry.target.classList.add('fade-in-up');
+                        
+                        // Update active sidebar link
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+
+</body>
+</html>
