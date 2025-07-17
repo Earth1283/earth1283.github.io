@@ -9,16 +9,83 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .command {
-            background-color: #f3f4f6;
-            padding: 2px 6px;
-            border-radius: 4px;
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 6px;
             font-family: monospace;
-            color: #4b5563;
+            color: #2d3748;
+            transition: all 0.2s ease;
+        }
+        .dark .command {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+        .command:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .content-section {
-            scroll-margin-top: 80px; /* Adjust based on your header height */
+            scroll-margin-top: 80px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Smooth transitions for theme changes */
+        .bg-white, .bg-gray-100, .bg-gray-800, .bg-gray-900 {
+            transition: background-color 0.3s ease;
+        }
+        /* Better color scheme */
+        .bg-gray-100 { background-color: #f8fafc; }
+        .dark .bg-gray-900 { background-color: #0f172a; }
+        .bg-white { background-color: #ffffff; }
+        .dark .bg-gray-800 { background-color: #1e293b; }
+        
+        /* Sidebar hover effects */
+        #sidebar a {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        #sidebar a:hover {
+            transform: translateX(4px);
+        }
+        #sidebar a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #3b82f6;
+            transition: width 0.2s ease;
+        }
+        #sidebar a:hover::after {
+            width: 100%;
+        }
+        
+        /* Button animations */
+        button {
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        
+        /* Section animations */
+        section {
+            animation-delay: calc(var(--animation-order) * 0.1s);
         }
     </style>
 </head>
@@ -289,7 +356,7 @@
             });
         });
         
-        // Smooth scroll
+        // Smooth scroll to the target content
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -302,6 +369,25 @@
         // Initialize with English and theme
         setLanguage('en');
         setTheme(getThemePref());
+
+        // Add animation order to sections
+        document.querySelectorAll('.content-section').forEach((section, index) => {
+            section.style.setProperty('--animation-order', index);
+        });
+        
+        // Animate sections when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
     </script>
 
 </body>
