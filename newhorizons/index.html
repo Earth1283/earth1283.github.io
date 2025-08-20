@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineHorizon - Explore Earth in Minecraft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), 
+                        url('https://64.media.tumblr.com/2b636005b3c444b5da5e3de78b10b60c/ad800ec080357bf3-ca/s640x960/4f38b2ddd0d6941a23c9d4f6b6d336383b082df0.gif') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #81C784, #A5D6A7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #E0E0E0;
+            font-weight: 300;
+            animation: fadeIn 2s ease-out 0.5s both;
+        }
+
+        .server-ip {
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px 40px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 2rem;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .server-ip:hover {
+            background: rgba(76, 175, 80, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(76, 175, 80, 0.5);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 2s ease-out 1s both;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #FFD700;
+        }
+
+        .btn-secondary:hover {
+            background: #FFD700;
+            color: #0a0a0a;
+            transform: translateY(-3px);
+        }
+
+        /* Rules Section */
+        .rules {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #0f3460, #16213e, #1a1a2e);
+            position: relative;
+        }
+
+        .rules::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .rule-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 15px;
+            padding: 30px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .rule-card:hover::before {
+            opacity: 1;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .rule-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .rule-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .rule-description {
+            color: #C0C0C0;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        .rules-note {
+            margin-top: 50px;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .rules-note p {
+            color: #FFD700;
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #4CAF50, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(76,175,80,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.2);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .feature-description {
+            color: #B0B0B0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Rules Section */
+        .rules {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #0f3460, #16213e, #1a1a2e);
+            position: relative;
+        }
+
+        .rules::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .rule-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 15px;
+            padding: 30px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .rule-card:hover::before {
+            opacity: 1;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .rule-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .rule-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .rule-description {
+            color: #C0C0C0;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        .rules-note {
+            margin-top: 50px;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .rules-note p {
+            color: #FFD700;
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+        .stats {
+            background: #0a0a0a;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 30px 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-label {
+            color: #B0B0B0;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 60px 20px 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .footer p {
+            color: #B0B0B0;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .discord-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(45deg, #5865F2, #7289DA);
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discord-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .discord-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+        }
+
+        .discord-link:hover::before {
+            left: 100%;
+        }
+
+        .discord-icon {
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .discord-text {
+            transition: all 0.3s ease;
+        }
+
+        /* Discord joining animation */
+        .discord-joining {
+            animation: discordJoining 2s ease-in-out;
+            pointer-events: none;
+        }
+
+        .discord-joining .discord-icon {
+            animation: spin 1s linear infinite;
+        }
+
+        .discord-joining .discord-text::after {
+            content: '...';
+            animation: dots 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes dots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes discordJoining {
+            0% {
+                transform: scale(1);
+                background: linear-gradient(45deg, #5865F2, #7289DA);
+            }
+            25% {
+                transform: scale(1.05);
+                background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            }
+            50% {
+                transform: scale(1.1);
+                background: linear-gradient(45deg, #4CAF50, #66BB6A);
+                box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+            }
+            75% {
+                transform: scale(1.05);
+                background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            }
+            100% {
+                transform: scale(1);
+                background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            }
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+            }
+            to {
+                text-shadow: 0 0 40px rgba(76, 175, 80, 0.8), 0 0 60px rgba(76, 175, 80, 0.4);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(76, 175, 80, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Network Error Balloon */
+        .network-error {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 107, 107, 0.95);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff4757;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            z-index: 1000;
+            font-size: 0.9rem;
+            max-width: 300px;
+            animation: slideInRight 0.5s ease-out, fadeOutRight 0.5s ease-in 4.5s forwards;
+        }
+
+        .network-error .error-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .network-error .error-message {
+            opacity: 0.9;
+            font-size: 0.85rem;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOutRight {
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .server-ip {
+                font-size: 1.4rem;
+                padding: 15px 25px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="particles" id="particles"></div>
+        <div class="hero-content">
+            <h1 class="logo">MineHorizon</h1>
+            <p class="tagline">Explore Earth in Minecraft • 1:500 Scale World Map</p>
+            <div class="server-ip" onclick="copyToClipboard('newhorizons.2m.pub')">
+                newhorizons.2m.pub
+            </div>
+            <div class="cta-buttons">
+                <a href="#features" class="btn btn-primary">Explore Features</a>
+                <a href="#rules" class="btn btn-secondary">Server Rules</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose MineHorizon?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🌍</span>
+                    <h3 class="feature-title">Real Earth Map</h3>
+                    <p class="feature-description">Experience the entire planet in Minecraft with our detailed 1:500 scale world map. Build in real locations from your hometown to famous landmarks!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏘️</span>
+                    <h3 class="feature-title">Towny System</h3>
+                    <p class="feature-description">Create and manage your own towns, form nations, and engage in diplomacy. Build communities with friends and establish your empire on Earth!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Gold Economy</h3>
+                    <p class="feature-description">Trade, buy, and sell using our balanced gold-based economy. Earn money through various activities and become the wealthiest player on Earth!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌌</span>
+                    <h3 class="feature-title">Epic Scale</h3>
+                    <p class="feature-description">Experience the breathtaking scope of our planet with incredible detail and realistic geography. Every continent awaits your exploration!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">👥</span>
+                    <h3 class="feature-title">Active Community</h3>
+                    <p class="feature-description">Join our friendly community of builders, explorers, and leaders. Make lasting friendships while conquering the world together!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">24/7 Uptime</h3>
+                    <p class="feature-description">Our dedicated servers ensure you can explore Earth anytime. Experience lag-free gameplay with regular updates and maintenance!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules Section -->
+    <section class="rules">
+        <div class="container">
+            <h2 class="section-title">Server Rules</h2>
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <span class="rule-icon">🤝</span>
+                    <h3 class="rule-title">Be Respectful</h3>
+                    <p class="rule-description">Treat all players with kindness and respect. No harassment, bullying, or toxic behavior will be tolerated.</p>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-icon">🚫</span>
+                    <h3 class="rule-title">No Griefing</h3>
+                    <p class="rule-description">Destroying or stealing from other players' builds is strictly prohibited. Respect others' hard work and creativity.</p>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-icon">⚡</span>
+                    <h3 class="rule-title">No Cheating</h3>
+                    <p class="rule-description">Hacking, exploiting, or using unauthorized mods will result in immediate punishment. Play fairly and earn your progress.</p>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-icon">💬</span>
+                    <h3 class="rule-title">Keep Chat Clean</h3>
+                    <p class="rule-description">No excessive swearing, spam, or inappropriate content. Keep conversations family-friendly and constructive.</p>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-icon">🏗️</span>
+                    <h3 class="rule-title">Build Responsibly</h3>
+                    <p class="rule-description">No inappropriate builds or offensive structures. Consider the impact of your creations on the community.</p>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-icon">📢</span>
+                    <h3 class="rule-title">Follow Staff Instructions</h3>
+                    <p class="rule-description">Listen to moderators and administrators. They're here to help maintain a fun and safe environment for everyone.</p>
+                </div>
+            </div>
+            <div class="rules-note">
+                <p>⚠️ Breaking these rules may result in warnings, temporary bans, or permanent removal from the server. Let's work together to keep MineHorizon an amazing place to play!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <h2 class="section-title">Server Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="players">Loading...</span>
+                    <span class="stat-label">Players Online</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="towns">89</span>
+                    <span class="stat-label">Towns Created</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="nations">23</span>
+                    <span class="stat-label">Nations Formed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">99.9%</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Ready to Conquer Earth?</h3>
+            <p>Join thousands of players building civilizations across our realistic Earth map. Your adventure starts with a single block!</p>
+            <div class="social-links">
+                <a href="#" class="discord-link" onclick="joinDiscord(event)">
+                    <span class="discord-icon">💬</span>
+                    <span class="discord-text">Join Discord</span>
+                </a>
+            </div>
+            <p style="color: #666; margin-top: 30px;">&copy; 2025 MineHorizon. Experience Earth like never before.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Discord join animation and redirect
+        function joinDiscord(event) {
+            event.preventDefault();
+            
+            const discordLink = event.currentTarget;
+            const discordText = discordLink.querySelector('.discord-text');
+            
+            // Add joining animation class
+            discordLink.classList.add('discord-joining');
+            
+            // Change text to "Joining Discord"
+            const originalText = discordText.textContent;
+            discordText.textContent = 'Joining Discord';
+            
+            // After 2 seconds (when animation completes), redirect
+            setTimeout(() => {
+                window.open('https://discord.gg/NVPgxRnwWq', '_blank');
+                
+                // Reset the button after a short delay
+                setTimeout(() => {
+                    discordLink.classList.remove('discord-joining');
+                    discordText.textContent = originalText;
+                }, 500);
+            }, 2000);
+        }
+
+        // Show network error notification
+        function showNetworkError() {
+            // Remove any existing error notifications
+            const existingError = document.querySelector('.network-error');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            const errorBalloon = document.createElement('div');
+            errorBalloon.className = 'network-error';
+            errorBalloon.innerHTML = `
+                <div class="error-title">🌐 Network Error</div>
+                <div class="error-message">Unable to fetch live server data. Please check your connection.</div>
+            `;
+            
+            document.body.appendChild(errorBalloon);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorBalloon.parentNode) {
+                    errorBalloon.remove();
+                }
+            }, 5000);
+        }
+
+        // Fetch server status from mcsrvstat API
+        async function fetchServerStatus() {
+            try {
+                const response = await fetch('https://api.mcsrvstat.us/3/newhorizons.2m.pub');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                const playersElement = document.getElementById('players');
+                
+                if (data.online) {
+                    const onlinePlayers = data.players.online || 0;
+                    const maxPlayers = data.players.max || 100;
+                    playersElement.textContent = `${onlinePlayers}/${maxPlayers}`;
+                    playersElement.style.color = '#FFD700';
+                    
+                    // Add server status indicator
+                    let statusIndicator = playersElement.parentElement.querySelector('.status-indicator');
+                    if (!statusIndicator) {
+                        statusIndicator = document.createElement('div');
+                        statusIndicator.className = 'status-indicator';
+                        statusIndicator.style.cssText = `
+                            position: absolute;
+                            top: -5px;
+                            right: -5px;
+                            width: 12px;
+                            height: 12px;
+                            background: #4CAF50;
+                            border-radius: 50%;
+                            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+                            animation: pulse 2s infinite;
+                        `;
+                        playersElement.parentElement.style.position = 'relative';
+                        playersElement.parentElement.appendChild(statusIndicator);
+                    } else {
+                        statusIndicator.style.background = '#4CAF50';
+                        statusIndicator.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
+                    }
+                } else {
+                    playersElement.textContent = 'Server Offline';
+                    playersElement.style.color = '#ff6b6b';
+                    
+                    // Update status indicator to red
+                    const statusIndicator = playersElement.parentElement.querySelector('.status-indicator');
+                    if (statusIndicator) {
+                        statusIndicator.style.background = '#ff6b6b';
+                        statusIndicator.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.5)';
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch server status:', error);
+                showNetworkError();
+                
+                // Set fallback display
+                const playersElement = document.getElementById('players');
+                playersElement.textContent = 'Check Status';
+                playersElement.style.color = '#FFA500';
+                
+                // Update status indicator to orange
+                const statusIndicator = playersElement.parentElement.querySelector('.status-indicator');
+                if (statusIndicator) {
+                    statusIndicator.style.background = '#FFA500';
+                    statusIndicator.style.boxShadow = '0 0 10px rgba(255, 165, 0, 0.5)';
+                }
+            }
+        }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const serverIp = document.querySelector('.server-ip');
+                const originalText = serverIp.textContent;
+                serverIp.textContent = 'Copied!';
+                serverIp.style.background = 'rgba(76, 175, 80, 0.2)';
+                
+                setTimeout(() => {
+                    serverIp.textContent = originalText;
+                    serverIp.style.background = 'rgba(0,0,0,0.7)';
+                }, 2000);
+            });
+        }
+
+        // Animate stats on scroll
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.textContent);
+                        animateNumber(entry.target, target);
+                    }
+                });
+            });
+
+            statNumbers.forEach(stat => {
+                if (!stat.textContent.includes('%')) {
+                    observer.observe(stat);
+                }
+            });
+        }
+
+        function animateNumber(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 40);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            animateStats();
+            fetchServerStatus();
+            
+            // Refresh server status every 30 seconds
+            setInterval(fetchServerStatus, 30000);
+        });
+
+        // Add parallax effect to hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
+</body>
+</html>
