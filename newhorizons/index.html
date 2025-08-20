@@ -927,6 +927,7 @@
         // Fetch server status from mcsrvstat API
         async function fetchServerStatus() {
             try {
+                console.log('Fetching server status for: newhorizons.2m.pub');
                 const response = await fetch('https://api.mcsrvstat.us/3/newhorizons.2m.pub');
                 
                 if (!response.ok) {
@@ -934,12 +935,14 @@
                 }
                 
                 const data = await response.json();
+                console.log('Server data received:', data);
                 
                 const playersElement = document.getElementById('players');
                 
-                if (data.online) {
-                    const onlinePlayers = data.players.online || 0;
-                    const maxPlayers = data.players.max || 100;
+                // Check if server is online
+                if (data.online === true) {
+                    const onlinePlayers = (data.players && typeof data.players.online === 'number') ? data.players.online : 0;
+                    const maxPlayers = (data.players && typeof data.players.max === 'number') ? data.players.max : 20;
                     playersElement.textContent = `${onlinePlayers}/${maxPlayers}`;
                     playersElement.style.color = '#FFD700';
                     
@@ -978,6 +981,11 @@
                 }
             } catch (error) {
                 console.error('Failed to fetch server status:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack
+                });
                 showNetworkError();
                 
                 // Set fallback display
