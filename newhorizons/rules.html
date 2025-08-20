@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineHorizon - Server Rules</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)),
+                        url('https://64.media.tumblr.com/2b636005b3c444b5da5e3de78b10b60c/ad800ec080357bf3-ca/s640x960/4f38b2ddd0d6941a23c9d4f6b6d336383b082df0.gif') center/cover;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #81C784, #A5D6A7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.8);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #81C784;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .rules-section {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+
+        .rule {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .rule::before {
+            content: "•";
+            color: #4CAF50;
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">MineHorizon</h1>
+        <p>Server Rules & Guidelines</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Rules</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="staff.html">Staff</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="rules-section">
+            <h2>General Rules</h2>
+            <div class="rule">Be respectful to all players and staff members</div>
+            <div class="rule">No harassment, hate speech, or inappropriate behavior</div>
+            <div class="rule">No cheating, hacking, or using unfair advantages</div>
+            <div class="rule">No griefing or destroying other players' builds</div>
+            <div class="rule">Keep chat family-friendly and appropriate</div>
+        </div>
+
+        <div class="rules-section">
+            <h2>Building Guidelines</h2>
+            <div class="rule">Respect other players' build space</div>
+            <div class="rule">No inappropriate or offensive builds</div>
+            <div class="rule">Report any issues to staff members</div>
+            <div class="rule">Don't claim more land than you need</div>
+        </div>
+
+        <div class="rules-section">
+            <h2>Trading Rules</h2>
+            <div class="rule">No scamming or unfair trades</div>
+            <div class="rule">Use designated trading areas</div>
+            <div class="rule">Report suspicious trading activity</div>
+            <div class="rule">Don't exploit game mechanics for unfair advantages</div>
+        </div>
+    </div>
+</body>
+</html>

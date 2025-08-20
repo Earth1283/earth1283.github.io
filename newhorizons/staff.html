@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineHorizon - Staff & Support</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)),
+                        url('https://64.media.tumblr.com/2b636005b3c444b5da5e3de78b10b60c/ad800ec080357bf3-ca/s640x960/4f38b2ddd0d6941a23c9d4f6b6d336383b082df0.gif') center/cover;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #81C784, #A5D6A7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.8);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #81C784;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .staff-card {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .staff-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .staff-role {
+            color: #4CAF50;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .support-section {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .discord-button {
+            display: inline-block;
+            background: #7289DA;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+
+        .discord-button:hover {
+            background: #5B73C7;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">MineHorizon</h1>
+        <p>Staff & Support</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Rules</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="staff.html">Staff</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="staff-grid">
+            <div class="staff-card">
+                <div class="staff-avatar">👑</div>
+                <h2>AdminName</h2>
+                <div class="staff-role">Server Owner</div>
+                <p>Server owner and main administrator. Contact for serious inquiries.</p>
+            </div>
+
+            <div class="staff-card">
+                <div class="staff-avatar">⚔️</div>
+                <h2>ModName1</h2>
+                <div class="staff-role">Senior Moderator</div>
+                <p>Handles player reports and maintains server rules.</p>
+            </div>
+
+            <div class="staff-card">
+                <div class="staff-avatar">🛡️</div>
+                <h2>ModName2</h2>
+                <div class="staff-role">Moderator</div>
+                <p>Assists players and moderates chat.</p>
+            </div>
+
+            <div class="staff-card">
+                <div class="staff-avatar">🔧</div>
+                <h2>HelperName</h2>
+                <div class="staff-role">Helper</div>
+                <p>Assists new players and answers general questions.</p>
+            </div>
+        </div>
+
+        <div class="support-section">
+            <h2>Need Help?</h2>
+            <p>Join our Discord server for quick support and to stay updated with server news!</p>
+            <a href="#" class="discord-button">Join Our Discord</a>
+        </div>
+    </div>
+</body>
+</html>
