@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCIO Terminal Plugin API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #D1D5DB; /* text-gray-300 */
+        }
+
+        /* Custom scrollbar for a more modern look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1F2937; /* bg-gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4B5563; /* bg-gray-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280; /* bg-gray-500 */
+        }
+
+        /* Styling for code blocks */
+        pre {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        /* Inline code styling */
+        code:not(pre > code) {
+            background-color: #374151; /* bg-gray-700 */
+            color: #E5E7EB; /* text-gray-200 */
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Active state for sidebar navigation links */
+        .sidebar-link.active {
+            color: #34D399; /* text-emerald-400 */
+            font-weight: 500;
+            border-left-color: #34D399; /* border-emerald-400 */
+        }
+
+        /* Copy button styling */
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #374151;
+            color: #D1D5DB;
+            border: 1px solid #4B5563;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            background-color: #4B5563;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-64 lg:flex-shrink-0 lg:fixed lg:h-screen p-8 border-b lg:border-b-0 lg:border-r border-gray-800 bg-gray-900/70 backdrop-blur-sm">
+            <h2 class="text-lg font-bold text-white flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
+                MCIO Terminal API
+            </h2>
+            <nav class="mt-8">
+                <ul class="space-y-4">
+                    <li><a href="#overview" class="sidebar-link block text-gray-400 hover:text-white transition-colors border-l-2 border-gray-700 pl-4">Overview</a></li>
+                    <li><a href="#getting-started" class="sidebar-link block text-gray-400 hover:text-white transition-colors border-l-2 border-gray-700 pl-4">Getting Started</a></li>
+                    <li><a href="#plugin-object" class="sidebar-link block text-gray-400 hover:text-white transition-colors border-l-2 border-gray-700 pl-4">The Plugin Object</a></li>
+                    <li><a href="#api-reference" class="sidebar-link block text-gray-400 hover:text-white transition-colors border-l-2 border-gray-700 pl-4">API Reference</a></li>
+                    <li><a href="#full-example" class="sidebar-link block text-gray-400 hover:text-white transition-colors border-l-2 border-gray-700 pl-4">Full Example</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="w-full lg:ml-64 p-8 lg:p-12">
+            <div class="max-w-4xl mx-auto space-y-12">
+                
+                <!-- Header Section -->
+                <header>
+                    <h1 class="text-4xl font-bold text-white tracking-tight">Plugin API Documentation</h1>
+                    <p class="mt-4 text-lg text-gray-400">A guide to creating your own plugins to extend the functionality of the MCIO Terminal.</p>
+                </header>
+
+                <hr class="border-gray-800">
+
+                <!-- Overview Section -->
+                <section id="overview" class="space-y-4 scroll-mt-24">
+                    <h2 class="text-2xl font-bold text-white">1. Overview</h2>
+                    <p>The plugin system is designed to be simple and powerful. It allows other userscripts to safely add new commands, and even run initialization code, without modifying the core terminal script.</p>
+                    <p>A plugin is essentially a separate userscript that:</p>
+                    <ul class="list-disc list-inside space-y-2 pl-4 text-gray-400">
+                        <li>Waits for the main MCIO Terminal to be ready.</li>
+                        <li>Defines a <code>plugin</code> object containing new commands and an optional <code>init</code> function.</li>
+                        <li>Registers itself with the terminal using the provided API.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-gray-800">
+
+                <!-- Getting Started Section -->
+                <section id="getting-started" class="space-y-4 scroll-mt-24">
+                    <h2 class="text-2xl font-bold text-white">2. Getting Started: Your First Plugin</h2>
+                    <p>Creating a plugin is straightforward.</p>
+                    
+                    <h3 class="text-xl font-semibold text-gray-200 pt-4">Step 1: Create a New Userscript</h3>
+                    <p>In Tampermonkey, create a new script. Here is a basic header you can use. The <code>@match</code> and <code>@run-at</code> directives are important for ensuring your script loads correctly.</p>
+                    <pre><code>// ==UserScript==
+// @name         MCIO Terminal - My Awesome Plugin
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Adds awesome new features to the MCIO Terminal!
+// @author       Your Name
+// @match        *://*.mine-craft.io/*
+// @grant        unsafeWindow
+// @run-at       document-end
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Your plugin code will go here...
+
+})();</code></pre>
+
+                    <h3 class="text-xl font-semibold text-gray-200 pt-4">Step 2: Connect to the Terminal</h3>
+                    <p>Your plugin script needs to wait for the main terminal to load. The terminal fires a <code>MCIOTerminalReady</code> event on the <code>window</code> object when it's fully initialized. You should listen for this event to safely access the API.</p>
+                    <p>Here is the standard connection boilerplate:</p>
+                    <pre><code>function connectPlugin() {
+    // Check if the terminal is already loaded (in case your plugin loads late)
+    if (unsafeWindow.MCIOTerminal) {
+        initializePlugin(unsafeWindow.MCIOTerminal);
+        return;
+    }
+
+    // If not, wait for the "ready" event
+    window.addEventListener('MCIOTerminalReady', (event) => {
+        const api = event.detail.api;
+        if (api) {
+            initializePlugin(api);
+        }
+    });
+}
+
+function initializePlugin(api) {
+    // We'll define our plugin here in the next step
+    console.log("Connected to Terminal API!", api);
+}
+
+connectPlugin();</code></pre>
+                </section>
+
+                <hr class="border-gray-800">
+
+                <!-- Plugin Object Section -->
+                <section id="plugin-object" class="space-y-4 scroll-mt-24">
+                    <h2 class="text-2xl font-bold text-white">3. The Plugin Object</h2>
+                    <p>The core of your plugin is a single object that you pass to the registration function. This object can have two main properties: <code>commands</code> and <code>init</code>.</p>
+                    <pre><code>const myPlugin = {
+    // Property 1: New commands to add to the terminal
+    commands: {
+        // ... command definitions go here
+    },
+
+    // Property 2 (Optional): A function that runs once on registration
+    init: (terminalElement) => {
+        // ... setup code goes here
+    }
+};</code></pre>
+                    
+                    <h3 class="text-xl font-semibold text-gray-200 pt-4">The <code>commands</code> Object</h3>
+                    <p>This is an object where each key is the name of your new command. The value is another object defining the command's properties:</p>
+                    <ul class="list-disc list-inside space-y-3 pl-4 text-gray-400">
+                        <li><code>description</code> (string): A brief explanation of what the command does. This appears in the <code>help</code> command.</li>
+                        <li><code>usage</code> (string): Shows the syntax for the command (e.g., <code>mycommand [argument]</code>).</li>
+                        <li><code>category</code> (string): The category your command will be listed under in <code>help</code>. It's best practice to use <code>'plugin'</code> for all your commands.</li>
+                        <li><code>execute</code> (function): The function that runs when the command is entered. It receives one argument: an array of strings (<code>args</code>) containing any arguments the user typed after the command.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-gray-200 pt-4">The <code>init</code> Function (Optional)</h3>
+                    <p>If you provide an <code>init</code> function, it will be executed once when your plugin is successfully registered. It receives the main terminal's DOM element as an argument, allowing for advanced DOM manipulation if needed.</p>
+                </section>
+
+                <hr class="border-gray-800">
+
+                <!-- API Reference Section -->
+                <section id="api-reference" class="space-y-4 scroll-mt-24">
+                    <h2 class="text-2xl font-bold text-white">4. API Reference</h2>
+                    <p>The Terminal API is passed to your <code>initializePlugin</code> function. It contains several helpful methods and properties.</p>
+
+                    <div class="pt-4 space-y-6">
+                        <div>
+                            <h3 class="text-lg font-mono font-medium text-emerald-400">api.registerPlugin(name, pluginObject)</h3>
+                            <p class="mt-2 ml-4">This is the most important function. It registers your plugin with the terminal.</p>
+                            <ul class="mt-2 ml-8 list-disc list-inside text-gray-400">
+                                <li><strong><code>name</code></strong> (string): A unique name for your plugin (e.g., <code>'MyAwesomePlugin'</code>).</li>
+                                <li><strong><code>pluginObject</code></strong> (object): The plugin object you created, containing your commands and optional <code>init</code> function.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-mono font-medium text-emerald-400">api.terminalOutput(text, type)</h3>
+                            <p class="mt-2 ml-4">Prints a message to the terminal's output screen. This is the recommended way to display information.</p>
+                             <ul class="mt-2 ml-8 list-disc list-inside text-gray-400">
+                                <li><strong><code>text</code></strong> (string): The message to display.</li>
+                                <li><strong><code>type</code></strong> (string, optional): The style of the message. Defaults to <code>'normal'</code>. Available types: <code>'normal'</code>, <code>'success'</code>, <code>'error'</code>, <code>'warning'</code>, <code>'info'</code>, <code>'command'</code>, <code>'system'</code>.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-mono font-medium text-emerald-400">api.executeCommand(commandLine)</h3>
+                            <p class="mt-2 ml-4">Executes a command in the terminal, just as if a user had typed it.</p>
+                             <ul class="mt-2 ml-8 list-disc list-inside text-gray-400">
+                                <li><strong><code>commandLine</code></strong> (string): The full command to run (e.g., <code>'help clear'</code>).</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-mono font-medium text-emerald-400">api.commands</h3>
+                            <p class="mt-2 ml-4">An object containing all currently registered commands. You can read this to see what other commands exist.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-mono font-medium text-emerald-400">api.settings</h3>
+                            <p class="mt-2 ml-4">An object containing the user's current terminal settings (theme, font size, etc.).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-gray-800">
+
+                <!-- Full Example Section -->
+                <section id="full-example" class="space-y-4 scroll-mt-24">
+                    <h2 class="text-2xl font-bold text-white">5. Full Example: <code>ExamplePlugin.user.js</code></h2>
+                    <p>Here is the complete code for a fully functional plugin that adds <code>hello</code> and <code>pluginfo</code> commands.</p>
+                    <pre><code>// ==UserScript==
+// @name         MCIO Terminal - Example Plugin
+// @namespace    http://tampermonkey.net/
+// @version      1.2
+// @description  An example plugin for the MCIO Terminal that adds new commands.
+// @author       Your Name
+// @match        *://*.mine-craft.io/*
+// @grant        unsafeWindow
+// @run-at       document-end
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    console.log('%c MCIO Terminal - Example Plugin: Script is running!', 'color: #ff00ff; font-size: 16px; font-weight: bold;');
+
+    /**
+     * This is the main function for our plugin.
+     * It will be called once the main MCIO Terminal is ready.
+     * @param {object} terminalAPI - The API object exposed by the main terminal script.
+     */
+    function initializePlugin(terminalAPI) {
+        // 1. Define the plugin object with its commands and init function.
+        const myPlugin = {
+            commands: {
+                'hello': {
+                    description: 'A friendly greeting from the example plugin.',
+                    usage: 'hello [name]',
+                    category: 'plugin',
+                    execute: (args) => {
+                        const name = args.join(' ') || 'world';
+                        // Use the terminal's built-in output function for consistency
+                        terminalAPI.terminalOutput(`Hello, ${name}! This message is from the example plugin.`, 'success');
+                    }
+                },
+                'pluginfo': {
+                    description: 'Shows information about this example plugin.',
+                    usage: 'pluginfo',
+                    category: 'plugin',
+                    execute: () => {
+                        terminalAPI.terminalOutput('--- Example Plugin v1.2 ---', 'info');
+                        terminalAPI.terminalOutput('This is a simple plugin to demonstrate extensibility.', 'normal');
+                    }
+                }
+            },
+            init: () => {
+                // Use the API to print a message to the terminal when the plugin loads.
+                setTimeout(() => {
+                   terminalAPI.terminalOutput('Example Plugin loaded successfully. Try the "hello" command!', 'system');
+                }, 1000); // Delay slightly to appear after startup sequence
+            }
+        };
+
+        // 2. Register the plugin with the main terminal script.
+        terminalAPI.registerPlugin('ExamplePlugin', myPlugin);
+    }
+
+    /**
+     * This function attempts to connect the plugin to the terminal.
+     */
+    function connectPlugin() {
+        // Case 1: The terminal is already loaded and ready.
+        if (unsafeWindow.MCIOTerminal && unsafeWindow.MCIOTerminal.registerPlugin) {
+            initializePlugin(unsafeWindow.MCIOTerminal);
+            return;
+        }
+
+        // Case 2: The terminal is not ready yet. We listen for the event.
+        window.addEventListener('MCIOTerminalReady', (event) => {
+            const api = event.detail.api;
+            if (api) {
+                initializePlugin(api);
+            }
+        });
+    }
+
+    // Start the connection process!
+    connectPlugin();
+
+})();</code></pre>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Copy to Clipboard Functionality ---
+            const allCodeBlocks = document.querySelectorAll('pre');
+            allCodeBlocks.forEach(block => {
+                const button = document.createElement('button');
+                button.innerText = 'Copy';
+                button.className = 'copy-btn';
+                block.appendChild(button);
+
+                button.addEventListener('click', () => {
+                    const code = block.querySelector('code').innerText;
+                    const textarea = document.createElement('textarea');
+                    textarea.value = code;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = 'Copy';
+                    }, 2000);
+                });
+            });
+
+            // --- Active Sidebar Link on Scroll ---
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.sidebar-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-30% 0px -70% 0px" }); // Activate when section is in the middle 30% of the viewport
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
